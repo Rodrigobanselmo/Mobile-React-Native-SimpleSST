@@ -13,7 +13,7 @@ export default ({navigation}) => {
 
     useEffect(()=> {
 
-      changeNavigationBarColor('#F27329', false)
+      changeNavigationBarColor('#0d0d0d', false)
 
       setUserLogin(false);
       if (initializing) {null}

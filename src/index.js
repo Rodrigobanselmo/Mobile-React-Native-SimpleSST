@@ -74,7 +74,7 @@ const theme = {
 };
 
 export default () => {
-  changeNavigationBarColor('#F27329', false)
+  changeNavigationBarColor('#0d0d0d', false)
   
   return(
     <Provider store={store}>

@@ -77,7 +77,7 @@ Sign.Footer = function Footer({animatedInitial,children}) {
   return(
     <FooterView style={{transform:[{translateY:animatedInitialFooter}],elevation:20}} duration="1000">
       <ScrollView showsVerticalScrollIndicator={false} bounces={false} keyboardShouldPersistTaps='handled'>
-          <View style={{paddingHorizontal:25,paddingTop:10,paddingBottom:5}}>
+          <View style={{paddingHorizontal:25,paddingTop:10,paddingBottom:10}}>
           <TextHeaderFooter >Faça login ou cadastre-se</TextHeaderFooter>
           {children}
           </View>
