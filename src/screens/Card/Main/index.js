@@ -3,18 +3,11 @@ import React, {useState,useContext,useRef,useEffect} from 'react';
 import {ThemeContext} from "styled-components";
 import {SafeAreaView, StyleSheet,StatusBar,Dimensions, Text,Animated,View, ScrollView} from 'react-native';
 import {useReactModal} from '../../../context/ModalContext'
-import styled from "styled-components";
 import changenavigationBarColor from 'react-native-navigation-bar-color';
 import Card from './comp'
 import {v4} from "uuid";
 import { useSelector, useDispatch } from 'react-redux';
 
-const ContainerSafe = styled(SafeAreaView)`
-  justify-content: flex-start;
-  align-items: center;
-  flex: 1;
-  background-color:${({theme})=>theme.background.card};
-`;
 
 const CheckListData = 
 {title:"PGR",id:'1',data:[
@@ -50,18 +43,20 @@ export default function App() {
 
   changenavigationBarColor('#0d0d0d', false)
 
-  const title = CheckListData.title
-  const dispatch = useDispatch();
   const answers = useSelector(state => state.answer);
+  const model = useSelector(state => state.model);
+  const title = answers?.title ?? 'Checklist'
+  const dispatch = useDispatch();
 
   useEffect(() => {
     !answers?.data && dispatch({type: 'CREATE_CHECKLIST',payload:CheckListData})
+    !model?.data && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
   }, [])
 
 
   return (
     <Card text={title}>
-        {answers?.data && <Card.Component CHECK_LIST_MODEL={CHECK_LIST_MODEL} CheckListData={answers} dispatch={dispatch}/>}
+        {answers?.data && <Card.Component CHECK_LIST_MODEL={model} CheckListData={answers} dispatch={dispatch}/>}
     </Card>
 
   );

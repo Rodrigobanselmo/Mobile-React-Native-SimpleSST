@@ -6,10 +6,11 @@ import {useReactModal} from '../../../context/ModalContext'
 import styled,{css} from "styled-components/native";
 import {ButtonInitial,IconButton} from '../../../components/basicComponents/Button';
 import Icons from '../../../components/Icons'
+import * as Animatable from 'react-native-animatable';
 
 import { TouchableOpacity,TextInput,FlatList } from 'react-native-gesture-handler';
 
-const TextQuestion = styled.Text`
+const TextQuestion = styled(Animatable.Text)`
   text-align:center;
   font-size:16px;
 
@@ -66,7 +67,7 @@ const TextProgress = styled.Text`
 
 
 
-export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch}) {
+export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch,modal}) {
 
   const windowHeight = Dimensions.get('window').height
   const themeContext = useContext(ThemeContext);
@@ -90,11 +91,12 @@ export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch
       </View>
       <View style={{flex:1,overflow:'hidden'}}>
         <ViewTextContent windowHeight={windowHeight} style={{elevation:5}}>
-          <TextQuestion windowHeight={windowHeight} >{item.text}</TextQuestion>
+          <TextQuestion animation="fadeIn" duration={1000} windowHeight={windowHeight} >{item.text}</TextQuestion>
         </ViewTextContent>
         <View style={{flex:1,justifyContent:'flex-start',marginHorizontal:20}}>
           <ButtonInitial
-            secondary={item?.selected && item.selected == 'yes' ? true : false}
+            secondary={item?.selected && item.selected == 'yes'}
+            informe={modal?.selected && modal.selected == 'yes'}
             onPress={()=>onAnswer('yes')}
             scale={0.65*windowHeight/1000+0.23}
             elevation={true}
