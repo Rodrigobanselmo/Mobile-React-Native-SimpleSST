@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "827607237083",
+    "project_id": "react-dashboard-93701",
+    "storage_bucket": "react-dashboard-93701.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827607237083:android:073c8b2e48d676e9a827fe",
+        "android_client_info": {
+          "package_name": "com.simpledev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "827607237083-956286n2oq7bscctrgpc1nk95od6fp2u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEezJCcNYtdnc4b0NO7SShGpRcY8MS58w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "827607237083-956286n2oq7bscctrgpc1nk95od6fp2u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
