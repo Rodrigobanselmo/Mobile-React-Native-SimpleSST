@@ -40,6 +40,8 @@ export default function Icons({name,...props}) {
             return <Ionicons name={'ios-camera-outline'} {...props} /> //ios-camera
         case 'Doc':
             return <Ionicons name={'document-text-outline'} {...props} />
+        case 'Fingerprint':
+            return <Ionicons name={'finger-print-outline'} {...props} />
         case 'Plus':
             return <AntDesign name={'plus'} {...props} />
         case 'Help':

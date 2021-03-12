@@ -102,7 +102,6 @@ Card.Component = function ComponentCard({CheckListData,dispatch,CHECK_LIST_MODEL
 
 
               const model = CHECK_LIST_MODEL.filter(i=>(i.groupId === groupId && i.questionId === item.id))[0]
-
               const inputRange = [index - 1, index,index+1]
 
               const translateY = animatedValue.interpolate({

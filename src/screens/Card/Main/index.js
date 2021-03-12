@@ -31,7 +31,7 @@ const CheckListData =
 ]}
 
 const CHECK_LIST_MODEL = [
-  {id:'1',groupId:'1',questionId:'1.1',selected:'',obs:'Aenean quam nunc, mattis necc mauris varius feugiat ut non velit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus consequat, eros at interdum congue, orci felis commodo sem, lacinia pulvinar nibh sapien sed sem. Mauris.'}
+  {id:'1',groupId:'1',questionId:'1.1',selected:'yes',obs:'Aenean quam nunc, mattis necc mauris varius feugiat ut non velit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus consequat, eros at interdum congue, orci felis commodo sem, lacinia pulvinar nibh sapien sed sem. Mauris.'}
 ]
 
 const RISK_FACTORS = [
@@ -50,9 +50,8 @@ export default function App() {
 
   useEffect(() => {
     !answers?.data && dispatch({type: 'CREATE_CHECKLIST',payload:CheckListData})
-    !model?.data && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
+    !model && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
   }, [])
-
 
   return (
     <Card text={title}>

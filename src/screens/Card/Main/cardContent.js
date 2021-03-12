@@ -67,12 +67,11 @@ const TextProgress = styled.Text`
 
 
 
-export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch,modal}) {
+export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch,model}) {
 
   const windowHeight = Dimensions.get('window').height
   const themeContext = useContext(ThemeContext);
   const reactModal = useReactModal();
-
   function onAnswer(peek) {
     if (item.action[peek]?.child) {
       dispatch({type: 'ANSWER_CHILD',payload:{peek,itemId:item.id,groupId,childId:item.action[peek].child}})
@@ -96,7 +95,10 @@ export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch
         <View style={{flex:1,justifyContent:'flex-start',marginHorizontal:20}}>
           <ButtonInitial
             secondary={item?.selected && item.selected == 'yes'}
-            informe={modal?.selected && modal.selected == 'yes'}
+            /* informe={modal?.selected && modal.selected == 'yes'} */
+            iconName={model?.selected && model.selected == 'yes' ? 'Fingerprint' : false}
+            iconColor={themeContext.primary.main} 
+            iconPosition='right'
             onPress={()=>onAnswer('yes')}
             scale={0.65*windowHeight/1000+0.23}
             elevation={true}
@@ -104,6 +106,7 @@ export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch
             />
           <ButtonInitial
             secondary={item?.selected && item.selected == 'no' ? true : false}
+            iconName={model?.selected && model.selected == 'no' ? 'Fingerprint' : false}
             onPress={()=>onAnswer('no')}
             scale={0.65*windowHeight/1000+0.23}
             elevation={true}
@@ -111,16 +114,19 @@ export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch
             />
           <ButtonInitial
             secondary={item?.selected && item.selected == 'na' ? true : false}
+            iconName={model?.selected && model.selected == 'na' ? 'Fingerprint' : false}
             onPress={()=>onAnswer('na')}
             scale={0.65*windowHeight/1000+0.23}
             elevation={true}
             text='N.A.'
           />
           {item?.parent &&
-          <TouchableOpacity style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',paddingTop:10}} onPress={()=>onAnswer('goBack')}>
-            <Icons name={'ArrowBack'} color={themeContext.text.third} size={18}/>
-            <TextProgress>Voltar</TextProgress>
-          </TouchableOpacity>
+          <View style={{width:100}}>
+            <TouchableOpacity style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',paddingTop:10,paddingBottom:10,marginBottom:5}} onPress={()=>onAnswer('goBack')}>
+              <Icons name={'ArrowBack'} color={themeContext.text.third} size={18}/>
+              <TextProgress>Voltar</TextProgress>
+            </TouchableOpacity>
+          </View>
           }
         </View>
       </View>
