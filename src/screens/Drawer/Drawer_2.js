@@ -21,7 +21,7 @@ const ContainerSafe = styled(SafeAreaView)`
 const CheckListData = 
 {title:"PGR",id:'1',data:[
   {group:'Limpeza e organização do local de trabalho',id:'1',questions:[
-    {action:{yes:{rec:''},no:{child:'1.1.1'},na:0},text:'As saídas de emergência estão bem sinalizadas, são mantidas destrancadas e o acesso a elas não está impedido por obstáculos .',id:'1.1'},
+    {action:{yes:{rec:''},no:{child:'1.1.1'},na:0},text:'Os trabalhadores, aastância químicas perigosas, recebem treinamento quanto aos riscos que estas substâncias representaram para a saúde e quanto às formas seguras de manipulação?',id:'1.1'},
     {action:{yes:{risk:'1'},no:0,na:0},hide:true,parent:'1.1',text:'As saídas de emergência estão bem sinalizadas, são mantidas destrancadas e o acesso a elas não está impedido por obstáculos .',id:'1.1.1'},
     {action:{yes:0,no:0,na:0},text:'Os trabalhadores, que lidam com substância químicas perigosas, recebem treinamento quanto aos riscos que estas substâncias representaram para a saúde e quanto às formas seguras de manipulação.',id:'1.2'},
     {action:{yes:0,no:0,na:0},text:'São utilizadas listas adequadas para a realização das inspeções.',id:'1.3'},

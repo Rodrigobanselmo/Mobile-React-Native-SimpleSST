@@ -46,6 +46,7 @@ const Principal = ({CheckListData,navigation,dispatch,CHECK_LIST_MODEL=[]}) => {
 
     const windowWidth = Dimensions.get('window').width
     const windowHeight = Dimensions.get('window').height
+    console.log(windowHeight);
     const CARD_WIDTH =windowWidth*0.85
     const CARD_HEIGHT =(windowHeight-60)*0.85;
     const CONTROLLER_HEIGHT =(windowHeight-70)*0.13;
@@ -95,7 +96,7 @@ const Principal = ({CheckListData,navigation,dispatch,CHECK_LIST_MODEL=[]}) => {
 
     function CardContainer() {
       return (
-          <FlingGestureHandler key='LEFT' direction={Directions.LEFT} onHandlerStateChange={ev=>{
+/*           <FlingGestureHandler key='LEFT' direction={Directions.LEFT} onHandlerStateChange={ev=>{
               if (ev.nativeEvent.state === State.END) {
               if (activeIndex === data.length) {
                   return;
@@ -111,10 +112,10 @@ const Principal = ({CheckListData,navigation,dispatch,CHECK_LIST_MODEL=[]}) => {
                   }
                   setactiveSlide(activeIndex-1)
                 }
-              }} >
+              }} > */
                   <Container >
                     {backCardGroup &&
-                      <BackGroupView animation="fadeIn" duration={2000} style={{height:CARD_HEIGHT+23}}>
+                      <BackGroupView animation="fadeIn" duration={1000} style={{height:CARD_HEIGHT+23}}>
                         <BackCard setId={setId} setactiveSlide={setactiveSlide} groupIndex={_key} data={CheckListData.data}/>
                       </BackGroupView>
                     }
@@ -204,25 +205,25 @@ const Principal = ({CheckListData,navigation,dispatch,CHECK_LIST_MODEL=[]}) => {
                       </View>
                       <View style={{height:CONTROLLER_HEIGHT,width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
                           <TouchableHighlight activeOpacity={0.5} underlayColor={themeContext.background.hover} style={{zIndex:1000,padding:9,borderRadius:30}} onLongPress={() => {setactiveSlide(0)}} onPress={() => {if (activeIndex!== 0) setactiveSlide(activeIndex-1)}}>
-                              <Icons  name={'ArrowLeft'} size={25} color={themeContext.text.third} />
+                              <Icons  name={'ArrowLeft'} size={25*windowHeight/1000+8.0} color={themeContext.text.third} />
                           </TouchableHighlight>
                           <ButtonInitial
                           secondary={secondary}
                           style={{backgroundColor:animatedInitialButton,marginHorizontal:20}}
                           textStyle={{fontWeight:'bold'}}
                   /*           onPress={onAdd} */
-                          scale={0.67}
+                          scale={windowHeight/1000}
                           elevation={true}
                           text='Adicionar'
                           disabledButton={true}
                           />
                           <TouchableHighlight activeOpacity={0.5} underlayColor={themeContext.background.hover} style={{zIndex:1000,padding:9,borderRadius:30}} onLongPress={() => {setactiveSlide(data.length-1)}} onPress={() => {if (activeIndex < data.length) setactiveSlide(activeIndex+1)}}>
-                              <Icons  name={'ArrowRight'} size={25} color={themeContext.text.third} />
+                              <Icons  name={'ArrowRight'} size={25*windowHeight/1000+8.0} color={themeContext.text.third} />
                           </TouchableHighlight>
                       </View>
                   </Container>
-              </FlingGestureHandler>
-          </FlingGestureHandler>
+/*               </FlingGestureHandler>
+          </FlingGestureHandler> */
       )
     }
 

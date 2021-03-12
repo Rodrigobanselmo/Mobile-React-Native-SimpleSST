@@ -21,8 +21,8 @@ export default () => {
   return (
       
       <MainStack.Navigator headerMode="none">
-      <MainStack.Screen name="DrawerStack" component={DrawerStack} options={{ cardStyleInterpolator: forFade }} />
       <MainStack.Screen name="Preload" component={Preload} options={{ cardStyleInterpolator: forFade }} />
+      <MainStack.Screen name="DrawerStack" component={DrawerStack} options={{ cardStyleInterpolator: forFade }} />
       <MainStack.Screen name="SignStack" component={SignStack} options={{ cardStyleInterpolator: forFade }} />
       <MainStack.Screen name="TabStack" component={TabStack} options={{ cardStyleInterpolator: forFade }} />
       <MainStack.Screen name="VerificationStack" component={VerificationStack} options={{ cardStyleInterpolator: forFade }} />
