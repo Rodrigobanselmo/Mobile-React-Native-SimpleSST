@@ -52,9 +52,9 @@ export default function App({navigation}) {
     !answers?.data && dispatch({type: 'CREATE_CHECKLIST',payload:CheckListData})
     !model && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
   }, [])
-
+  
   return (
-    <Card navigation={navigation} text={title}>
+    <Card navigation={navigation} title={title}>
         {answers?.data && <Card.Component CHECK_LIST_MODEL={model} CheckListData={answers} dispatch={dispatch}/>}
     </Card>
 

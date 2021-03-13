@@ -36,18 +36,16 @@ const useAuth = (initializing,setInitializing,setUser) => {
     dispatch({type: 'LOGIN_USER',payload:{email:userLogin.email,emailVerified:userLogin.emailVerified,uid:userLogin.uid,...doc}})
     //reactModal.close()
     //console.log('user',{...doc})
-    
+    console.log(1);
     if (!setInitializing) {
       if ( !userLogin ) {
         navigationReset({screen:'SignStack'})
       } else if (userLogin.emailVerified && doc.name) {
-        setTimeout(() => {
-          reactModal.loaderScreen({onFunc:()=>navigationReset({screen:'TabStack'}),background:'#fff'})
-        }, 700);
+        //reactModal.loaderScreen({onFunc:()=>navigationReset({screen:'TabStack'}),background:'#fff'})
+        navigationReset({screen:'TabStack'})
       } else {
-        setTimeout(() => {
-          reactModal.loaderScreen({onFunc:()=>navigationReset({screen:'VerificationStack'}),background:'#fff'})
-        }, 700);
+          //reactModal.loaderScreen({onFunc:()=>navigationReset({screen:'VerificationStack'}),background:'#fff'})
+          navigationReset({screen:'VerificationStack'})
       }
     }
       
@@ -68,20 +66,21 @@ const useAuth = (initializing,setInitializing,setUser) => {
   }
 
   function AuthStateChanged(userLogin) {
-    console.log('user',user)
-    console.log('userLogin',userLogin)
+    //console.log('user',user)
+    //console.log('userLogin',userLogin)
 
-    if(!userLogin && user) dispatch({type: 'LOGOUT_USER',})
-    else if (userLogin && !user) {
-      console.log('object')
-      GetUserData(userLogin,checkSuccess,checkError)
+    if(!userLogin && user?.email && user.email) {
+    dispatch({type: 'LOGOUT_USER',});}
+    else if (userLogin && !user?.email) {
+    GetUserData(userLogin,checkSuccess,checkError)
     } else {
       if (initializing) setTimeout(() => {setInitializing(false)}, 1000);
     }
-    
     if (setUser && userLogin?.email) setUser(userLogin)
   }
 
+
+  console.log('objedwqdwct');
   useEffect(() => {
 
     const subscriber = auth().onAuthStateChanged(AuthStateChanged);

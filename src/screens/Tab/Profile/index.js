@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 //import { } from '../../../services/firebaseAuth';
 //import { } from '../../../services/firestoreUser';
 import Profile from './comp';
+import {onLogOut} from './func';
 import {useReactModal} from '../../../context/ModalContext'
+//import useAuth from '../../../hooks/useAuthChange'
 
 const ininialStateType = {
   tipo:'ok',
@@ -18,7 +20,9 @@ export default function App({navigation}) {
   const [type, setType] = useState({...ininialStateType});
   const [modalVisible, setModalVisible] = useState(false);
   
+  //const [] = useAuth()
   const reactModal = useReactModal();
+  const dispatch = useDispatch();
 
   function onChangeType(types,_email) {
 
@@ -67,7 +71,7 @@ export default function App({navigation}) {
     else if (status === 'Tipo de Conta') reactModal.animated({text:'Somente seu adminitrador pode alterar este campo.',type:'Warn'})
     else if (status === 'Administrador') reactModal.animated({text:'Atual adminitrador de sua conta.',type:'Check'})
     else if (status === 'Status') reactModal.animated({text:'A sua conta encontra-se ativa!',type:'Check'})
-    else if (status === 'Sair') reactModal.alert({title:'Você tem certeza?',text:'Você realmente desaja sair de sua conta?',confirmButton:'Sair',onConfirm:()=>{},option:true})
+    else if (status === 'Sair') reactModal.alert({title:'Você tem certeza?',text:'Você realmente desaja sair de sua conta?',confirmButton:'Sair',onConfirm:()=>onLogOut({dispatch,reactModal,navigation}),option:true})
   }
   
 

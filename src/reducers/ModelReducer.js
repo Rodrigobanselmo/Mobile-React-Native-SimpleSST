@@ -8,6 +8,8 @@ export default (state = initialState, action) => {
     switch(action.type) {
         case 'CREATE_MODEL':
         return [...action.payload];
+        case 'LOGOUT_MODEL':
+        return [...initialState];
 
         default:
         return state;

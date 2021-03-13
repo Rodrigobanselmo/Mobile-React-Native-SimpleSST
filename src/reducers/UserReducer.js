@@ -29,6 +29,7 @@ export default (state = initialState, action) => {
         return {...state,theme};
 
         case 'LOGOUT_USER':
+            //console.log('logout',initialState);
         return {...initialState};
 
         case 'LOGIN_USER':

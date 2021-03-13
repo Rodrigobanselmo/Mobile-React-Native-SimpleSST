@@ -11,7 +11,6 @@ const ContainerSafe = styled(SafeAreaView)`
   align-items: center;
   flex: 1;
   background-color:${({theme})=>theme.background.back};
-  background-color:#e2e2e2;
 `;
 
 
@@ -22,7 +21,7 @@ export default function App() {
 
   return (
     <ContainerSafe >
-      <StatusBar backgroundColor={'#e2e2e2'/* themeContext.text.primary */} barStyle="light-content"/>
+      <StatusBar backgroundColor={themeContext.background.back} barStyle="dark-content"/>
       <ScrollView showsVerticalScrollIndicator={false} style={{width:'100%'}}>
       <Header text='Verificar Email' />
       <View style={{backgroundColor:'#eee',height:80,elevation:16,marginBottom:10,marginHorizontal:20}}></View>

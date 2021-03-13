@@ -56,6 +56,9 @@ export default (state = initialState, action) => {
             list.data[groupId].questions[parentId].selected = 'none'
         return {...list};
 
+        case 'LOGOUT_ANSWER':
+            return {...initialState};
+
         default:
         return state;
     }

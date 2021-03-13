@@ -42,7 +42,7 @@ export default function ModalProvider(props) {
 
   return (
     <ModalContext.Provider value={dispatch}>
-      <View style={{position:'relative',width:windowWidth,height:'100%'}}>
+      <View style={{position:'relative',zIndex:918293482034829023904432423423,width:windowWidth,height:'100%'}}>
       {state.typeModal === 'loader' && <LoaderModal open={open}/>}
       {state.typeModal === 'loaderScreen' && <ModalLoadScreen  open={open} onClose={()=>dispatch('')} {...state}/>}
       {state.typeModal === 'animated' &&<AnimatedModal random={state.random} dispatch={()=>dispatch('')} type={state.type} position={state.position} text={state.text} HEIGHT={state.height}/>}
