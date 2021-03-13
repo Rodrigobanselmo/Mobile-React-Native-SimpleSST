@@ -83,6 +83,25 @@ export function SendEmailVerification(checkSuccess,checkError) {
   });
 }
 
+export function ChangePassword(oldPassword,password,checkSuccess,checkError) {
+  
+  var user = firebase.auth().currentUser;
+  var credentials = firebase.auth.EmailAuthProvider.credential(
+    user.email,
+    oldPassword
+  );
+  
+  user.reauthenticateWithCredential(credentials).then(function() {
+    user.updatePassword(password).then(function() {
+      checkSuccess()
+    }).catch(function(error) {
+      checkError(errorCatch(error))
+    });
+  }).catch(function(error) {
+    checkError(errorCatch(error))
+  });
+
+}
 export function getCurrentUserReload(checkSuccess,checkError) {
   
   var user = firebase.auth().currentUser;
@@ -95,7 +114,7 @@ export function getCurrentUserReload(checkSuccess,checkError) {
 
 }
 
-export function getCurrentUserEmailVerify(checkSuccess,checkError) {
+export function getCurrentUserEmailVerify() {
   var user = firebase.auth().currentUser;
   if (user!==null) {
    return  (user.emailVerified)

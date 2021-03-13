@@ -269,7 +269,7 @@ const ininialStateData = {
                       />
                       
                       {item == 'pass' || item =='confirmePass' ? 
-                        <TouchableOpacity style={{padding:10}} onPress={()=>onSecureTextEntry(index)} >
+                        <TouchableOpacity style={{padding:10,transform:[{translateX:-50}]}} onPress={()=>onSecureTextEntry(index)} >
                         {(secureTextEntry[index]) ? 
                           <Icons name="SecureOn" color={themeContext.text.fourth} size={20}/>
                         :
@@ -277,7 +277,7 @@ const ininialStateData = {
                         }
                         </TouchableOpacity> 
                       : null}
-                      {false && data.isValidInput[index] && invalidEmail && item != 'name' && item!='normal' ? 
+                      {data.isValidInput[index] && invalidEmail && item != 'name' && item!='normal' ? 
                         <Animatable.View animation="bounceIn" >
                             <Icons name="Check" color={themeContext.status.success} size={20} />
                         </Animatable.View>

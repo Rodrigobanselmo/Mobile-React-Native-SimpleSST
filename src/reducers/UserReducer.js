@@ -38,7 +38,11 @@ export default (state = initialState, action) => {
         return {..._user};
 
         case 'ADD_USER_DATA':
-        return {...state , ...action.payload };
+            let data = {...action.payload}
+            if (data?.info) {
+                data.info = {...state.info,...data.info}
+            }
+        return {...state , ...data };
 
         default:
             return state;

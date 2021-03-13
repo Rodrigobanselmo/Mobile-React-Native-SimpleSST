@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 //import { } from '../../../services/firebaseAuth';
 //import { } from '../../../services/firestoreUser';
 import Profile from './comp';
-import {onLogOut} from './func';
+import {onLogOut,onChangePassword,onChangeName,onChangeCPF} from './func';
 import {useReactModal} from '../../../context/ModalContext'
 //import useAuth from '../../../hooks/useAuthChange'
 
@@ -23,6 +23,7 @@ export default function App({navigation}) {
   //const [] = useAuth()
   const reactModal = useReactModal();
   const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
 
   function onChangeType(types,_email) {
 
@@ -34,7 +35,7 @@ export default function App({navigation}) {
         subTitle:'Insira uma nova senha de cadastro',
         typeInput:['pass','pass','confirmePass'],
         placeholder:['Senha atual','Senha nova','Confirmar senha nova'],
-        //onFunc: (onAnimationModal,t1,t2,t3,valid,onClose)=>EmailSignAfter(t1,t2,valid[0],valid[1],valid[2],onAnimationModal,onModalVisible,onClose)
+        onFunc: (t1,t2,t3,valid,onClose)=>onChangePassword({oldPass:t1,newPass:t2,reactModal,onClose})
       }
     } else if (types == 'change_name') {
       infos = {
@@ -44,7 +45,7 @@ export default function App({navigation}) {
         typeInput:['name'],
         placeholder:['Primeiro nome'],
         preLoaded:[user?.name ??''],
-        //onFunc: (onAnimationModal,t1,t2,t3,valid,onClose)=>{ChangeUserData({uid:user.userId,changeData:{givenName:t1.trim()},action:'name'},onModalVisible,onClose,dispatchUserDataChange,onSetModalVisible)}
+        onFunc: (t1,t2,t3,valid,onClose)=>onChangeName({name:t1,uid:user.uid,reactModal,onClose,dispatch})
       }
     } else if (types == 'change_cpf') {
       infos = {
@@ -54,7 +55,7 @@ export default function App({navigation}) {
         typeInput:['cpf'],
         placeholder:['CPF'],
         preLoaded:[user?.info?.CPF ?? ''],
-        //onFunc: (onAnimationModal,t1,t2,t3,valid,onClose)=>{ChangeUserData({uid:user.userId,changeData:{givenName:t1.trim()},action:'name'},onModalVisible,onClose,dispatchUserDataChange,onSetModalVisible)}
+        onFunc: (t1,t2,t3,valid,onClose)=>onChangeCPF({cpf:t1,uid:user.uid,reactModal,onClose,dispatch})
       }
     }
 
@@ -74,9 +75,6 @@ export default function App({navigation}) {
     else if (status === 'Sair') reactModal.alert({title:'Você tem certeza?',text:'Você realmente desaja sair de sua conta?',confirmButton:'Sair',onConfirm:()=>onLogOut({dispatch,reactModal,navigation}),option:true})
   }
   
-
-  const user = useSelector(state => state.user);
-
   return (
     <Profile>
       <Profile.Body navigation={navigation} >
