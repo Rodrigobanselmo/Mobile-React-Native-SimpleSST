@@ -24,15 +24,15 @@ export default ({ state, navigation }) => {
 
   return (
     <ContainerTabArea style={styles.TabArea}>  
-      <TouchableOpacity onPress={()=>goTo('Tab_1')} style={styles.TabItem} >
+      <TouchableOpacity onPress={()=>goTo('Home')} style={styles.TabItem} >
           <Ionicons name="ios-home" color={themeContext.tabBar.icons} size={23} style={{opacity: state.index===0? 1 : 0.5}} />
       </TouchableOpacity>
       <View style={{backgroundColor:themeContext.tabBar.backButton, marginTop: -20,borderRadius:40}}>
-        <TouchableOpacity onPress={()=>goTo('Tab_3')} style={styles.TabItemCenter} >
+        <TouchableOpacity onPress={()=>goTo('Card')} style={styles.TabItemCenter} >
           <Ionicons name="add" color={themeContext.tabBar.plus} size={40} style={{opacity: state.index===2? 1 : 0.7,backgroundColor:themeContext.tabBar.backButton,borderRadius:50,padding:0}} />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={()=>goTo('Tab_4')} style={styles.TabItem} >
+      <TouchableOpacity onPress={()=>goTo('Profile')} style={styles.TabItem} >
         <Ionicons name="ios-person" color={themeContext.tabBar.icons} size={23} style={{opacity: state.index===3? 1 : 0.5}} />
       </TouchableOpacity>
     </ContainerTabArea>

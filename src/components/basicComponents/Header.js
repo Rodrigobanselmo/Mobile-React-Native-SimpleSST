@@ -29,7 +29,7 @@ export function Header({text,navigation,style,type, align='center',
     function buttonPress() {
         if (type=='Drawer') {
             navigation.openDrawer()
-        } else if (type=='Back') {
+        } else if (type=='Back' || type=='Close') {
             navigation.goBack()
         }
     }
@@ -38,6 +38,8 @@ export function Header({text,navigation,style,type, align='center',
             return (<Icons name='Menu' size={25} color={themeContext.text.title} />)
         } else if (type=='Back') {
             return (<Icons  name="ArrowLeft" size={28} color={themeContext.text.title} />)
+        } else if (type=='Close') {
+            return (<Icons  name="Close" size={28} color={themeContext.text.title} />)
         }
     }
 

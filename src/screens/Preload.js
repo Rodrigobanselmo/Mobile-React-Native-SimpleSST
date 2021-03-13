@@ -4,12 +4,13 @@ import LottieView from 'lottie-react-native';
 import useAuth from'../hooks/useAuthChange';
 import { StackActions } from '@react-navigation/native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
+import { useSelector, useDispatch } from 'react-redux';
 
 export default ({navigation}) => {
 
     const [initializing, setInitializing] = useState(true);
     const [userLogin, setUserLogin] = useState(false);
-    const [navigationActions,navigationReset] = useAuth(initializing,setInitializing,setUserLogin)
+    const [_,navigationReset] = useAuth(initializing,setInitializing,setUserLogin)
 
     useEffect(()=> {
 

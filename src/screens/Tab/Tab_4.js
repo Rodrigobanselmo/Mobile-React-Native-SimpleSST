@@ -5,7 +5,7 @@ import {SafeAreaView, StyleSheet, Text} from 'react-native';
 export default function App() {
   return (
     <SafeAreaView>
-      <Text>ssas</Text>
+      <Text></Text>
     </SafeAreaView>
   );
 }

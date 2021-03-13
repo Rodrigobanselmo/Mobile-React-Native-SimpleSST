@@ -19,7 +19,8 @@ const theme = {
   primary:{
     main:'#d9560b',
     lighter:'#F27329',
-    textInside:'#fff'
+    textInside:'#fff',
+    strong:'#000000',
   },
   secondary:{
     main:'#990000',

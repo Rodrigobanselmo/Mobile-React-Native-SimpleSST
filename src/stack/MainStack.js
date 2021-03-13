@@ -1,7 +1,9 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
+import { CardStyleInterpolators } from '@react-navigation/stack';
 
 import Preload from '../screens/Preload.js';
+import CardStack from './Stacks/CardStack';
 import DrawerStack from './Stacks/DrawerStack';
 import SignStack from './Stacks/SignStack';
 import TabStack from './Stacks/TabStack';
@@ -21,8 +23,9 @@ export default () => {
   return (
       
     <MainStack.Navigator headerMode="none">
-      <MainStack.Screen name="DrawerStack" component={DrawerStack} options={{ cardStyleInterpolator: forFade }} />
       <MainStack.Screen name="Preload" component={Preload} options={{ cardStyleInterpolator: forFade }} />
+      <MainStack.Screen name="Card" component={CardStack} options={{cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid}} />
+      <MainStack.Screen name="DrawerStack" component={DrawerStack} options={{ cardStyleInterpolator: forFade }} />
       <MainStack.Screen name="SignStack" component={SignStack} options={{ cardStyleInterpolator: forFade }} />
       <MainStack.Screen name="TabStack" component={TabStack} options={{ cardStyleInterpolator: forFade }} />
       <MainStack.Screen name="VerificationStack" component={VerificationStack} options={{ cardStyleInterpolator: forFade }} />

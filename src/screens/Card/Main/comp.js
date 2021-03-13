@@ -13,12 +13,12 @@ import {BackGroupView,CardView,Container,ContainerSafe} from './styles';
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
 
-export default function Card({title,children, ...restProps }) {
+export default function Card({title,children,navigation, ...restProps }) {
   const themeContext = useContext(ThemeContext);
   return (
         <ContainerSafe {...restProps}>
           <StatusBar backgroundColor={themeContext.background.card} barStyle="dark-content"/>
-          <Header text={title} type="Back" secondIcon/>
+          <Header text={title} type="Close" navigation={navigation} secondIcon/>
           <View style={{height:(windowHeight-60),width:'100%'}}>
             {children}
           </View>

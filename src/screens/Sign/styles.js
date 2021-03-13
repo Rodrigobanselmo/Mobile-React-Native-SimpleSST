@@ -38,7 +38,7 @@ export const TextHeaderFooter = styled.Text`
   font-size: 15px;
   flex: 1;
   text-align: center;
-  margin-bottom: 2px;
+  margin-bottom: 20px;
   margin-top: 5px;
   font-size: 14px;
 `;

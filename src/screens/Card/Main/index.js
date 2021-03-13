@@ -39,7 +39,7 @@ const RISK_FACTORS = [
 ]
 
 
-export default function App() {
+export default function App({navigation}) {
 
   changenavigationBarColor('#0d0d0d', false)
 
@@ -54,7 +54,7 @@ export default function App() {
   }, [])
 
   return (
-    <Card text={title}>
+    <Card navigation={navigation} text={title}>
         {answers?.data && <Card.Component CHECK_LIST_MODEL={model} CheckListData={answers} dispatch={dispatch}/>}
     </Card>
 

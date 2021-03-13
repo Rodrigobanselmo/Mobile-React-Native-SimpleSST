@@ -2,13 +2,14 @@ import React, {useState,useContext} from 'react';
 import {View,Text,Image,TouchableOpacity, Dimensions,TextInput,Platform,StyleSheet,ScrollView,Animated,Easing, Keyboard,Modal,KeyboardAvoidingView,TouchableWithoutFeedback} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {InputInitial} from '../../components/basicComponents/Input';
 import Icons from '../Icons'
 import {isEqual} from 'lodash';
-import styled, {ThemeContext} from "styled-components";
+import styled, {ThemeContext} from "styled-components/native";
 
 
 
-const Container = styled(View)`
+const Container = styled.View`
       background-color: ${({theme})=>theme.background.paper};
       padding: 15px;
       max-width:500px;
@@ -16,7 +17,7 @@ const Container = styled(View)`
       border-radius:10px;
 `;
 
-const InputContainer = styled(View)`
+const InputContainer = styled.View`
       flex-direction: row;
       margin-top: 14px;
       border-bottom-width: 1px;
@@ -24,13 +25,13 @@ const InputContainer = styled(View)`
       align-items:center;
 `;
 
-const Input = styled(TextInput)`
+const Input = styled.TextInput`
       flex: 1;
       color: ${({theme})=>theme.text.primary};
       font-size: 16px;
 `;
 
-const TextHeader = styled(Text)`
+const TextHeader = styled.Text`
       color: ${({theme})=>theme.text.primary};
       text-align: left;
       font-size: 20px;
@@ -43,7 +44,7 @@ const TextSubHeader = styled(TextHeader)`
     margin-bottom:0px;
 `;
 
-const ContainerButtons = styled(View)`
+const ContainerButtons = styled.View`
   flex-direction: row;
   justify-content: flex-end;
 
@@ -53,7 +54,7 @@ const ContainerButtons = styled(View)`
   `}
 `;
 
-const ButtonOk = styled(TouchableOpacity)`
+const ButtonOk = styled.TouchableOpacity`
   background-color: ${({theme,warn,isValid})=> isValid? warn? theme.status.fail2:theme.status.success : theme.background.inactive};
   justify-content: center;
   align-items: center;
@@ -77,7 +78,7 @@ const ButtonCancel = styled(ButtonOk)`
 `;
 
 
-const TextOk = styled(Text)`
+const TextOk = styled.Text`
   color: ${({theme,warn})=> theme.status.text};
 `;
 
@@ -153,8 +154,10 @@ const ininialStateData = {
             TEXT_INPUT.isValidInput[index] = val.trim().length >= 1
       } else if(item == 'normal') {
             TEXT_INPUT.isValidInput[index] = val.trim().length >= 1
+      } else if(item == 'cpf') {
+            TEXT_INPUT.isValidInput[index] = val.trim().length == 14
       } else {
-            TEXT_INPUT.isValidInput[index] = false
+            TEXT_INPUT.isValidInput[index] = true
       }
       
       if (!invalidEmail) {
@@ -167,7 +170,8 @@ const ininialStateData = {
     }
 
     function onEnviar() {
-        onPress(data.text0,data.text1,data.text2,data.isValidInput,onClose)
+        if (onPress) onPress(data.text0,data.text1,data.text2,data.isValidInput,onClose)
+        else onClose()
         setinvalidInput(false)
     }
 
@@ -203,7 +207,7 @@ const ininialStateData = {
                     var TYPE = {};
                     if (item=='pass') {
                       TYPE = {
-                        autoCompleteType:'password',
+                        autoCompleteType:'off',
                         textContentType:'none',
                         keyboardType:'default'
                       }
@@ -225,6 +229,15 @@ const ininialStateData = {
                         textContentType:'none',
                         keyboardType:'numeric'
                       }
+                    } else if (item=='cpf') {
+                      TYPE = {
+                        autoCompleteType:'off',
+                        textContentType:'none',
+                        keyboardType:'numeric',
+                        mask:true,
+                        maxLength:14,
+                        type:'cpf'
+                      }
                     } else {
                       TYPE = {
                         autoCompleteType:'off',
@@ -235,8 +248,8 @@ const ininialStateData = {
 
                     return(
                     <InputContainer key={index} focused={focus == index+1 && typeInput.length > 1}>
-                      <Input
-                        ref={index == 1 ? ref1 : index == 2 ? ref2 : null} 
+                      <InputInitial
+                        inputRef={index == 1 ? ref1 : index == 2 ? ref2 : null} 
                         onChangeText={(val) => onChangeText(val,index,item)}
                         placeholder={placeholder[index]}
                         autoCapitalize={item != 'name'?'none':'words'}
@@ -246,14 +259,13 @@ const ininialStateData = {
                         blurOnSubmit={false}
                         value={data['text'+index.toString()]}
                         secureTextEntry={item != 'pass' && item !='confirmePass' ? false:secureTextEntry[index]}
-                        keyboardType={TYPE.keyboardType}
-                        textContentType={TYPE.textContentType}
-                        autoCompleteType={TYPE.autoCompleteType}
                         onFocus={()=>setFocus(index+1)}
                         onBlur={()=>setFocus(0)}
+                        icon={false}
                         blurOnSubmit={false}
                         allowFontScaling={true}
                         onSubmitEditing={()=>onSubmit(index)}
+                        {...TYPE}
                       />
                       
                       {item == 'pass' || item =='confirmePass' ? 
@@ -273,15 +285,14 @@ const ininialStateData = {
                     </InputContainer>
                     )
             })}
-
             <ContainerButtons invert={invert} >
-                    <ButtonCancel  invert={invert} activeOpacity={0.5} onPress={onClose}>
-                        <TextCancel>{buttonCancelTitle}</TextCancel>
-                    </ButtonCancel>
-                    <ButtonOk disabled={!(data.isValidInput.findIndex(i=>i===false)== -1 && data.isValidInput.length == typeInput.length)} warn={warn} activeOpacity={0.7} onPress={onEnviar} isValid={data.isValidInput.findIndex(i=>i===false)== -1 && data.isValidInput.length == typeInput.length}>
-                        <TextOk>{buttonSentTitle}</TextOk>
-                    </ButtonOk>
-                </ContainerButtons>
+              <ButtonCancel  invert={invert} activeOpacity={0.5} onPress={onClose}>
+                  <TextCancel>{buttonCancelTitle}</TextCancel>
+              </ButtonCancel>
+              <ButtonOk disabled={!(data.isValidInput.findIndex(i=>i===false)== -1 && data.isValidInput.length == typeInput.length)} warn={warn} activeOpacity={0.7} onPress={onEnviar} isValid={data.isValidInput.findIndex(i=>i===false)== -1 && data.isValidInput.length == typeInput.length}>
+                  <TextOk>{buttonSentTitle}</TextOk>
+              </ButtonOk>
+            </ContainerButtons>
           </Container>
         <TouchableWithoutFeedback onPress={onClose}>
           <View style={{flex:1,alignItems:'center'}}>
