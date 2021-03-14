@@ -21,6 +21,7 @@ const theme = {
     lighter:'#F27329',
     textInside:'#fff',
     strong:'#000000',
+    light:'#ffffff',
   },
   secondary:{
     main:'#990000',

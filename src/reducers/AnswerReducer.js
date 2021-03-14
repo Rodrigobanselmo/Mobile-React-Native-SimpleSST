@@ -7,7 +7,6 @@ export default (state = initialState, action) => {
 
     switch(action.type) {
         case 'CREATE_CHECKLIST':
-            console.log('object')
         return {...action.payload};
 
         case 'ANSWER':

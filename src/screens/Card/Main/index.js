@@ -41,7 +41,7 @@ const RISK_FACTORS = [
 
 export default function App({navigation}) {
 
-  changenavigationBarColor('#0d0d0d', false)
+  //changenavigationBarColor('#0d0d0d', false)
 
   const answers = useSelector(state => state.answer);
   const model = useSelector(state => state.model);
@@ -49,8 +49,9 @@ export default function App({navigation}) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log(model,model.length);
     !answers?.data && dispatch({type: 'CREATE_CHECKLIST',payload:CheckListData})
-    !model && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
+    !(model.length > 0 ) && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
   }, [])
   
   return (

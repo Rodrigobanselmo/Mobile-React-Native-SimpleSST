@@ -36,7 +36,6 @@ const useAuth = (initializing,setInitializing,setUser) => {
     dispatch({type: 'LOGIN_USER',payload:{email:userLogin.email,emailVerified:userLogin.emailVerified,uid:userLogin.uid,...doc}})
     //reactModal.close()
     //console.log('user',{...doc})
-    console.log(1);
     if (!setInitializing) {
       if ( !userLogin ) {
         navigationReset({screen:'SignStack'})
@@ -47,7 +46,8 @@ const useAuth = (initializing,setInitializing,setUser) => {
           //reactModal.loaderScreen({onFunc:()=>navigationReset({screen:'VerificationStack'}),background:'#fff'})
           navigationReset({screen:'VerificationStack'})
       }
-    }
+    } 
+    if (initializing) setInitializing(false);
       
 /*     if (newUser) {
       setTimeout(() => {reactModal.animated({text:'Seja bem-vindo!'})}, 1000);
@@ -55,7 +55,7 @@ const useAuth = (initializing,setInitializing,setUser) => {
     if (newUser !== true && newUser) {
       setTimeout(() => {reactModal.animated({text:`Parabens, agora você é membro da empresa ${newUser}`})}, 3000);
     } */
-    if (initializing) setTimeout(() => {setInitializing(false)}, 1000);
+    
   }
 
   function checkError(error) {
@@ -69,23 +69,21 @@ const useAuth = (initializing,setInitializing,setUser) => {
     //console.log('user',user)
     //console.log('userLogin',userLogin)
 
-    if(!userLogin && user?.email && user.email) {
-    dispatch({type: 'LOGOUT_USER',});}
+    if(!userLogin && user?.email && user.email) {dispatch({type: 'LOGOUT_USER',});}
     else if (userLogin && !user?.email) {
     GetUserData(userLogin,checkSuccess,checkError)
     } else {
-      if (initializing) setTimeout(() => {setInitializing(false)}, 1000);
+      if (initializing) setInitializing(false);
     }
     if (setUser && userLogin?.email) setUser(userLogin)
   }
 
 
-  console.log('objedwqdwct');
   useEffect(() => {
 
     const subscriber = auth().onAuthStateChanged(AuthStateChanged);
     
-    return subscriber //,()=>console.log('unsubscribe'); // unsubscribe on unmount
+    return subscriber // unsubscribe on unmount
   }, []);
 
   return [navigationActions,navigationReset];
