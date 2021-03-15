@@ -4,22 +4,30 @@ import * as Animatable from 'react-native-animatable';
 export const ContainerSafe = styled.SafeAreaView`
   justify-content: flex-start;
   flex: 1;
-  background-color:${({theme})=>theme.background.card};
+  background-color:${({theme})=>theme.background.back};
   padding:0px 0px;
 `;
 
 export const Container = styled.View`
-  padding:10px 25px 50px 25px;
+  padding:0px 0px 0px 0px;
+  overflow: visible;
+`;
+
+export const ContainerCard = styled.View`
+  margin: 10px 15px 20px 15px;
+  background-color:${({theme})=>theme.background.card};
+  border-radius: 15px;
+  elevation: 16;
+  padding-top: 10px;
 `;
 
 export const Circle = styled.View`
   height: 10px;
   width: 10px;
-  border-radius: 10px;
-  margin-right: 10px;
+  border-radius: 20px;
+  margin-right: 0px;
 
   ${props => props.fill==='yes' && css`
-    background-color:${({theme})=>theme.status.success};
   `}
   ${props => props.fill==='no' && css`
     background-color:${({theme})=>theme.status.fail};
@@ -64,7 +72,8 @@ export const TextNum = styled.Text`
   color:${({theme})=>theme.text.fourth};
 
   ${props => props.title && css`
-    font-size:17px;
-    color:${({theme})=>theme.primary.light};
+    font-size:19px;
+    color:${({theme})=>theme.text.fourth};
+    margin:0px 15px;
   `}
 `;
