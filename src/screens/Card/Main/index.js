@@ -39,7 +39,7 @@ const RISK_FACTORS = [
 ]
 
 
-export default function App({navigation}) {
+export default function App({navigation,route}) {
 
   //changenavigationBarColor('#0d0d0d', false)
 
@@ -49,14 +49,13 @@ export default function App({navigation}) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(model,model.length);
     !answers?.data && dispatch({type: 'CREATE_CHECKLIST',payload:CheckListData})
     !(model.length > 0 ) && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
   }, [])
   
   return (
     <Card navigation={navigation} title={title}>
-        {answers?.data && <Card.Component CHECK_LIST_MODEL={model} CheckListData={answers} dispatch={dispatch}/>}
+        {answers?.data && <Card.Component route={route} CHECK_LIST_MODEL={model} CheckListData={answers} dispatch={dispatch}/>}
     </Card>
 
   );

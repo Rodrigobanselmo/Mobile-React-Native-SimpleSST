@@ -18,7 +18,7 @@ export default function Card({title,children,navigation, ...restProps }) {
   return (
         <ContainerSafe {...restProps}>
           <StatusBar backgroundColor={themeContext.background.card} barStyle="dark-content"/>
-          <Header text={title} type="Close" navigation={navigation} secondIcon/>
+          <Header text={title} type="Close" secondScreenName={'CardSummary'} navigation={navigation} secondIcon /* iconProps={{color:themeContext.primary.lighter}}  */secondIconProps={{color:themeContext.primary.lighter}}/>
           <View style={{height:(windowHeight-60),width:'100%'}}>
             {children}
           </View>
@@ -26,7 +26,7 @@ export default function Card({title,children,navigation, ...restProps }) {
     );
 }
 
-Card.Component = function ComponentCard({CheckListData,dispatch,CHECK_LIST_MODEL=[]}) {
+Card.Component = function ComponentCard({CheckListData,dispatch,CHECK_LIST_MODEL=[],route}) {
 
   
   const [secondary, setSecondary] = useState(false);
@@ -41,8 +41,8 @@ Card.Component = function ComponentCard({CheckListData,dispatch,CHECK_LIST_MODEL
   const groupId = CheckListData.data[_key].id ?? _id
 
   const CARD_WIDTH =windowWidth*0.85
-  const CARD_HEIGHT =(windowHeight-60)*0.85;
-  const CONTROLLER_HEIGHT =(windowHeight-70)*0.13;
+  const CARD_HEIGHT =(windowHeight-70)*0.85;
+  const CONTROLLER_HEIGHT =(windowHeight-70)*0.11;
   const VISIBLE_ITEMS =1;
 
   const themeContext = useContext(ThemeContext);
@@ -57,7 +57,19 @@ Card.Component = function ComponentCard({CheckListData,dispatch,CHECK_LIST_MODEL
       duration:300,
       useNativeDriver:true
       }).start();
+
+
   }, [])
+
+  useEffect(() => {
+    console.log(route.params);
+    if (route.params?.groupId && route.params?.cardIndex) {
+      setId(route.params.groupId)
+      setactiveSlide(route.params?.cardIndex)
+    } else if (route.params?.groupId)  {
+      setId(route.params.groupId)
+    }
+  }, [route])
 
   const setactiveSlide = React.useCallback((newIndex) => {
       setactiveIndex(newIndex);

@@ -13,7 +13,7 @@ const CardStackNav = ({navigation}) => {
   //const user = useSelector(state => state.user);
     
     return (
-        <CardStack.Navigator headerMode='none' initialRouteName={'CardSummary'}>
+        <CardStack.Navigator headerMode='none' initialRouteName={'CardMain'}>
             <CardStack.Screen name="CardMain" component={CardMain} options={{cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid}}/>
             <CardStack.Screen name="CardSummary" component={CardSummary} options={{cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid}}/>
         </CardStack.Navigator>

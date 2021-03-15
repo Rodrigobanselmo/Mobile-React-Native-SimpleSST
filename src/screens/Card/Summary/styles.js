@@ -9,7 +9,7 @@ export const ContainerSafe = styled.SafeAreaView`
 `;
 
 export const Container = styled.View`
-  padding:0px 0px 0px 0px;
+  padding:0px 0px 50px 0px;
   overflow: visible;
 `;
 
@@ -18,7 +18,7 @@ export const ContainerCard = styled.View`
   background-color:${({theme})=>theme.background.card};
   border-radius: 15px;
   elevation: 16;
-  padding-top: 10px;
+  padding: 10px 0px;
 `;
 
 export const Circle = styled.View`

@@ -47,30 +47,30 @@ Summary.Info = function SummaryInfo() {
   );
 }
 
-Summary.Data = function SummaryData({answers}) {
+Summary.Data = function SummaryData({answers,navigation}) {
 
-  function MapAnswer({index,item}) {
+  function MapAnswer({index,item,group}) {
     return (
-        <View style={{width:(windowWidth-30)/4,justifyContent:'center',paddingVertical:7,marginBottom:10,alignItems:'center'}}>
+        <TouchableOpacity onPress={()=>navigation.navigate('CardMain',{groupId:group.id,cardIndex:index})} style={{width:(windowWidth-30)/4,justifyContent:'center',paddingVertical:7,marginBottom:10,alignItems:'center'}}>
           <TextNum style={{textAlign:'center'}}>{`${index+1}`}</TextNum>
-          <Circle large fill={item}/>
-        </View>
+          <Circle large fill={item?.selected ?? 'none'}/>
+        </TouchableOpacity>
     )
   }
 
-  function MapData({index,item}) {
+  function MapData({item}) {
     return (
       <ContainerCard >
-        <View style={{flexDirection:'row',alignItems:'center',paddingTop:6,paddingBottom:12/* ,borderBottomColor:'#fff',borderBottomWidth:1 */}}>
+        <View style={{flexDirection:'row',alignItems:'center',paddingTop:6,paddingLeft:5,paddingBottom:4/* ,borderBottomColor:'#fff',borderBottomWidth:1 */}}>
 {/*           <Circle large title>
             <TextNum  title >{`${index+1}`}</TextNum>
           </Circle> */}
-          <TextTitle style={{marginHorizontal:20}}>{item}</TextTitle>
+          <TextTitle style={{marginHorizontal:20}}>{item.group}</TextTitle>
         </View>
         <View style={{flexDirection:'row',flexWrap:'wrap',justifyContent:'flex-start',marginTop:10}}>
-          {['ok','pendding','pendding','ok','ok','ok','ok','none','none','none','none','none','none','none'].map((item,index)=>{
+          {item.questions.filter(i=>!(i?.hide&&i.hide)).map((question,indexQuestion)=>{
             return (
-              <MapAnswer key={index} index={index} item={item}/>
+              <MapAnswer key={question.id} index={indexQuestion} item={question} group={item} />
             )
           })}
         </View>
@@ -80,9 +80,9 @@ Summary.Data = function SummaryData({answers}) {
 
   return (
     <>
-      {answers.map((item,index)=>{
+      {answers.data.map((item)=>{
         return (
-          <MapData key={index} index={index} item={item}/>
+          <MapData key={item.id} item={item}/>
         )
       })}
     </>

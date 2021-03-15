@@ -20,39 +20,43 @@ const TextHeader = styled(Text)`
 
 export function Header({text,navigation,style,type, align='center',
     secondIcon=false,
-    secondName='Apps'
+    secondIconProps={},
+    iconProps={},
+    secondScreenName='Apps'
 }) {
     
 
     const themeContext = useContext(ThemeContext);
 
-    function buttonPress() {
-        if (type=='Drawer') {
+    function buttonPress(screenName) {
+        if (screenName) {
+            navigation.navigate(screenName)
+        } else if (type=='Drawer') {
             navigation.openDrawer()
         } else if (type=='Back' || type=='Close') {
             navigation.goBack()
         }
     }
-    function IconType() {
+    function IconType({...props}) {
         if (type=='Drawer') {
-            return (<Icons name='Menu' size={25} color={themeContext.text.title} />)
+            return (<Icons name='Menu' size={25} color={themeContext.text.title} {...props}/>)
         } else if (type=='Back') {
-            return (<Icons  name="ArrowLeft" size={28} color={themeContext.text.title} />)
+            return (<Icons  name="ArrowLeft" size={28} color={themeContext.text.title} {...props}/>)
         } else if (type=='Close') {
-            return (<Icons  name="Close" size={28} color={themeContext.text.title} />)
+            return (<Icons  name="Close" size={28} color={themeContext.text.title} {...props}/>)
         }
     }
 
     return (
         <View style={{alignItems:"center",flexDirection:'row',width:'100%',justifyContent:align==='left'?'flex-start':'center',height:60,...style}} >
             {type &&
-            <TouchableOpacity style={{position:'absolute',top:17.5,left:17,zIndex:10,width:80,height:35}} onPress={buttonPress} >
-                <IconType/>
+            <TouchableOpacity style={{position:'absolute',top:17.5,left:17,zIndex:10,width:80,height:35}} onPress={()=>buttonPress()}>
+                <IconType {...iconProps}/>
             </TouchableOpacity>
             }
             {secondIcon &&
-            <TouchableOpacity style={{position:'absolute',top:17.5,right:17,zIndex:10,width:80,height:35,alignItems:'flex-end'}} onPress={buttonPress} >
-                <Icons  name={secondName} size={25} color={themeContext.text.title} />
+            <TouchableOpacity style={{position:'absolute',top:17.5,right:17,zIndex:10,width:80,height:35,alignItems:'flex-end'}} onPress={()=>buttonPress(secondScreenName)} >
+                <Icons  name={'Apps'} size={25} color={themeContext.text.title} {...secondIconProps} />
             </TouchableOpacity>
             }
             {text ? 
@@ -62,80 +66,3 @@ export function Header({text,navigation,style,type, align='center',
     );
   }
 
-
-  const styles = StyleSheet.create({
-    header: {
-        justifyContent: 'flex-start',
-        paddingHorizontal: 0,
-        paddingBottom: 50,
-        paddingTop:70,
-    },
-    text_header: {
-        fontSize:20,
-        color:'#000',
-        fontWeight:'bold',
-        paddingVertical:15
-    },
-    buttonView: {
-        flexDirection:`row`,
-        marginVertical:10,
-        height:70,
-    },
-    buttonViewShadow: {
-        flexDirection:`row`,
-        marginVertical:10,
-        height:70,
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 6,
-        },
-        shadowOpacity: 0.37,
-        shadowRadius: 7.49,
-        
-        elevation: 12,
-    },
-    button: {
-        flex:1,
-        flexDirection:`row`,
-        height:70,
-        justifyContent:`center`,
-        alignItems:`center`,
-    },
-    buttonPrincipal: {
-        backgroundColor:`#fff`,
-    },
-    buttonSecundario: {
-        backgroundColor:`#F27329`,
-    },
-      text_footer: {
-          color: '#000',
-          fontSize: 15
-      },
-      action: {
-          flexDirection: 'row',
-          marginTop: 8,
-          borderBottomWidth: 1,
-          borderBottomColor: '#f2f2f2',
-          paddingBottom: 0,
-          alignItems:`center`
-      },
-      textInput: {
-          flex: 1,
-          height:45,
-          paddingLeft: 10,
-          color: '#000',
-      },
-      textPrivate: {
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          marginTop: 15,
-          marginBottom:15
-      },
-      color_textPrivate: {
-          color: 'grey',
-          textAlign:`justify`,
-          marginTop: 15,
-          marginBottom:15
-      },
-    });
