@@ -5,8 +5,10 @@ import {ThemeContext} from "styled-components/native";
 import {Header} from '../../../components/basicComponents/Header';
 import {ButtonInitial} from '../../../components/basicComponents/Button';
 import Icons from '../../../components/Icons'
-import {Container,ContainerSafe,Circle,TextTitle,TextNum} from './styles';
-import styled from "styled-components";
+import {Container,ContainerSafe,Circle,TextTitle,TextNum,ContainerCard} from './styles';
+
+
+
 
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
@@ -15,10 +17,12 @@ export default function Summary({title,children,navigation, ...restProps }) {
   //const themeContext = useContext(ThemeContext);
   return (
         <ContainerSafe {...restProps}>
+          <ScrollView showsVerticalScrollIndicator={false} style={{}}>
           <Header navigation={navigation} text={'Sumário'} type="Back"/>
             <Container>
               {children}
             </Container>
+          </ScrollView>
         </ContainerSafe>
     );
 }
@@ -47,8 +51,8 @@ Summary.Data = function SummaryData({answers}) {
 
   function MapAnswer({index,item}) {
     return (
-        <View style={{flexDirection:'row',width:(windowWidth-50)/4,justifyContent:'center',paddingVertical:10,marginBottom:15}}>
-          <TextNum >{`${index+1}.`}</TextNum>
+        <View style={{width:(windowWidth-30)/4,justifyContent:'center',paddingVertical:7,marginBottom:10,alignItems:'center'}}>
+          <TextNum style={{textAlign:'center'}}>{`${index+1}`}</TextNum>
           <Circle large fill={item}/>
         </View>
     )
@@ -56,12 +60,12 @@ Summary.Data = function SummaryData({answers}) {
 
   function MapData({index,item}) {
     return (
-      <View style={{marginBottom:20}}>
-        <View style={{flexDirection:'row',alignItems:'center'}}>
-          <Circle large title>
+      <ContainerCard >
+        <View style={{flexDirection:'row',alignItems:'center',paddingTop:6,paddingBottom:12/* ,borderBottomColor:'#fff',borderBottomWidth:1 */}}>
+{/*           <Circle large title>
             <TextNum  title >{`${index+1}`}</TextNum>
-          </Circle>
-          <TextTitle style={{marginRight:25}}>{item}</TextTitle>
+          </Circle> */}
+          <TextTitle style={{marginHorizontal:20}}>{item}</TextTitle>
         </View>
         <View style={{flexDirection:'row',flexWrap:'wrap',justifyContent:'flex-start',marginTop:10}}>
           {['ok','pendding','pendding','ok','ok','ok','ok','none','none','none','none','none','none','none'].map((item,index)=>{
@@ -70,17 +74,17 @@ Summary.Data = function SummaryData({answers}) {
             )
           })}
         </View>
-      </View>
+      </ContainerCard>
     )
   }
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={{}}>
-        {['Limpeza e organização do local de trabalho','Ruido','Químicos','Iluminaçao'].map((item,index)=>{
-          return (
-            <MapData key={index} index={index} item={item}/>
-          )
-        })}
-    </ScrollView>
+    <>
+      {answers.map((item,index)=>{
+        return (
+          <MapData key={index} index={index} item={item}/>
+        )
+      })}
+    </>
   );
 }

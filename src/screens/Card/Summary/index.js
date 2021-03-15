@@ -22,7 +22,7 @@ export default function App({navigation}) {
 
   return (
     <Summary navigation={navigation}>
-      <StatusBar backgroundColor={themeContext.background.card} barStyle="dark-content"/>
+      <StatusBar backgroundColor={themeContext.background.back} barStyle="dark-content"/>
       {/* <Summary.Info/> */}
       <Summary.Data answers={answers}/>
     </Summary>
