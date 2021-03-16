@@ -32,6 +32,19 @@ export default (state = initialState, action) => {
             //}
         return {...list};
 
+        case 'ANSWER_CONFIRM':
+            var list = {...state}
+            var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
+            var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
+            
+            if (list.data[groupId].questions[itemId].confirmed ==='confirmed') {
+                list.data[groupId].questions[itemId].confirmed = 'none'
+            } else {
+                list.data[groupId].questions[itemId].confirmed = 'confirmed'
+            }
+            
+        return {...list};
+
         case 'ANSWER_CHILD':
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)

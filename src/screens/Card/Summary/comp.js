@@ -53,7 +53,7 @@ Summary.Data = function SummaryData({answers,navigation}) {
     return (
         <TouchableOpacity onPress={()=>navigation.navigate('CardMain',{groupId:group.id,cardIndex:index})} style={{width:(windowWidth-30)/4,justifyContent:'center',paddingVertical:7,marginBottom:10,alignItems:'center'}}>
           <TextNum style={{textAlign:'center'}}>{`${index+1}`}</TextNum>
-          <Circle large fill={item?.selected ?? 'none'}/>
+          <Circle large fill={item?.confirmed ?? item?.selected ?? 'none'}/>
         </TouchableOpacity>
     )
   }
@@ -62,9 +62,6 @@ Summary.Data = function SummaryData({answers,navigation}) {
     return (
       <ContainerCard >
         <View style={{flexDirection:'row',alignItems:'center',paddingTop:6,paddingLeft:5,paddingBottom:4/* ,borderBottomColor:'#fff',borderBottomWidth:1 */}}>
-{/*           <Circle large title>
-            <TextNum  title >{`${index+1}`}</TextNum>
-          </Circle> */}
           <TextTitle style={{marginHorizontal:20}}>{item.group}</TextTitle>
         </View>
         <View style={{flexDirection:'row',flexWrap:'wrap',justifyContent:'flex-start',marginTop:10}}>

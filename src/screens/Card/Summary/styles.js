@@ -27,19 +27,21 @@ export const Circle = styled.View`
   border-radius: 20px;
   margin-right: 0px;
 
-  ${props => props.fill==='yes' && css`
+  ${props => props.fill==='1' && css`
+  background-color:${({theme})=>theme.status.success};
   `}
-  ${props => props.fill==='no' && css`
+  ${props => props.fill==='2' && css`
     background-color:${({theme})=>theme.status.fail};
   `}
-  ${props => props.fill==='na' && css`
+  ${props => props.fill==='3' && css`
     background-color:${({theme})=>theme.status.warn};
   `}
-  ${props => props.fill==='ok' && css`
+  
+  ${props => props.fill==='confirmed' && css`
     background-color:${({theme})=>theme.primary.lighter};
   `}
-  ${props => props.fill==='pendding' && css`
-    border: 3px ${({theme})=>theme.primary.lighter} solid;
+  ${(props) => (props.fill==='yes' || props.fill==='no' || props.fill==='na') && css`
+    border: 4px ${({theme})=>theme.primary.lighter} solid;
   `}
   ${props => props.fill==='none' && css`
     border: 2px ${({theme})=>theme.background.line} solid;

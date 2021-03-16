@@ -68,7 +68,7 @@ export function ButtonInitial({animated=false,text='Click Aqui',disabledButton=f
     );
 }
 
-export function ButtonAnimated({animated=false,text='Click Aqui',disabledButton=false,imageSource=false,imagePosition='left',imageSize=30,iconName = false,iconPosition='left',iconColor='#000',iconSize=40,secondary=false,style={},textStyle={},height=60,scale=0.8,elevation=true,...props}) {
+export function ButtonAnimated({animated=false,disabled=false,text='Click Aqui',disabledButton=false,imageSource=false,imagePosition='left',imageSize=30,iconName = false,iconPosition='left',iconColor='#000',iconSize=40,secondary=false,style={},textStyle={},height=60,scale=0.8,elevation=true,...props}) {
 
     const animatedValue = useRef(new Animated.Value(secondary?1:0)).current
     const themeContext = useContext(ThemeContext);
@@ -95,8 +95,8 @@ export function ButtonAnimated({animated=false,text='Click Aqui',disabledButton=
     }, [secondary])
 
     return (
-        <ViewContainerAnimated disabled={disabledButton} secondary={secondary} style={[{minWidth:scale*250,height:scale*height,backgroundColor:animatedInitial,...style},elevation && {...styles.Shadow}]} >
-            <Touchable underlayColor={'#00000022'}  style={{height:scale*height}} {...props} >
+        <ViewContainerAnimated disabled={disabledButton || disabled} secondary={secondary} style={[{minWidth:scale*250,height:scale*height,backgroundColor:animatedInitial,...style},elevation && {...styles.Shadow}]} >
+            <Touchable disabled={disabled} underlayColor={'#00000022'}  style={{height:scale*height}} {...props} >
                 <>
                 {iconName || imageSource  ?
                     iconName ?
@@ -106,7 +106,7 @@ export function ButtonAnimated({animated=false,text='Click Aqui',disabledButton=
                     :
                     null
                 }
-                <TextButtonAnimated disabled={disabledButton} secondary={secondary} style={{fontSize:scale*20,...textStyle}}>{text}</TextButtonAnimated>
+                <TextButtonAnimated disabled={disabledButton || disabled} secondary={secondary} style={{fontSize:scale*20,...textStyle}}>{text}</TextButtonAnimated>
                 </>
             </Touchable>
         </ViewContainerAnimated>
