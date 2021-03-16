@@ -1,5 +1,5 @@
 import React, {useState,useRef,useEffect,useContext} from 'react';
-import {View,ScrollView,Animated,Keyboard,Text} from 'react-native';
+import {View,ScrollView,Animated,Keyboard,Dimensions} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {ButtonInitial} from '../../components/basicComponents/Button';
 import {InputInitial} from '../../components/basicComponents/Input';
@@ -8,6 +8,9 @@ import {handleEmailChange,handlePasswordChange,confirmHandlePasswordChange} from
 import {Container,TextForgotPass,TextBold,TextPrivacy,ContainerPass,TextHeaderFooter,FooterView} from './styles'
 
 const B = (props) => <TextBold onPress={props.onPress} >{props.children}</TextBold>
+
+const windowWidth = Dimensions.get('window').width; 
+const windowHeight = Dimensions.get('window').height; 
 
 export default function Sign({children, ...restProps }) {
     return (
@@ -62,13 +65,13 @@ Sign.Logo = function Logo({animatedInitial,onAnimatedInitial}) {
 
   return(
     <Animated.View style={{flex:1,justifyContent:'center',alignItems:"center",opacity:animatedImage,transform:[{translateY:animatedInitialImage}]}} >
-      <Animatable.Image animation="bounceIn" duraton="1500" source={require('../../assets/logo.png')} style={{height:250,width:250,resizeMode:`contain`, marginTop:0}}/>
+      <Animatable.Image animation="bounceIn" duraton="1500" source={require('../../assets/logo.png')} style={[{height:250,width:250,resizeMode:`contain`, marginTop:0},windowHeight>700&&{height:250,width:250}]}/>
     </Animated.View>
   )
 }
 
 Sign.Footer = function Footer({animatedInitial,children}) {
-
+console.log(windowHeight);
   const animatedInitialFooter = animatedInitial.interpolate({
     inputRange:[0,1],
     outputRange:[270,0]
@@ -77,9 +80,9 @@ Sign.Footer = function Footer({animatedInitial,children}) {
   return(
     <FooterView style={{transform:[{translateY:animatedInitialFooter}],elevation:20}} duration="1000">
       <ScrollView showsVerticalScrollIndicator={false} bounces={false} keyboardShouldPersistTaps='handled'>
-          <View style={{paddingHorizontal:25,paddingTop:10,paddingBottom:10}}>
-          <TextHeaderFooter >Faça login ou cadastre-se</TextHeaderFooter>
-          {children}
+          <View style={[{paddingHorizontal:25,paddingTop:10,paddingBottom:0},windowHeight>700&&{paddingBottom:10}]}>
+            <TextHeaderFooter windowHeight={windowHeight}>Faça login ou cadastre-se</TextHeaderFooter>
+            {children}
           </View>
       </ScrollView>
     </FooterView>
@@ -117,6 +120,7 @@ Sign.Email = function Email({refFocus,onContinue,data,setData,expanded,onAnimate
       warnText={'E-mail com formatação inválida'}
       isValid={data.isValidUser}
       iconCheck={data.check_textInputChange}
+      style={windowHeight>700 && {fontSize:18}}
     />
   )
 }
@@ -201,7 +205,7 @@ Sign.FooterBottom = function Pass({onContinue,secondary=false,expanded=false,ani
 
 
   return(
-    <View style={{zIndex:1}}>
+    <View style={[{zIndex:1},windowHeight>700&&{marginTop:10}]}>
     <ButtonInitial
       secondary={secondary}
       textStyle={{color:animatedInitialText}}
@@ -211,9 +215,9 @@ Sign.FooterBottom = function Pass({onContinue,secondary=false,expanded=false,ani
     />
 
     {expanded && expanded != 'register' && (
-      <TextForgotPass onPress={()=>setModalVisible(true)}  >Esqueceu sua senha?</TextForgotPass>
+      <TextForgotPass windowHeight={windowHeight} onPress={()=>setModalVisible(true)}  >Esqueceu sua senha?</TextForgotPass>
     )}
-    <TextPrivacy>Ao criar uma conta, você concorda com os nossos
+    <TextPrivacy windowHeight={windowHeight}>Ao criar uma conta, você concorda com os nossos
       <B onPress={()=>{}}> Termos de Serviço</B> e a
       <B onPress={()=>{}}> Política de Privacidade</B>
     </TextPrivacy>

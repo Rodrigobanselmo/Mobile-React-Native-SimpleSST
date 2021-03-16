@@ -1,5 +1,5 @@
 import {Animated} from 'react-native';
-import styled from 'styled-components/native';
+import styled, {css} from 'styled-components/native';
 
 export const Container = styled.View`
   background-color: ${({theme})=>theme.background.back};
@@ -12,6 +12,7 @@ export const TextForgotPass = styled.Text`
   width:100%;
   text-align:right;
   margin:2px 0px 10px 0px;
+  
 `;
 
 export const TextBold = styled.Text`
@@ -25,6 +26,12 @@ export const TextPrivacy = styled.Text`
   color: ${({theme})=>theme.text.grey};
   text-align:justify;
   margin-top: 10px;
+  
+  ${props => props.windowHeight >700 && css`
+    font-size: 14px;
+    margin-top: 20px;
+    margin-bottom: 4px;
+  `}
 `;
 
 
@@ -35,12 +42,15 @@ export const ContainerPass = styled.View`
 
 export const TextHeaderFooter = styled.Text`
   color: ${({theme})=>theme.text.third};
-  font-size: 15px;
   flex: 1;
   text-align: center;
   margin-bottom: 20px;
   margin-top: 5px;
   font-size: 14px;
+  ${props => props.windowHeight >700 && css`
+    font-size: 16px;
+    margin-bottom: 25px;
+  `}
 `;
 
 

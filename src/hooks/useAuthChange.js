@@ -39,12 +39,15 @@ const useAuth = (initializing,setInitializing,setUser) => {
     if (!setInitializing) {
       if ( !userLogin ) {
         navigationReset({screen:'SignStack'})
+        reactModal.close()
       } else if (userLogin.emailVerified && doc.name) {
         //reactModal.loaderScreen({onFunc:()=>navigationReset({screen:'TabStack'}),background:'#fff'})
         navigationReset({screen:'TabStack'})
+        reactModal.close()
       } else {
           //reactModal.loaderScreen({onFunc:()=>navigationReset({screen:'VerificationStack'}),background:'#fff'})
           navigationReset({screen:'VerificationStack'})
+          reactModal.close()
       }
     } 
     if (initializing) setInitializing(false);
