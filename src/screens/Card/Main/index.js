@@ -5,6 +5,7 @@ import {SafeAreaView, StyleSheet,StatusBar,Dimensions, Text,Animated,View, Scrol
 import {useReactModal} from '../../../context/ModalContext'
 import changenavigationBarColor from 'react-native-navigation-bar-color';
 import Card from './comp'
+import {onAddPhotoToStorage} from './func'
 import {v4} from "uuid";
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -42,6 +43,7 @@ const RISK_FACTORS = [
 export default function App({navigation,route}) {
 
   //changenavigationBarColor('#0d0d0d', false)
+  const sheetRef = useRef(null);
 
   const answers = useSelector(state => state.answer);
   const model = useSelector(state => state.model);
@@ -50,12 +52,13 @@ export default function App({navigation,route}) {
 
   useEffect(() => {
     !answers?.data && dispatch({type: 'CREATE_CHECKLIST',payload:CheckListData})
-    !(model.length > 0 ) && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
+    !(model?.length) && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
   }, [])
   
   return (
     <Card navigation={navigation} title={title}>
-        {answers?.data && <Card.Component route={route} CHECK_LIST_MODEL={model} CheckListData={answers} dispatch={dispatch}/>}
+        {answers?.data && <Card.Component onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} route={route} CHECK_LIST_MODEL={model} CheckListData={answers} dispatch={dispatch}/>}
+        <Card.BottomSheet sheetRef={sheetRef}/>
     </Card>
 
   );

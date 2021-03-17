@@ -1,14 +1,20 @@
 import React, {useState,useContext,useRef,useEffect} from 'react';
-import {TouchableHighlight, StatusBar,Dimensions,Animated,View} from 'react-native';
-import {CheckList,Observation} from './cardContent'
+import {TouchableHighlight, StatusBar,Dimensions,Animated as AnimatedReact,View,Button,Text} from 'react-native';
 import {useReactModal} from '../../../context/ModalContext'
 import {ThemeContext} from "styled-components/native";
 import {Header} from '../../../components/basicComponents/Header';
 import {ButtonAnimated} from '../../../components/basicComponents/Button';
 import Icons from '../../../components/Icons'
 import { Directions, FlingGestureHandler,ScrollView, State } from 'react-native-gesture-handler';
-import BackCard from './backCardContent'
+import {CardCheckList} from './cardCheckList'
+import {CardContainer} from './cardContainer'
+import {BackCard} from './backCard'
+import {CardCamera} from './cardCamera'
+import {CardObservation} from './cardObservation'
 import {BackGroupView,CardView,Container,ContainerSafe} from './styles';
+
+import BottomSheet from 'reanimated-bottom-sheet';
+import Animated from 'react-native-reanimated';
 
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
@@ -26,7 +32,8 @@ export default function Card({title,children,navigation, ...restProps }) {
     );
 }
 
-Card.Component = function ComponentCard({CheckListData,dispatch,CHECK_LIST_MODEL=[],route}) {
+Card.Component = function ComponentCard({onAddPhotoToStorage,CheckListData,dispatch,CHECK_LIST_MODEL=[],route,sheetRef}) {
+  
     const [secondary, setSecondary] = useState(false);
     const [backCardGroup, setBackCardGroup] = useState(false)
     const [activeIndex, setactiveIndex] = useState(0)
@@ -40,18 +47,18 @@ Card.Component = function ComponentCard({CheckListData,dispatch,CHECK_LIST_MODEL
 
     const CARD_WIDTH =windowWidth*0.85
     const CARD_HEIGHT =(windowHeight-70)*0.85;
-    const CONTROLLER_HEIGHT =(windowHeight-70)*0.11;
+    const CONTROLLER_HEIGHT =(windowHeight-70)*0.15;
     const VISIBLE_ITEMS =1;
 
     const themeContext = useContext(ThemeContext);
     const reactModal = useReactModal();
 
-    const animatedValue = useRef(new Animated.Value(0)).current
-    const reactiveAnimated = useRef(new Animated.Value(0)).current
-    const animatedButton = useRef(new Animated.Value(0)).current;
+    const animatedValue = useRef(new AnimatedReact.Value(0)).current
+    const reactiveAnimated = useRef(new AnimatedReact.Value(0)).current
+    const animatedButton = useRef(new AnimatedReact.Value(0)).current;
 
     useEffect(() => {
-        Animated.timing(animatedValue, {
+      AnimatedReact.timing(animatedValue, {
         toValue:reactiveAnimated,
         duration:300,
         useNativeDriver:true
@@ -59,7 +66,7 @@ Card.Component = function ComponentCard({CheckListData,dispatch,CHECK_LIST_MODEL
     }, [])
 
     useEffect(() => {
-      console.log(route.params);
+      //console.log(route.params);
       if (route.params?.groupId && route.params?.cardIndex) {
         setId(route.params.groupId)
         setactiveSlide(route.params?.cardIndex)
@@ -97,100 +104,11 @@ Card.Component = function ComponentCard({CheckListData,dispatch,CHECK_LIST_MODEL
     function onAnimatedButton(toValue) {
       if(toValue == 1) setSecondary(true)
       if(toValue == 0) setSecondary(false)
-      Animated.timing(animatedButton, {
+      AnimatedReact.timing(animatedButton, {
           toValue,
           duration: 600,
           useNativeDriver: false,
       }).start();
-    }
-
-
-    function CardContainer() {
-      return (
-        <View style={{height:CARD_HEIGHT,marginTop:10}}>
-            {data.map((item,index)=> {
-
-                const [isFront, setIsFront] = useState(true);
-                const [value, setValue] = useState(data?.obs ? data.obs:'')
-
-                useEffect(() => {
-                  if (previewIndex==index && (activeIndex-1 === index || activeIndex+1 === index)) {
-                      if (!isFront) onAnimatedFlip(0);
-                      if (value!=='' && (data?.obs||value!==data.obs)) dispatch({type: 'ANSWER_OBS',payload:{value,itemId:item.id,groupId}})
-                  }
-                }, [activeIndex])
-
-
-                const model = CHECK_LIST_MODEL.filter(i=>(i.groupId === groupId && i.questionId === item.id))[0]
-                const inputRange = [index - 1, index,index+1]
-
-                const translateY = animatedValue.interpolate({
-                    inputRange,
-                    outputRange:[-10,0,10]
-                })
-                const translateX = animatedValue.interpolate({
-                    inputRange,
-                    outputRange:[30,0,-500]
-                })
-
-                const opacity = animatedValue.interpolate({
-                    inputRange,
-                    outputRange:[1-1/(VISIBLE_ITEMS*2),1,0]
-                })
-
-                const scale = animatedValue.interpolate({
-                    inputRange,
-                    outputRange:[0.88,1,1.2]
-                })
-
-                const animatedFlip = useRef(new Animated.Value(0)).current
-
-                const animatedFlipFront = animatedFlip.interpolate({
-                    inputRange:[0,180],
-                    outputRange:['0deg','180deg']
-                })
-
-                const animatedFlipBack = animatedFlip.interpolate({
-                    inputRange:[0,180],
-                    outputRange:['180deg','360deg']
-                })
-
-                function onAnimatedFlip(toValue) {
-                    if(toValue == 180) setTimeout(() => { setIsFront(false)}, 80);
-                    if(toValue == 0) setTimeout(() => { setIsFront(true)}, 80);
-                    Animated.spring(animatedFlip, {
-                        toValue,
-                        friction:8,
-                        tension:10,
-                        useNativeDriver: true,
-                    }).start();
-                }
-
-                if (index >= activeIndex - 1 && index <= activeIndex+VISIBLE_ITEMS) {
-
-                    return (
-                        <View key={item.id}>
-                            <Animated.View  style={{position:'absolute',backfaceVisibility:'hidden', transform: [{translateY},{rotateY:animatedFlipBack},{translateX},{scale}],opacity,zIndex:data.length*2-index*2+(isFront?0:1),elevation:data.length*2-index*2+(isFront?0:1), left:(windowWidth-CARD_WIDTH)/2, top:0}}>
-                                <CardView style={{height:CARD_HEIGHT, width:CARD_WIDTH,}} >
-                                    <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false} style={{width:'100%'}}>
-                                        <Observation model={model} value={value} setValue={setValue} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} group={'group'} item={item}/>
-                                    </ScrollView>
-                                </CardView>
-                            </Animated.View>
-                            <Animated.View  style={{position:'absolute',backfaceVisibility:'hidden', transform: [{translateY},{rotateY:animatedFlipFront},{translateX},{scale}],opacity,zIndex:data.length*2-index*2 ,elevation:data.length*2-index*2, left:(windowWidth-CARD_WIDTH)/2, top:0}}>
-                                <CardView style={{height:CARD_HEIGHT, width:CARD_WIDTH,}} >
-                                    <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false} style={{width:'100%',flex:1}}>
-                                        <CheckList model={model} index={index} data={data} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} group={group} groupId={groupId} item={item} dispatch={dispatch}/>
-                                    </ScrollView>
-                                </CardView>
-                            </Animated.View>
-                        </View>
-                    )
-                }
-
-            })}
-        </View>
-      )
     }
 
     function FlingGesture({children}) {
@@ -226,7 +144,9 @@ Card.Component = function ComponentCard({CheckListData,dispatch,CHECK_LIST_MODEL
               <BackCard setId={setId} setactiveSlide={setactiveSlide} groupIndex={_key} data={CheckListData.data}/>
             </BackGroupView>
           }
-          <CardContainer/>
+        
+          <CardContainer onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} group={group} groupId={groupId} CARD_WIDTH={CARD_WIDTH} previewIndex={previewIndex} data={data} CARD_HEIGHT={CARD_HEIGHT} activeIndex={activeIndex} dispatch={dispatch} CHECK_LIST_MODEL={CHECK_LIST_MODEL} animatedValue={animatedValue} VISIBLE_ITEMS={VISIBLE_ITEMS}  />
+
           <View style={{height:CONTROLLER_HEIGHT,width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
             <TouchableHighlight activeOpacity={0.5} underlayColor={themeContext.background.hover} style={{zIndex:1000,padding:9,borderRadius:30}} onLongPress={() => {setactiveSlide(0)}} onPress={() => {if (activeIndex!== 0) setactiveSlide(activeIndex-1)}}>
                 <Icons  name={'ArrowLeft'} size={25*windowHeight/1000+8.0} color={themeContext.text.third} />
@@ -248,4 +168,26 @@ Card.Component = function ComponentCard({CheckListData,dispatch,CHECK_LIST_MODEL
         </Container>
       /* </FlingGesture> */
     );
+}
+
+Card.BottomSheet = function Sheet({sheetRef}) {
+  const renderContent = () => (
+    <View
+      style={{
+        backgroundColor: 'black',
+        padding: 16,
+        height: 450,
+      }}
+    >
+      <Text>Swipe down to close</Text>
+    </View>
+  );
+  return (
+      <BottomSheet
+        ref={sheetRef}
+        snapPoints={[0, 300, 450]}
+        borderRadius={30}
+        renderContent={renderContent}
+      />
+  );
 }

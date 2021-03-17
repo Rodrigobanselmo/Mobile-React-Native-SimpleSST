@@ -43,11 +43,11 @@ const TextButtonAnimated = styled(Animated.Text)`
     `}
 `;
 
-export function ButtonInitial({animated=false,text='Click Aqui',disabledButton=false,imageSource=false,imagePosition='left',imageSize=30,iconName = false,iconPosition='left',iconColor='#000',iconSize=40,secondary=false,style={},textStyle={},height=60,scale=0.8,elevation=true,...props}) {
+export function ButtonInitial({animated=false,text='Click Aqui',disabledButton=false,imageSource=false,imagePosition='left',imageSize=30,iconName = false,iconPosition='left',iconProps={},iconColor='#000',iconSize=40,secondary=false,style={},textStyle={},height=60,scale=0.8,elevation=true,...props}) {
 
-    const positionLeft = {position:`absolute`,top:(scale*height-(iconSize ? scale*iconSize : scale*imageSize))/2,left:(scale*height-(iconSize ? scale*iconSize : scale*imageSize))/2}
-    const positionRight = {position:`absolute`,top:(scale*height-(iconSize ? scale*iconSize : scale*imageSize)-1)/2,right:(scale*height-(iconSize ? scale*iconSize : scale*imageSize))/2+5}
-    const positionCenter = {marginRight:18}
+    const positionLeft = {position:`absolute`,top:(scale*height-(iconSize ? scale*iconSize : scale*imageSize))/2,left:(height-(iconSize ? iconSize : imageSize))/2}
+    const positionRight = {position:`absolute`,top:(scale*height-(iconSize ? scale*iconSize : scale*imageSize)-1)/2,right:(height-(iconSize ? iconSize : imageSize))/2+5}
+    const positionCenter = {marginRight:7}
 
     return (
         <ViewContainerAnimated disabled={disabledButton} secondary={secondary} style={[{minWidth:scale*250,height:scale*height,...style},elevation && {...styles.Shadow}]} >
@@ -55,7 +55,7 @@ export function ButtonInitial({animated=false,text='Click Aqui',disabledButton=f
                 <>
                 {iconName || imageSource  ?
                     iconName ?
-                        <Icons name={iconName} size={scale*iconSize} color={iconColor}  style={iconPosition=='left'?positionLeft: iconPosition=='right'? positionRight : positionCenter}/>
+                        <Icons name={iconName} size={scale*iconSize} color={iconColor}  style={[iconPosition=='left'?positionLeft: iconPosition=='right'? positionRight : positionCenter,{...iconProps}]}/>
                         :
                         <Image source={imageSource} style={[{height:scale*imageSize,width:scale*imageSize,resizeMode:`contain`},imagePosition=='left'?positionLeft: imagePosition=='right'? positionRight : positionCenter]}/>                  
                     :

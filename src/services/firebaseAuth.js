@@ -13,7 +13,7 @@ const errorCatch = (error) => {
     errorMessage = 'Falha de conexão com a internet, tente novamente quando estiver conectado a uma rede!'
   }
   else if (error.code === 'auth/invalid-email') {
-    errorMessage = 'Endereço de e-mail mal formatado'
+    errorMessage = 'Endereço de e-mail mal formatado.'
   }
   else if (error.code === 'auth/email-already-in-use') {
     errorMessage = 'O endereço de email já esta cadastrado!'
@@ -22,10 +22,25 @@ const errorCatch = (error) => {
     errorMessage = 'Falha de conexão com a internet, tente novamente quando estiver conectado a uma rede!'
   } 
   else if (error.code === 'auth/wrong-password') {
-    errorMessage = 'Senha incorreta. Por favor, tente novamente'
+    errorMessage = 'Senha incorreta. Por favor, tente novamente.'
   } 
   else if (error.code === 'auth/too-many-requests') {
     errorMessage = 'O Acesso a essa conta está temporariamente desabilitado devido ao grande números de requisoções ao servidor. Por favor, tente novamente mais tarde'
+  } 
+  else if (error.code === 'auth/invalid-credential') {
+    errorMessage = 'Credencial de acesso fornecida expirada ou com formatação inválida.'
+  } 
+  else if (error.code === 'auth/no-auth-event') {
+    errorMessage = 'Houve um erro interno do servidor, por favor, tente novamente mais tarde.'
+  } 
+  else if (error.code === 'auth/user-cancelled') {
+    errorMessage = 'Operação cancelada por usuário.'
+  } 
+  else if (error.code === 'user-disabled') {
+    errorMessage = 'Essa conta de usuário foi desabilitada pelo administrador.'
+  } 
+  else if (error.code === 'weak-password') {
+    errorMessage = 'Sua senha deve ser maior que 6 caracteres.'
   } 
   else {
     errorMessage = error.message

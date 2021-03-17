@@ -17,13 +17,6 @@ const ItemContainer = styled(TouchableOpacity)`
 /*   background-color: ${({theme})=>theme.text.third}; */
 `;
 
-
-const TextQuestion = styled.Text`
-  text-align:center;
-  font-size:15px;
-`;
-
-
 const Container = styled.View`
   margin:10px 30px 15px 30px;
   padding:0px 10px;
@@ -31,24 +24,13 @@ const Container = styled.View`
   border: 1px ${props=>props.theme.background.line} solid; */
 `;
 
-
 const TextGroup = styled.Text`
   color: ${({theme})=>theme.text.third};
   margin-left:10px;
 /*   background-color: ${({theme})=>theme.text.primary}; */
 `;
 
-const TextProgress = styled.Text`
-  width:auto;
-  color: ${({theme})=>theme.text.third};
-`;
-
-
-
-export default function BackCard({data,groupIndex,setId,setactiveSlide}) {
-
-  const windowHeight = Dimensions.get('window').height
-  const windowWidth = Dimensions.get('window').width
+export function BackCard({data,groupIndex,setId,setactiveSlide}) {
 
   const themeContext = useContext(ThemeContext);
   const reactModal = useReactModal();
@@ -89,8 +71,3 @@ export default function BackCard({data,groupIndex,setId,setactiveSlide}) {
   )
 }
 
-
-const styles = StyleSheet.create({
-
-  textInput: {flex: 1,paddingLeft: 10,color: '#000',},
-});

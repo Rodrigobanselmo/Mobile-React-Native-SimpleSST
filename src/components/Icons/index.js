@@ -46,6 +46,18 @@ export default function Icons({name,...props}) {
             return <AntDesign name={'plus'} {...props} />
         case 'Help':
             return <Ionicons name={'ios-help-circle-outline'} {...props} />
+        case 'Image':
+            return <Ionicons name={'md-image-outline'} {...props} />
+        case 'NoImages':
+            return <MaterialCommunityIcons name={'image-off-outline'} {...props} />
+        case 'Upload':
+            return <MaterialCommunityIcons name={'upload'} {...props} />
+        case 'UploadFail':
+            return <MaterialCommunityIcons name={'upload-off-outline'} {...props} />
+        case 'Trash':
+            return <Ionicons name={'ios-trash-outline'} {...props} />
+        case 'DoubleCheck':
+            return <Ionicons name={'ios-checkmark-done'} {...props} />
 
 /*         case 'Load':
             return (

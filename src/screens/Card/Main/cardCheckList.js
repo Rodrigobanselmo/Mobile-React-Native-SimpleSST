@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, {useContext} from 'react';
 import {ThemeContext} from "styled-components";
-import {StyleSheet,Dimensions,View, } from 'react-native';
+import {Dimensions,View, } from 'react-native';
 import {useReactModal} from '../../../context/ModalContext'
 import styled,{css} from "styled-components/native";
 import {ButtonInitial,IconButton} from '../../../components/basicComponents/Button';
@@ -25,9 +25,7 @@ const TextQuestion = styled(Animatable.Text)`
     line-height:26px;
     font-size:20px;
   `}
-
 `;
-
 
 const ViewTextContent = styled.View`
 /*   background-color: ${({theme})=>theme.background.lineActive}; */
@@ -47,7 +45,6 @@ const ViewTextContent = styled.View`
   `}
 `;
 
-
 const TextGroup = styled.Text`
   width:75%;
   color: ${({theme})=>theme.text.third};
@@ -66,8 +63,7 @@ const TextProgress = styled.Text`
 `;
 
 
-
-export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch,model}) {
+export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch,model,sheetRef}) {
 
   const windowHeight = Dimensions.get('window').height
   const themeContext = useContext(ThemeContext);
@@ -88,7 +84,7 @@ export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch
           <TextGroup ellipsizeMode={'tail'} numberOfLines={1} >{group}</TextGroup>
           <TextProgress>{`${index+1}/${data.length}`}</TextProgress>
       </View>
-      <View style={{flex:1,overflow:'hidden'}}>
+      <View style={{flex:1,overflow:'visible'}}>
         <ViewTextContent windowHeight={windowHeight} style={{elevation:5}}>
           <TextQuestion animation="fadeIn" duration={1000} windowHeight={windowHeight} >{item.text}</TextQuestion>
         </ViewTextContent>
@@ -134,7 +130,7 @@ export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch
         <View style={{flexDirection:'row',flex:1}}>
           <IconButton
             iconName='Camera'
-            onPress={()=>onAnimatedFlip(180)}
+            onPress={()=>onAnimatedFlip(-180)}
             style={{marginRight:5}}
             warn={''}
             info={''}
@@ -149,7 +145,7 @@ export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch
         </View>
         <IconButton
             iconName='Warn'
-            onPress={()=>onAnimatedFlip(180)}
+            onPress={() => sheetRef.current.snapTo(1)}
             style={{marginRight:-5}}
             color={themeContext.text.third}
           />
@@ -158,65 +154,3 @@ export function CheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch
 
   )
 }
-
-export function Observation({item,group,onAnimatedFlip,setValue,value,model}) {
-
-  const windowHeight = Dimensions.get('window').height
-
-  const themeContext = useContext(ThemeContext);
-  const reactModal = useReactModal();
-
-  function onChengeTextInput(value) {
-    setValue(value)
-  }
-  function onConfirm(value) {
-    setValue(model?.obs ?? '')
-  }
-
-  return (
-    <View style={{flex: 1,paddingHorizontal:15,paddingVertical:10}}>
-      <View>
-        <View style={{flexDirection:'row',alignItems:'center'}} >
-          <Icons style={{marginRight:5}} name={'Doc'} color={themeContext.text.third} size={30*windowHeight/1000+0.1}/>
-          <TextProgress windowHeight={windowHeight}>Observações</TextProgress>
-        </View>
-        <TextInput
-          value={value}
-          onChangeText={(value)=>{onChengeTextInput(value)}}
-          placeholder="Faça uma observação"
-          style={{flex: 1,paddingLeft: 10,fontSize:15*windowHeight/1000+4.9,color: themeContext.text.primary,backgroundColor:themeContext.background.paper,marginTop:10,borderRadius:10,height:(35/83*(windowHeight)-82.5301)}}
-          autoCapitalize="none"
-          returnKeyType="next"
-          textAlign="justify"
-          numberOfLines={10}
-          multiline={true}
-          maxLength={300}
-          textAlignVertical='top'
-        />
-      </View>
-      <View style={{flex: 1}}>
-        <View style={{flexDirection:'row',alignItems:'center',marginTop:10}} >
-          <Icons style={{marginRight:5}} name={'Help'} color={themeContext.text.third} size={30*windowHeight/1000+0.1}/>
-          <TextProgress windowHeight={windowHeight}>Sugestões</TextProgress>
-        </View>
-        <View style={{flex: 1,marginTop:5}}>
-          {model?.obs &&
-          <TouchableOpacity onPress={()=>reactModal.alert({text:'Deseja reescrever suas observações pelo sugestão selecioanda?',warn:false,title:'Copiar Texto',onConfirm:onConfirm})}>
-            <TextProgress windowHeight={windowHeight}>{model?.obs ?? ''}</TextProgress>
-          </TouchableOpacity>
-          }
-        </View>
-      </View>
-      <TouchableOpacity style={{flexDirection:'row',justifyContent:'flex-start',alignItems:'center',paddingTop:10}} onPress={()=>onAnimatedFlip(0)}>
-        <Icons name={'ArrowBack'} color={themeContext.text.third} size={19*windowHeight/1000+8.0}/>
-        <TextProgress windowHeight={windowHeight}>Voltar</TextProgress>
-      </TouchableOpacity>
-    </View>
-
-  );
-}
-
-const styles = StyleSheet.create({
-
-  textInput: {flex: 1,paddingLeft: 10,color: '#000',},
-});

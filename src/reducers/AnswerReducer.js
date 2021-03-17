@@ -57,6 +57,56 @@ export default (state = initialState, action) => {
             //}
         return {...list};
 
+        case 'ANSWER_PHOTO':
+            var list = {...state}
+            var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
+            var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
+            if (list.data[groupId].questions[itemId]?.image) {
+                let index = list.data[groupId].questions[itemId].image.findIndex((i)=>i?.path && i.path===action.payload.data.path)
+                if (index === -1 ) {
+                    list.data[groupId].questions[itemId].image = [...list.data[groupId].questions[itemId].image,action.payload.data]
+                } else {
+                    list.data[groupId].questions[itemId].image[index] = {...list.data[groupId].questions[itemId].image[index],...action.payload.data}
+                }
+            } else {
+                list.data[groupId].questions[itemId].image = [action.payload.data]
+            }
+        return {...list};
+        
+        case 'ANSWER_PHOTO_UPDATED':
+            var list = {...state}
+            var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
+            var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
+            var imageId = list.data[groupId].questions[itemId].image.findIndex((i)=>i?.id && i.id===action.payload.imageId)
+
+            list.data[groupId].questions[itemId].image[imageId].uploaded = true
+            list.data[groupId].questions[itemId].image[imageId].isUploading = action.payload?.isUploading ? action.payload.isUploading : false
+            
+        return {...list};
+        
+        case 'ANSWER_PHOTO_UPDATED_TRY':
+            var list = {...state}
+            var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
+            var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
+            var imageId = list.data[groupId].questions[itemId].image.findIndex((i)=>i?.id && i.id===action.payload.imageId)
+
+            list.data[groupId].questions[itemId].image[imageId].uploadedTry = action.payload?.uploadedTry ? action.payload.uploadedTry : true
+            list.data[groupId].questions[itemId].image[imageId].isUploading = action.payload?.isUploading ? action.payload.isUploading : true
+            
+        return {...list};
+        
+        case 'ANSWER_PHOTO_UPDATED_PERCENTAGE':
+            var list = {...state}
+            var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
+            var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
+            var imageId = list.data[groupId].questions[itemId].image.findIndex((i)=>i?.id && i.id===action.payload.imageId)
+
+            list.data[groupId].questions[itemId].image[imageId].percentage = action.payload.percentage
+            if (action.payload?.isUploading) list.data[groupId].questions[itemId].image[imageId].isUploading = action.payload.isUploading
+
+            
+        return {...list};
+
         case 'ANSWER_BACK':
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
