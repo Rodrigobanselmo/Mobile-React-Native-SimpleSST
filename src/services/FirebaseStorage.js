@@ -66,11 +66,27 @@ export const addPhotoToStorage = async ({pathToFile,filename,user,setPercentage,
 
     await task;
     const url = await storageRef.getDownloadURL();
-    checkSuccess("Document successfully updated!");
+    const meta = await storageRef.getMetadata();
+    checkSuccess(url,meta);
 
   } catch (error) {
     checkError(errorCatch(error))
   }
+
+}; 
+
+export const deletePhotoFromStorage = async ({data,checkSuccess,checkError}) => {
+  
+  //console.log(user);
+  const storageRef = storage().ref(data.fullPath);
+
+  storageRef.delete().then(function() {
+    checkSuccess();
+  }).catch(function(error) {
+    checkError(errorCatch(error))
+});
+
+
 
 }; 
 

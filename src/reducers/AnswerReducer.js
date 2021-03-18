@@ -57,7 +57,7 @@ export default (state = initialState, action) => {
             //}
         return {...list};
 
-        case 'PHOTO_ADD':
+        case 'P!HOTO_ADD':
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
             var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
@@ -73,7 +73,7 @@ export default (state = initialState, action) => {
             }
         return {...list};
         
-        case 'ANSWER_PHOTO_UPDATED':
+        case 'A!NSWER_PHOTO_UPDATED':
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
             var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
@@ -86,7 +86,7 @@ export default (state = initialState, action) => {
             
         return {...list};
         
-        case 'ANSWER_PHOTO_UPDATED_TRY':
+        case '!ANSWER_PHOTO_UPDATED_TRY':
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
             var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
@@ -97,7 +97,7 @@ export default (state = initialState, action) => {
             
         return {...list};
         
-        case 'ANSWER_PHOTO_UPDATED_PERCENTAGE':
+        case 'A!NSWER_PHOTO_UPDATED_PERCENTAGE':
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
             var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
@@ -109,7 +109,7 @@ export default (state = initialState, action) => {
             
         return {...list};
 
-        case 'ANSWER_PHOTO_DELETED':
+        case '!ANSWER_PHOTO_DELETED':
             var list = {...state}
             console.log(action.payload.imageId);
             list.data[action.payload.groupIndex].questions[action.payload.itemIndex].image = list.data[action.payload.groupIndex].questions[action.payload.itemIndex].image.filter( i=> i.id != action.payload.imageId);
