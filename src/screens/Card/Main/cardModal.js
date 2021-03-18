@@ -33,7 +33,7 @@ const TextProgress = styled.Text`
 
 const windowHeight = Dimensions.get('window').height
 
-export const CardModal = ({image,setData,data,modalVisible,setModalVisible,addQuestionPhoto}) => {
+export const CardModal = ({image,setData,data,modalVisible,setModalVisible,addQuestionPhoto,answers}) => {
   
   const themeContext = useContext(ThemeContext);
 
@@ -50,43 +50,44 @@ export const CardModal = ({image,setData,data,modalVisible,setModalVisible,addQu
     >
     <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false} style={{width:'100%'}}>
     {image != null ? <AddImage source={{uri: image}} /> : null}
-      <TextProgress  windowHeight={windowHeight}>Dados da imagem</TextProgress>
-    <TextInput
-      value={data.title}
-      onChangeText={(value)=>{setData({...data,title:value})}}
-      placeholder="Título"
-      style={{paddingLeft: 10,padding:5,fontSize:15*windowHeight/1000+4.9,color: themeContext.text.primary,backgroundColor:themeContext.background.back,marginTop:15,borderRadius:10}}
-      autoCapitalize="none"
-      returnKeyType="next"
-      textAlign="justify"
-      numberOfLines={1}
-      maxLength={300}
-      textAlignVertical='top'
-      />
+    {data?.imageIndex ? <ProgresseBar percentage={answers.data[data.groupIndex].questions[data.itemIndex].image[data.imageIndex].percentage} style={{height:8,marginBottom:10,borderColor:themeContext.background.line}}/> : null}
+      <TextProgress windowHeight={windowHeight}>Dados da imagem</TextProgress>
       <TextInput
-        value={data.desc}
-        onChangeText={(value)=>{setData({...data,desc:value})}}
-        placeholder="Descrição"
-        style={{padding: 10,fontSize:15*windowHeight/1000+4.9,color: themeContext.text.primary,backgroundColor:themeContext.background.back,marginTop:15,marginBottom:5,borderRadius:10}}
+        value={data.title}
+        onChangeText={(value)=>{setData({...data,title:value})}}
+        placeholder="Título"
+        style={{paddingLeft: 10,padding:5,fontSize:15*windowHeight/1000+4.9,color: themeContext.text.primary,backgroundColor:themeContext.background.back,marginTop:15,borderRadius:10}}
         autoCapitalize="none"
         returnKeyType="next"
         textAlign="justify"
-        numberOfLines={3}
-        multiline={true}
-        maxLength={100}
+        numberOfLines={1}
+        maxLength={300}
         textAlignVertical='top'
-      />
-      <ButtonInitial
-        secondary={true}
-        iconName={'Trash'}
-        iconProps={{color:themeContext.primary.textInside,padding:0}}
-        style={{marginBottom:15,backgroundColor:themeContext.status.fail}}
-        iconPosition={'left'}
-        onPress={()=>{}}
-        scale={0.5}
-        elevation={false}
-        text='Deletar Imagem'
-      />
+        />
+        <TextInput
+          value={data.desc}
+          onChangeText={(value)=>{setData({...data,desc:value})}}
+          placeholder="Descrição"
+          style={{padding: 10,fontSize:15*windowHeight/1000+4.9,color: themeContext.text.primary,backgroundColor:themeContext.background.back,marginTop:15,marginBottom:5,borderRadius:10}}
+          autoCapitalize="none"
+          returnKeyType="next"
+          textAlign="justify"
+          numberOfLines={3}
+          multiline={true}
+          maxLength={100}
+          textAlignVertical='top'
+        />
+        <ButtonInitial
+          secondary={true}
+          iconName={'Trash'}
+          iconProps={{color:themeContext.primary.textInside,padding:0}}
+          style={{marginBottom:15,backgroundColor:themeContext.status.fail}}
+          iconPosition={'left'}
+          onPress={()=>{}}
+          scale={0.5}
+          elevation={false}
+          text='Deletar Imagem'
+        />
       </ScrollView>
   </ReactModal>
   );
