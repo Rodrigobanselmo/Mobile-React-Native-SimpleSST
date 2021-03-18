@@ -57,7 +57,7 @@ export default (state = initialState, action) => {
             //}
         return {...list};
 
-        case 'ANSWER_PHOTO':
+        case 'PHOTO_ADD':
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
             var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
@@ -109,6 +109,13 @@ export default (state = initialState, action) => {
             
         return {...list};
 
+        case 'ANSWER_PHOTO_DELETED':
+            var list = {...state}
+            console.log(action.payload.imageId);
+            list.data[action.payload.groupIndex].questions[action.payload.itemIndex].image = list.data[action.payload.groupIndex].questions[action.payload.itemIndex].image.filter( i=> i.id != action.payload.imageId);
+            //console.log(list.data[action.payload.groupIndex].questions[action.payload.itemIndex].image);
+        return {...list};
+
         case 'ANSWER_BACK':
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
@@ -119,6 +126,7 @@ export default (state = initialState, action) => {
             list.data[groupId].questions[parentId].hide = false
             list.data[groupId].questions[parentId].selected = 'none'
         return {...list};
+
 
         case 'LOGOUT_ANSWER':
             return {...initialState};
