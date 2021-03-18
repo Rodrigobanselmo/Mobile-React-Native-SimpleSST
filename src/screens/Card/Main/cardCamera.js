@@ -114,12 +114,17 @@ export function CardCamera({onAddPhotoToStorage,dispatch,item,groupId,onAnimated
         ...data,
         uploaded:false,
       }
-      dispatch({type: 'ANSWER_PHOTO',payload:{data:photo,itemId:item.id,groupId}})
+      dispatch({type: 'PHOTO_ADD',payload:{data:photo,itemId:item.id,groupId}})
     }
 
     function onOpenModal(open,onFunc) {
       setModalVisible(open)
       if(onFunc) onFunc()
+    }
+
+    function onDeleteImage() {
+      setModalVisible(false)
+      if (data?.imageId) dispatch({type: 'ANSWER_PHOTO_DELETED',payload:{groupIndex:data.groupIndex,itemIndex:data.itemIndex,imageId:data.imageId,imageIndex:data.imageIndex}})
     }
 
     return (
@@ -165,7 +170,7 @@ export function CardCamera({onAddPhotoToStorage,dispatch,item,groupId,onAnimated
           <Icons name={'ArrowBack'} color={themeContext.text.third} size={19*windowHeight/1000+8.0}/>
           <TextProgress windowHeight={windowHeight}>Voltar</TextProgress>
         </TouchableOpacity>
-        <CardModal answers={answers} image={image} setData={setData} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} addQuestionPhoto={addQuestionPhoto}/>
+        <CardModal onDeleteImage={onDeleteImage} answers={answers} image={image} setData={setData} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} addQuestionPhoto={addQuestionPhoto}/>
       </View>
 
     );

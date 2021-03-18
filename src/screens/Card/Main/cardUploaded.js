@@ -65,12 +65,12 @@ export function CardUploaded({images,index,item,dispatch,groupId,user,onAddPhoto
   }
 
   function EditImage() {
-    let groupIndex = answers.data.findIndex((i)=>i?.id && i.id===groupId)
-    let itemIndex = answers.data[groupIndex].questions.findIndex((i)=>i?.id && i.id===item.id)
-    let imageIndex = answers.data[groupIndex].questions[itemIndex].image.findIndex((i)=>i?.id && i.id===images.id)
+    //let groupIndex = answers.data.findIndex((i)=>i?.id && i.id===groupId)
+    //let itemIndex = answers.data[groupIndex].questions.findIndex((i)=>i?.id && i.id===item.id)
+    //let imageIndex = answers.data[groupIndex].questions[itemIndex].image.findIndex((i)=>i?.id && i.id===images.id)
     onOpenModal(true,onAddphoto)
     setImage(images.path)
-    setData({desc:images.desc,title:images.title,groupIndex,itemIndex,imageIndex})
+    setData({desc:images.desc,title:images.title,groupId,itemId:item.id,imageId,imageId:images.id})
   }
 
   return (

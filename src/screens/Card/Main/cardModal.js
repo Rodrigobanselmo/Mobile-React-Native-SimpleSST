@@ -1,18 +1,11 @@
-import React, {useContext,useState} from 'react';
+import React, {useContext} from 'react';
 import {ThemeContext} from "styled-components";
-import {StyleSheet,Dimensions,View,ScrollView } from 'react-native';
-import {useReactModal} from '../../../context/ModalContext'
+import {Dimensions,ScrollView } from 'react-native';
 import styled,{css} from "styled-components/native";
-import {ButtonInitial,IconButton} from '../../../components/basicComponents/Button';
+import {ButtonInitial} from '../../../components/basicComponents/Button';
 import ReactModal from '../../../components/modalComponents/ModalAlert';
 import {ProgresseBar} from '../../../components/basicComponents/ProgresseBar';
-import {ProgresseValue} from '../../../components/basicComponents/ProgresseValue';
-import Icons from '../../../components/Icons'
-import * as Animatable from 'react-native-animatable';
-import ImagePicker from 'react-native-image-crop-picker';
-import {v4} from "uuid";
-
-import { TouchableOpacity,TextInput,FlatList } from 'react-native-gesture-handler';
+import { TextInput } from 'react-native-gesture-handler';
 
 const AddImage = styled.Image`
     width: 100%;
@@ -33,7 +26,7 @@ const TextProgress = styled.Text`
 
 const windowHeight = Dimensions.get('window').height
 
-export const CardModal = ({image,setData,data,modalVisible,setModalVisible,addQuestionPhoto,answers}) => {
+export const CardModal = ({image,setData,data,modalVisible,setModalVisible,addQuestionPhoto,answers,onDeleteImage}) => {
   
   const themeContext = useContext(ThemeContext);
 
@@ -50,7 +43,7 @@ export const CardModal = ({image,setData,data,modalVisible,setModalVisible,addQu
     >
     <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false} style={{width:'100%'}}>
     {image != null ? <AddImage source={{uri: image}} /> : null}
-    {data?.imageIndex ? <ProgresseBar percentage={answers.data[data.groupIndex].questions[data.itemIndex].image[data.imageIndex].percentage} style={{height:8,marginBottom:10,borderColor:themeContext.background.line}}/> : null}
+    {data?.imageIndex >=0 && answers.data[data.groupIndex].questions[data.itemIndex].image[data.imageIndex] ? <ProgresseBar percentage={answers.data[data.groupIndex].questions[data.itemIndex].image[data.imageIndex].percentage} style={{height:8,marginBottom:10,borderColor:themeContext.background.line}}/> : null}
       <TextProgress windowHeight={windowHeight}>Dados da imagem</TextProgress>
       <TextInput
         value={data.title}
@@ -83,7 +76,7 @@ export const CardModal = ({image,setData,data,modalVisible,setModalVisible,addQu
           iconProps={{color:themeContext.primary.textInside,padding:0}}
           style={{marginBottom:15,backgroundColor:themeContext.status.fail}}
           iconPosition={'left'}
-          onPress={()=>{}}
+          onPress={()=>onDeleteImage()}
           scale={0.5}
           elevation={false}
           text='Deletar Imagem'
