@@ -69,6 +69,7 @@ export function CardCamera({onAddPhotoToStorage,dispatch,item,groupId,onAnimated
     const themeContext = useContext(ThemeContext);
     const reactModal = useReactModal();
     const user = useSelector(state => state.user);
+    const answers = useSelector(state => state.answer);
 /*     useEffect(() => {
       onAddPhotoToStorage(photo,reactModal,dispatch)
     }, [input]) */
@@ -120,14 +121,20 @@ export function CardCamera({onAddPhotoToStorage,dispatch,item,groupId,onAnimated
         uploaded:false,
       }
       dispatch({type: 'ANSWER_PHOTO',payload:{data:photo,itemId:item.id,groupId}})
-      /*       useEffect(() => {
-        if (item?.image) {
+      //let itemId = answers.findIndex((i)=>i?.id && i.id===item.id)
+      let groupID = answers.data.findIndex((i)=>i?.id && i.id===groupId)
+      let itemID = answers.data[groupID].questions.findIndex((i)=>i?.id && i.id===item.id)
+      let index = answers.data[groupID].questions[itemID].image.findIndex((i)=>i?.path && i.path===photo.path)
+      //console.log('ITEMSSS', answers.data[groupID].questions[itemID].image[index]);
+/*       if (index === -1 ) {
+      } else {
+        let images = answers[itemId].image[index]
+        if  (!images.uploaded) onAddPhotoToStorage({photo:images,reactModal,dispatch,user,itemId,groupId,imageId:images.id})
+      }  */
+    }
 
-          let index = item.image.findIndex((i)=>i?.path && i.path===data.path)
-          if (index === -1 ) onAddPhotoToStorage({photo,reactModal,dispatch,user,setPercentage})
-  
-        } else onAddPhotoToStorage({photo,reactModal,dispatch,user,setPercentage})
-      }, []) */
+    function onOpenModal(params) {
+      
     }
 
     return (
@@ -142,7 +149,7 @@ export function CardCamera({onAddPhotoToStorage,dispatch,item,groupId,onAnimated
           {item?.image && item.image.length > 0  ?
             <FlatList
               data={item?.image ?? []}
-              renderItem={({item:images,index})=>{return <CardUploaded images={images} index={index} item={item} onAddPhotoToStorage={onAddPhotoToStorage} reactModal={reactModal} user={user} groupId={groupId} dispatch={dispatch} setModalVisible={setModalVisible} setData={setData} setImage={setImage} themeContext={themeContext}/>}}
+              renderItem={({item:images,index})=>{return <CardUploaded images={images} index={index} item={item} onAddPhotoToStorage={onAddPhotoToStorage} reactModal={reactModal} user={user} groupId={groupId} dispatch={dispatch} onOpenModal={onOpenModal} setData={setData} setImage={setImage} themeContext={themeContext}/>}}
               keyExtractor={item => item.id}
               showsVerticalScrollIndicator={false}
               style={{paddingTop:10}}

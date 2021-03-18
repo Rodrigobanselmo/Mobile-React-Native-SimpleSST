@@ -45,20 +45,24 @@ const AnimatableTextProgress = styled(Animatable.Text)`
   `}
 `;
 
-export function CardUploaded({images,index,item,dispatch,groupId,user,onAddPhotoToStorage,reactModal,setModalVisible,setData,setImage,themeContext,}) {
+export function CardUploaded({images,index,item,dispatch,groupId,user,onAddPhotoToStorage,reactModal,onOpenModal,setData,setImage,themeContext,}) {
 
 
   useEffect(() => {
     console.log(item.image);
     if ((images?.uploadedTry && images.uploadedTry) || images.uploaded) {console.log('uploaded');} 
     else {
-        dispatch({type: 'ANSWER_PHOTO_UPDATED_TRY',payload:{imageId:images.id,itemId:item.id,groupId}})
-        onAddPhotoToStorage({photo:images,reactModal,dispatch,user,itemId:item.id,groupId,imageId:images.id})
+      onAddphoto()
     }
   }, [])
 
+  function onAddphoto() {
+    dispatch({type: 'ANSWER_PHOTO_UPDATED_TRY',payload:{imageId:images.id,itemId:item.id,groupId}})
+    onAddPhotoToStorage({photo:images,reactModal,dispatch,user,itemId:item.id,groupId,imageId:images.id})
+  }
+
   function EditImage() {
-    setModalVisible(true)
+    onOpenModal(true,images)
     setImage(images.path)
     setData({desc:images.desc,title:images.title})
   }
@@ -83,12 +87,13 @@ export function CardUploaded({images,index,item,dispatch,groupId,user,onAddPhoto
         }
       </View>
       <ProgresseBar percentage={images.percentage} style={{height:8,borderColor:themeContext.background.line}}/>
-      {!(images?.uploadedTry && images.uploadedTry && images?.uploaded && !images.uploaded) ?
-        <TextProgress style={{flex:1,paddingRight:10,fontSize:12}}></TextProgress>
-      :
-        <AnimatableTextProgress animation="fadeInLeft" duration={1000} numberOfLines={1} ellipsizeMode='tail' style={{flex:1,paddingRight:10,color:themeContext.status.fail2,fontSize:11}}>
+      {console.log(images?.uploadedTry ,images.uploadedTry ,images?.uploaded, !images.uploaded,images)}
+      {(images?.uploadedTry && images.uploadedTry && !images?.uploaded) ?
+        <AnimatableTextProgress animation="fadeInLeft" duration={1000} numberOfLines={1} ellipsizeMode='tail' style={{flex:1,paddingRight:10,color:themeContext.status.fail2,fontSize:10}}>
           Upload falhou, Tente Novamente.
         </AnimatableTextProgress>
+      :
+        <TextProgress style={{flex:1,paddingRight:10,fontSize:12}}></TextProgress>
       }
   </TouchableOpacity>
   );
