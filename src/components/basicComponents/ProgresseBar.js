@@ -11,7 +11,7 @@ import styled, {css,ThemeContext} from "styled-components";
 import Icons from '../Icons'
 
 
-export function ProgresseBar({percentage=0,style={},barColor}) {
+export function ProgresseBar({percentage=0,style={},barColor,duration=1000}) {
     
     let animation = useRef(new Animated.Value(0));
     
@@ -20,7 +20,7 @@ export function ProgresseBar({percentage=0,style={},barColor}) {
     useEffect(() => {
         Animated.timing(animation.current, {
           toValue: percentage,
-          duration: 300,
+          duration,
           useNativeDriver:false
         }).start();
       },[percentage])
