@@ -18,7 +18,7 @@ import Animated from 'react-native-reanimated';
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
 
-export function CardContainer({onAddPhotoToStorage,sheetRef,group, groupId ,CARD_WIDTH,  previewIndex, data,CARD_HEIGHT,activeIndex,dispatch,CHECK_LIST_MODEL,animatedValue,VISIBLE_ITEMS}) {
+export function CardContainer({onDeletePhotoFromStorage,onAddPhotoToStorage,sheetRef,group, groupId ,CARD_WIDTH,  previewIndex, data,CARD_HEIGHT,activeIndex,dispatch,CHECK_LIST_MODEL,animatedValue,VISIBLE_ITEMS}) {
   return (
     <View style={{height:CARD_HEIGHT,marginTop:10}}>
         {data.map((item,index)=> {
@@ -89,7 +89,7 @@ export function CardContainer({onAddPhotoToStorage,sheetRef,group, groupId ,CARD
                         <AnimatedReact.View  style={{position:'absolute',backfaceVisibility:'hidden', transform: [{translateY},{rotateY:animatedFlipBack},{translateX},{scale}],opacity,zIndex:data.length*2-index*2+((isFront===true)?0:1),elevation:data.length*2-index*2+((isFront===true)?0:1), left:(windowWidth-CARD_WIDTH)/2, top:0}}>
                             <CardView style={{height:CARD_HEIGHT, width:CARD_WIDTH,}} >
                                     {isFront === 'Camera'?
-                                      <CardCamera onAddPhotoToStorage={onAddPhotoToStorage} dispatch={dispatch}/*  image={image} setImage={setImage} */ onAnimatedFlip={onAnimatedFlip} groupId={groupId} item={item}/>
+                                      <CardCamera onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} dispatch={dispatch}/*  image={image} setImage={setImage} */ onAnimatedFlip={onAnimatedFlip} groupId={groupId} item={item}/>
                                     :
                                       <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false} style={{width:'100%'}}>
                                         <CardObservation model={model} value={value} setValue={setValue} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} item={item}/>

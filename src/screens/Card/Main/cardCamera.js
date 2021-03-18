@@ -61,7 +61,7 @@ const AddImage = styled.Image`
 
 const windowHeight = Dimensions.get('window').height
 
-export function CardCamera({onAddPhotoToStorage,dispatch,item,groupId,onAnimatedFlip}) {
+export function CardCamera({onDeletePhotoFromStorage,onAddPhotoToStorage,dispatch,item,groupId,onAnimatedFlip}) {
     const [image, setImage] = useState(null)
     const [modalVisible, setModalVisible] = useState(false)
     const [data, setData] = useState({desc:'',title:''})
@@ -70,6 +70,7 @@ export function CardCamera({onAddPhotoToStorage,dispatch,item,groupId,onAnimated
     const reactModal = useReactModal();
     const user = useSelector(state => state.user);
     const answers = useSelector(state => state.answer);
+    const photos = useSelector(state => state.photo);
 
     function onTakePhoto() {
       ImagePicker.openCamera({
@@ -87,6 +88,7 @@ export function CardCamera({onAddPhotoToStorage,dispatch,item,groupId,onAnimated
         console.log(error);
       })
     }
+    
     function onChooseFoto() {
       ImagePicker.openPicker({
         width: 720,
@@ -111,10 +113,14 @@ export function CardCamera({onAddPhotoToStorage,dispatch,item,groupId,onAnimated
       }
       const photo = {
         id:v4(),
+        groupId,
+        itemId:item.id,
         ...data,
+        uploadedTry:false,
+        percentage:0,
         uploaded:false,
       }
-      dispatch({type: 'PHOTO_ADD',payload:{data:photo,itemId:item.id,groupId}})
+      dispatch({type: 'PHOTO_ADD_EDIT',payload:{data:photo}})
     }
 
     function onOpenModal(open,onFunc) {
@@ -124,7 +130,10 @@ export function CardCamera({onAddPhotoToStorage,dispatch,item,groupId,onAnimated
 
     function onDeleteImage() {
       setModalVisible(false)
-      if (data?.imageId) dispatch({type: 'ANSWER_PHOTO_DELETED',payload:{groupIndex:data.groupIndex,itemIndex:data.itemIndex,imageId:data.imageId,imageIndex:data.imageIndex}})
+      if (data?.imageId && !data.uploaded) dispatch({type: 'PHOTO_DELETED',payload:{imageId:data.imageId}})
+      else {
+        onDeletePhotoFromStorage({data,dispatch,reactModal})
+      }
     }
 
     return (
@@ -135,11 +144,11 @@ export function CardCamera({onAddPhotoToStorage,dispatch,item,groupId,onAnimated
             <TextProgress windowHeight={windowHeight}>Fotos Adicionadas</TextProgress>
           </View>
           <View style={{flex: 1,paddingLeft: 10,backgroundColor:themeContext.background.paper,marginTop:10,borderRadius:10}}> 
-
-          {item?.image && item.image.length > 0  ?
+          {console.log(photos)}
+          {photos.length > 0  ?
             <FlatList
-              data={item?.image ?? []}
-              renderItem={({item:images,index})=>{return <CardUploaded answers={answers} images={images} index={index} item={item} onAddPhotoToStorage={onAddPhotoToStorage} reactModal={reactModal} user={user} groupId={groupId} dispatch={dispatch} onOpenModal={onOpenModal} setData={setData} setImage={setImage} themeContext={themeContext}/>}}
+              data={photos.filter(i=>(i.groupId === groupId && i.itemId === item.id) )}
+              renderItem={({item:images,index})=>{return <CardUploaded photos={photos} images={images} index={index} item={item} onAddPhotoToStorage={onAddPhotoToStorage} reactModal={reactModal} user={user} groupId={groupId} dispatch={dispatch} onOpenModal={onOpenModal} setData={setData} setImage={setImage} themeContext={themeContext}/>}}
               keyExtractor={item => item.id}
               showsVerticalScrollIndicator={false}
               style={{paddingTop:10}}
@@ -170,7 +179,7 @@ export function CardCamera({onAddPhotoToStorage,dispatch,item,groupId,onAnimated
           <Icons name={'ArrowBack'} color={themeContext.text.third} size={19*windowHeight/1000+8.0}/>
           <TextProgress windowHeight={windowHeight}>Voltar</TextProgress>
         </TouchableOpacity>
-        <CardModal onDeleteImage={onDeleteImage} answers={answers} image={image} setData={setData} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} addQuestionPhoto={addQuestionPhoto}/>
+        <CardModal onDeleteImage={onDeleteImage} photos={photos} image={image} setData={setData} data={data} modalVisible={modalVisible} setModalVisible={setModalVisible} addQuestionPhoto={addQuestionPhoto}/>
       </View>
 
     );

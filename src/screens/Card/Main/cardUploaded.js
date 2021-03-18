@@ -45,7 +45,7 @@ const AnimatableTextProgress = styled(Animatable.Text)`
   `}
 `;
 
-export function CardUploaded({images,index,item,dispatch,groupId,user,onAddPhotoToStorage,reactModal,onOpenModal,setData,setImage,themeContext,answers}) {
+export function CardUploaded({images,index,item,dispatch,groupId,user,onAddPhotoToStorage,reactModal,onOpenModal,setData,setImage,themeContext,photos}) {
 
   const [errorMessage, setErrorMessage] = useState('Upload falhou, Tente Novamente.')
 
@@ -58,19 +58,17 @@ export function CardUploaded({images,index,item,dispatch,groupId,user,onAddPhoto
   }, [])
 
   function onAddphoto() {
-    if (!images.uploaded) {
-      dispatch({type: 'ANSWER_PHOTO_UPDATED_TRY',payload:{imageId:images.id,itemId:item.id,groupId}})
+    if (!images.uploaded&& !images.isUploading) {
+      dispatch({type: 'PHOTO_UPDATED_TRY',payload:{imageId:images.id,itemId:item.id,groupId}})
       onAddPhotoToStorage({photo:images,reactModal,dispatch,user,itemId:item.id,groupId,imageId:images.id,setErrorMessage})
     }
   }
 
   function EditImage() {
-    //let groupIndex = answers.data.findIndex((i)=>i?.id && i.id===groupId)
-    //let itemIndex = answers.data[groupIndex].questions.findIndex((i)=>i?.id && i.id===item.id)
-    //let imageIndex = answers.data[groupIndex].questions[itemIndex].image.findIndex((i)=>i?.id && i.id===images.id)
+    let imageIndex = photos.findIndex((i)=>i?.id && i.id===images.id)
     onOpenModal(true,onAddphoto)
     setImage(images.path)
-    setData({desc:images.desc,title:images.title,groupId,itemId:item.id,imageId,imageId:images.id})
+    setData({desc:images.desc,title:images.title,groupId,itemId:item.id,imageId:images.id,imageIndex,...images})
   }
 
   return (
@@ -98,9 +96,9 @@ export function CardUploaded({images,index,item,dispatch,groupId,user,onAddPhoto
         </View>
       </View>
       <ProgresseBar percentage={images.percentage} style={{height:8,borderColor:themeContext.background.line}}/>
-      {(!images.isUploading && images?.uploadedTry && images.uploadedTry && !images?.uploaded) ?
+      {((!images.isUploading && images?.uploadedTry && images.uploadedTry && !images?.uploaded) || images?.delete) ?
         <AnimatableTextProgress animation="fadeInLeft" duration={1000} numberOfLines={1} ellipsizeMode='tail' style={{flex:1,paddingRight:10,color:themeContext.status.fail2,fontSize:10}}>
-          {errorMessage}
+          {images?.delete ?? errorMessage}
         </AnimatableTextProgress>
       :
         null

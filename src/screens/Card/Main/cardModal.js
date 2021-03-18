@@ -26,7 +26,7 @@ const TextProgress = styled.Text`
 
 const windowHeight = Dimensions.get('window').height
 
-export const CardModal = ({image,setData,data,modalVisible,setModalVisible,addQuestionPhoto,answers,onDeleteImage}) => {
+export const CardModal = ({image,setData,data,modalVisible,setModalVisible,addQuestionPhoto,photos,onDeleteImage}) => {
   
   const themeContext = useContext(ThemeContext);
 
@@ -43,7 +43,7 @@ export const CardModal = ({image,setData,data,modalVisible,setModalVisible,addQu
     >
     <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false} style={{width:'100%'}}>
     {image != null ? <AddImage source={{uri: image}} /> : null}
-    {data?.imageIndex >=0 && answers.data[data.groupIndex].questions[data.itemIndex].image[data.imageIndex] ? <ProgresseBar percentage={answers.data[data.groupIndex].questions[data.itemIndex].image[data.imageIndex].percentage} style={{height:8,marginBottom:10,borderColor:themeContext.background.line}}/> : null}
+    {data?.imageId && data?.imageIndex >= 0 ? <ProgresseBar percentage={photos[data.imageIndex]?.percentage ?? 0} style={{height:8,marginBottom:10,borderColor:themeContext.background.line}}/> : null}
       <TextProgress windowHeight={windowHeight}>Dados da imagem</TextProgress>
       <TextInput
         value={data.title}
