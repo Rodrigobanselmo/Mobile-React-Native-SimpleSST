@@ -81,6 +81,8 @@ export default (state = initialState, action) => {
 
             list.data[groupId].questions[itemId].image[imageId].uploaded = true
             list.data[groupId].questions[itemId].image[imageId].isUploading = action.payload?.isUploading ? action.payload.isUploading : false
+            list.data[groupId].questions[itemId].image[imageId].uploadedTry = true
+            list.data[groupId].questions[itemId].image[imageId].percentage = 100
             
         return {...list};
         
@@ -102,7 +104,7 @@ export default (state = initialState, action) => {
             var imageId = list.data[groupId].questions[itemId].image.findIndex((i)=>i?.id && i.id===action.payload.imageId)
 
             list.data[groupId].questions[itemId].image[imageId].percentage = action.payload.percentage
-            if (action.payload?.isUploading === false) list.data[groupId].questions[itemId].image[imageId].isUploading = action.payload.isUploading
+            list.data[groupId].questions[itemId].image[imageId].isUploading = action.payload.isUploading
 
             
         return {...list};
