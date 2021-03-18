@@ -5,7 +5,7 @@ import {SafeAreaView, StyleSheet,StatusBar,Dimensions, Text,Animated,View, Scrol
 import {useReactModal} from '../../../context/ModalContext'
 import changenavigationBarColor from 'react-native-navigation-bar-color';
 import Card from './comp'
-import {onAddPhotoToStorage} from './func'
+import {onAddPhotoToStorage,onDeletePhotoFromStorage} from './func'
 import {v4} from "uuid";
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -57,7 +57,7 @@ export default function App({navigation,route}) {
   
   return (
     <Card navigation={navigation} title={title}>
-        {answers?.data && <Card.Component onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} route={route} CHECK_LIST_MODEL={model} CheckListData={answers} dispatch={dispatch}/>}
+        {answers?.data && <Card.Component onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} route={route} CHECK_LIST_MODEL={model} CheckListData={answers} dispatch={dispatch}/>}
         <Card.BottomSheet sheetRef={sheetRef}/>
     </Card>
 

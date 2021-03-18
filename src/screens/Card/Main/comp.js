@@ -32,7 +32,7 @@ export default function Card({title,children,navigation, ...restProps }) {
     );
 }
 
-Card.Component = function ComponentCard({onAddPhotoToStorage,CheckListData,dispatch,CHECK_LIST_MODEL=[],route,sheetRef}) {
+Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToStorage,CheckListData,dispatch,CHECK_LIST_MODEL=[],route,sheetRef}) {
   
     const [secondary, setSecondary] = useState(false);
     const [backCardGroup, setBackCardGroup] = useState(false)
@@ -80,15 +80,19 @@ Card.Component = function ComponentCard({onAddPhotoToStorage,CheckListData,dispa
       else onAnimatedButton(0)
     }, [CheckListData,activeIndex,_id])
 
-    const setactiveSlide = React.useCallback((newIndex) => {
+    useEffect(() => {
+      console.log(backCardGroup);
+    }, [backCardGroup])
+
+    const setactiveSlide = (newIndex) => {
         setactiveIndex(newIndex);
         reactiveAnimated.setValue(newIndex)
         setPreviewIndex(activeIndex)
-        if (activeIndex === data.length-1) {
+        if (activeIndex == data.length-1) {
           if (!backCardGroup) setBackCardGroup(true)
         }
         if (backCardGroup) setBackCardGroup(false)
-    },[])
+    }
 
     const onConfirmed = () => {
       if(data[activeIndex]?.selected && (data[activeIndex].selected === 'yes' || data[activeIndex].selected === 'na' || data[activeIndex].selected === 'no')) {
@@ -145,7 +149,7 @@ Card.Component = function ComponentCard({onAddPhotoToStorage,CheckListData,dispa
             </BackGroupView>
           }
         
-          <CardContainer onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} group={group} groupId={groupId} CARD_WIDTH={CARD_WIDTH} previewIndex={previewIndex} data={data} CARD_HEIGHT={CARD_HEIGHT} activeIndex={activeIndex} dispatch={dispatch} CHECK_LIST_MODEL={CHECK_LIST_MODEL} animatedValue={animatedValue} VISIBLE_ITEMS={VISIBLE_ITEMS}  />
+          <CardContainer onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} group={group} groupId={groupId} CARD_WIDTH={CARD_WIDTH} previewIndex={previewIndex} data={data} CARD_HEIGHT={CARD_HEIGHT} activeIndex={activeIndex} dispatch={dispatch} CHECK_LIST_MODEL={CHECK_LIST_MODEL} animatedValue={animatedValue} VISIBLE_ITEMS={VISIBLE_ITEMS}  />
 
           <View style={{height:CONTROLLER_HEIGHT,width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
             <TouchableHighlight activeOpacity={0.5} underlayColor={themeContext.background.hover} style={{zIndex:1000,padding:9,borderRadius:30}} onLongPress={() => {setactiveSlide(0)}} onPress={() => {if (activeIndex!== 0) setactiveSlide(activeIndex-1)}}>
