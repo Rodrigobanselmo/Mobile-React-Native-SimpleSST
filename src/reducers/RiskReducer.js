@@ -1,4 +1,4 @@
-const initialState = []
+const initialState = {}
 
 
 export default (state = initialState, action) => {
@@ -7,7 +7,12 @@ export default (state = initialState, action) => {
 
     switch(action.type) {
         case 'CREATE_RISKS':
-        return [...action.payload];
+            var risksAll = {};
+            action.payload.map((item)=>{
+                risksAll[item.id] = item
+            })
+            console.log(risksAll,risksAll);
+        return {...risksAll};
 
 /*         case 'GET_RISK':
             var risksArray = [...state]

@@ -72,13 +72,13 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
   const risk = useSelector(state => state.risk);
   //const answers = useSelector(state => state.answer);
   
-  function onAnswer(peek) {
+  function onAnswer(peek,selected) {
     if (item.action[peek]?.child) {
       dispatch({type: 'ANSWER_CHILD',payload:{peek,itemId:item.id,groupId,childId:item.action[peek].child}})
       //dispatch({type: 'REMOVE_RISK_ANSWER',payload:{itemId:item.id,groupId,riskId:item.action[peek].risk}})
     }
     if (item.action[peek]?.risk) {
-      sheetRef.current.snapTo(1)
+      if (selected !== peek) sheetRef.current.snapTo(1)
       dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
     }
     if (peek === 'goBack') {
@@ -88,11 +88,12 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
       dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
       //dispatch({type: 'REMOVE_RISK_ANSWER',payload:{itemId:item.id,groupId}})
     }
-    if (item.action[peek]?.rec) {
+    if (item.action[peek]?.rec === '' || item.action[peek]?.rec) {
       dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
       //dispatch({type: 'REMOVE_RISK_ANSWER',payload:{itemId:item.id,groupId}})
     }
-    dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{peek,itemId:item.id,groupId}})
+    // dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{peek,itemId:item.id,groupId}})
+    dispatch({type: 'ADD_RISK_ANSWER',payload:{peek,itemId:item.id,groupId,peekData:selected !== peek ? item.action[peek] : {}}})
   }
 
   return (
@@ -112,7 +113,7 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
             iconName={model?.selected && model.selected == 'yes' ? 'Fingerprint' : false}
             iconColor={themeContext.primary.main} 
             iconPosition='right'
-            onPress={()=>onAnswer('yes')}
+            onPress={()=>onAnswer('yes',item?.selected)}
             scale={0.65*windowHeight/1000+0.23}
             elevation={true}
             text='SIM'

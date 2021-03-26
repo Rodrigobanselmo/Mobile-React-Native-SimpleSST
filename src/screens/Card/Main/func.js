@@ -70,7 +70,7 @@ export const onGetAllRisks = ({user,reactModal,dispatch}) => {
     GetAllRisks({companyId:user?.company?.id,checkSuccess,checkError})
 
     function checkSuccess(data) {
-        console.log('onGetAllRisks',data);
+        //console.log('onGetAllRisks',data);
         dispatch({type: 'CREATE_RISKS',payload:data})
     }
 

@@ -6,82 +6,14 @@ import {Header} from '../../../components/basicComponents/Header';
 import {ButtonAnimated,ButtonInitial} from '../../../components/basicComponents/Button';
 import Icons from '../../../components/Icons'
 import { Directions, FlingGestureHandler,ScrollView, State } from 'react-native-gesture-handler';
-import {CardCheckList} from './cardCheckList'
 import {CardContainer} from './cardContainer'
 import {BackCard} from './backCard'
-import {CardCamera} from './cardCamera'
-import {CardObservation} from './cardObservation'
+import {RiskComponent,TitleText} from './riskComponent'
 import {BackGroupView,CardView,Container,ContainerSafe,SheetHandle,SheetHeaderCont,SheetHeader,SheetBody} from './styles';
-import { lighten } from 'polished';
 
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
-import styled, {css}from "styled-components/native";
 
-const RiskText = styled.Text`
-  padding-right: 55px;
-  text-align:left;
-  color:${({theme})=>theme.text.third};
-`;
-
-const TitleText = styled.Text`
-  text-align:center;
-  color:${({theme})=>theme.text.third};
-  margin-bottom:15px;
-`;
-
-
-const IconRiskContainer = styled.View`
-  width: 45px;
-  height: 45px;
-  margin-right: 15px;
-  align-items: center;
-  border-radius:25px;
-  justify-content: center;
-  background-color: #ffffff;
-
-  ${props => props.type == 'fis' && css`
-      background-color:${({theme})=>theme.risk.fis};
-  `}
-  ${props => props.type == 'qim' && css`
-      background-color:${({theme})=>theme.risk.qim};
-  `}
-  ${props => props.type == 'bio' && css`
-      background-color:${({theme})=>theme.risk.bio};
-  `}
-  ${props => props.type == 'erg' && css`
-      background-color:${({theme})=>theme.risk.erg};
-  `}
-  ${props => props.type == 'aci' && css`
-      background-color:${({theme})=>theme.risk.aci};
-  `}
-`;
-
-
-const ItemRiskConatiner = styled.View`
-  width: 100%;
-  padding: 10px 15px;
-  flex-direction: row;
-  border-radius:15px;
-  align-items: center;
-  elevation: 12;
-  background-color: ${({theme})=>lighten(0.58,theme.background.paper)};
-/*   ${props => props.type == 'fis' && css`
-      background-color: ${({theme})=>lighten(0.58,theme.risk.fis)};
-  `}
-  ${props => props.type == 'qim' && css`
-      background-color: ${({theme})=>lighten(0.49,theme.risk.qim)};
-  `}
-  ${props => props.type == 'bio' && css`
-      background-color: ${({theme})=>lighten(0.64,theme.risk.bio)};
-  `}
-  ${props => props.type == 'erg' && css`
-      background-color: ${({theme})=>lighten(0.49,theme.risk.erg)};
-  `}
-  ${props => props.type == 'aci' && css`
-      background-color: ${({theme})=>lighten(0.485,theme.risk.aci)};
-  `} */
-`;
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
 
@@ -133,9 +65,9 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
 
     useEffect(() => {
       //console.log(route.params);
-      if (route.params?.groupId && route.params?.cardIndex) {
+      if (route.params?.groupId && route.params?.cardIndex >= 0) {
         setId(route.params.groupId)
-        setactiveSlide(route.params?.cardIndex)
+        setactiveSlide(route.params.cardIndex)
       } else if (route.params?.groupId)  {
         setId(route.params.groupId)
       }
@@ -249,28 +181,29 @@ Card.BottomSheet = function Sheet({sheetRef,answers,riskAnswer,risk}) {
   var itemIndex = answers.data[groupIndex]?.questions.findIndex((i)=>i?.id && i.id===riskAnswer.position.itemId)
   var peek = riskAnswer.position.peek
 
-  if (groupIndex >= 0 && itemIndex >= 0 && peek && answers.data[groupIndex].questions[itemIndex].action[peek]?.risk) console.log(answers.data[groupIndex].questions[itemIndex].action[peek]);
+  console.log(riskAnswer.risks[`${riskAnswer.position.groupId}-${riskAnswer.position.itemId}`]);
+  
+  const risks = riskAnswer.risks[`${riskAnswer.position.groupId}-${riskAnswer.position.itemId}`]?.data
+  
+  if (risks) {
+
+    console.log('risks',risks[0]);
+    console.log('risks',risk[risks[0]]?.name);
+    
+  }
 
   const renderContent = () => {
     return (
       <SheetBody >
         <TitleText>Fatorres de Risco Selecionados</TitleText>
-        
-        <ItemRiskConatiner type='fis' style={{marginBottom:20}}>
-          <IconRiskContainer type='fis'>
-            <Icons  name={'Fis'} fill={themeContext.status.text} />
-          </IconRiskContainer>
-          <RiskText>Pisos, passagens, passarelas, plataformas, rampas e corredores com saliências, descontinuidades, aberturas ou obstruções, ou escorregadios;</RiskText>
-        </ItemRiskConatiner>
-
         <TitleText>Sugestões de Fatorres de Risco</TitleText>
+        {Array.isArray(risks) && risks.map((item,index)=>{
+          return(
+            <RiskComponent key={item} text={risk[risks[0]].name} type={risk[risks[0]].type} style={{marginTop:index==0 ? 0 : 15,marginBottom:0}}/>
+          );
+        })}
 
-        <ItemRiskConatiner type='bio' style={{marginTop:20}}>
-          <IconRiskContainer type='bio' >
-            <Icons name={'Bio'} fill={themeContext.status.text} />
-          </IconRiskContainer>
-          <RiskText>Movimentação de materiais.</RiskText>
-        </ItemRiskConatiner>
+
         
         <View style={{flex:1}}/>
 
@@ -319,7 +252,7 @@ Card.BottomSheet = function Sheet({sheetRef,answers,riskAnswer,risk}) {
     <>
       <BottomSheet
         ref={sheetRef}
-        snapPoints={[0, 350, 500]}
+        snapPoints={[0, 450]}
         springConfig={{        
           stiffness: 25,
         }}

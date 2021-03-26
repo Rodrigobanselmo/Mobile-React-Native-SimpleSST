@@ -1,72 +1,85 @@
 /* eslint-disable no-unused-vars */
-import React, {useContext,useRef,useEffect} from 'react';
-import {ThemeContext} from "styled-components";
-import {StyleSheet,Dimensions} from 'react-native';
-import {useReactModal} from '../../../context/ModalContext'
-import styled from "styled-components/native";
-import Donut from '../../../components/donutComponents/donut';
+import React, {useContext} from 'react';
+import styled, {css,ThemeContext}from "styled-components/native";
+import { lighten } from 'polished';
+import Icons from '../../../components/Icons'
 
-import { TouchableOpacity,TextInput,FlatList } from 'react-native-gesture-handler';
 
-const ItemContainer = styled(TouchableOpacity)`
-  flex-direction: row;
-  padding:5px 10px;
+export const TitleText = styled.Text`
+  text-align:center;
+  color:${({theme})=>theme.text.third};
+  margin-bottom:15px;
+`;
+
+const RiskText = styled.Text`
+  padding-right: 55px;
+  text-align:left;
+  color:${({theme})=>theme.text.third};
+`;
+
+const IconRiskContainer = styled.View`
+  width: 45px;
+  height: 45px;
+  margin-right: 15px;
   align-items: center;
-  border: 1px ${props=>props.theme.background.line} solid;
-  border-radius:10px;
-/*   background-color: ${({theme})=>theme.text.third}; */
+  border-radius:25px;
+  justify-content: center;
+  background-color: #ffffff;
+
+  ${props => props.type == 'fis' && css`
+      background-color:${({theme})=>theme.risk.fis};
+  `}
+  ${props => props.type == 'qim' && css`
+      background-color:${({theme})=>theme.risk.qim};
+  `}
+  ${props => props.type == 'bio' && css`
+      background-color:${({theme})=>theme.risk.bio};
+  `}
+  ${props => props.type == 'erg' && css`
+      background-color:${({theme})=>theme.risk.erg};
+  `}
+  ${props => props.type == 'aci' && css`
+      background-color:${({theme})=>theme.risk.aci};
+  `}
 `;
 
-const Container = styled.View`
-  margin:10px 30px 15px 30px;
-  padding:0px 10px;
-/*   border-radius:10px;
-  border: 1px ${props=>props.theme.background.line} solid; */
+
+const ItemRiskConatiner = styled.View`
+  width: 100%;
+  padding: 10px 15px;
+  flex-direction: row;
+  border-radius:15px;
+  align-items: center;
+  elevation: 12;
+  background-color: ${({theme})=>theme.background.paper};
+/*   ${props => props.type == 'fis' && css`
+      background-color: ${({theme})=>lighten(0.58,theme.risk.fis)};
+  `}
+  ${props => props.type == 'qim' && css`
+      background-color: ${({theme})=>lighten(0.49,theme.risk.qim)};
+  `}
+  ${props => props.type == 'bio' && css`
+      background-color: ${({theme})=>lighten(0.64,theme.risk.bio)};
+  `}
+  ${props => props.type == 'erg' && css`
+      background-color: ${({theme})=>lighten(0.49,theme.risk.erg)};
+  `}
+  ${props => props.type == 'aci' && css`
+      background-color: ${({theme})=>lighten(0.485,theme.risk.aci)};
+  `} */
 `;
 
-const TextGroup = styled.Text`
-  color: ${({theme})=>theme.text.third};
-  margin-left:10px;
-/*   background-color: ${({theme})=>theme.text.primary}; */
-`;
-
-export function BackCard({data,groupIndex,setId,setactiveSlide}) {
+export function RiskComponent({type='qui',text='',...props}) {
 
   const themeContext = useContext(ThemeContext);
-  const reactModal = useReactModal();
-  const ref = useRef()
-
-  useEffect(() => {
-    setTimeout(() => {
-      try {
-        ref.current.scrollToIndex({animated:true,index:groupIndex})
-      } catch {}
-    }, 1100);
-  }, [])
-
-  function onGroup(item) {
-    setactiveSlide(0)
-    setId(item.id)
-  }
-
-  const renderItem = ({ item,index }) => (
-    <ItemContainer onPress={()=>onGroup(item)} style={index > 0 && {marginTop:13 }}>
-        <Donut strokeWidth={9} color={themeContext.primary.main} percentage={item.questions.filter(i=>(i?.selected && i.selected !=='none' && !(i?.hide&&i.hide))).length} max={item.questions.filter(i=>(!(i?.hide&&i.hide))).length} radius={25} />
-        <TextGroup style={{marginRight:58}}>{item.group}</TextGroup>
-        <TextGroup style={{position:'absolute',bottom:3,right:6,fontSize:8}}>{index+1}</TextGroup>
-    </ItemContainer>
-  );
 
   return (
-    <Container style={{flex:1}}>
-      <FlatList
-        ref={ref}
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        showsVerticalScrollIndicator={false}
-      />
-    </Container>
+    <ItemRiskConatiner type={type} {...props}>
+      <IconRiskContainer type={type}>
+        <Icons  name={type} fill={themeContext.status.text} />
+      </IconRiskContainer>
+      <RiskText>{text}</RiskText>
+    </ItemRiskConatiner>
 
   )
 }

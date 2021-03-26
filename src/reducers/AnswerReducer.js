@@ -122,7 +122,7 @@ export default (state = initialState, action) => {
 
         case '!ANSWER_PHOTO_DELETED':
             var list = {...state}
-            console.log(action.payload.imageId);
+            //console.log(action.payload.imageId);
             list.data[action.payload.groupIndex].questions[action.payload.itemIndex].image = list.data[action.payload.groupIndex].questions[action.payload.itemIndex].image.filter( i=> i.id != action.payload.imageId);
             //console.log(list.data[action.payload.groupIndex].questions[action.payload.itemIndex].image);
         return {...list};

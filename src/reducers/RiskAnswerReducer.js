@@ -1,4 +1,4 @@
-const initialState = {position:{itemId:'',groupId:'',peek:''},risks:[]}
+const initialState = {position:{itemId:'',groupId:'',peek:''},risks:{}}
 
 
 export default (state = initialState, action) => {
@@ -8,7 +8,23 @@ export default (state = initialState, action) => {
     switch(action.type) {
         case 'ADD_RISK_ANSWER':
             var actualState = {...state}
-            actualState.data = [...actualState.data,...action.payload]
+
+            actualState.position = {...actualState.position, itemId:action.payload.itemId,groupId:action.payload.groupId,peek:action.payload.peek}
+
+            if (action.payload.peekData?.risk) {
+                actualState.risks[`${action.payload.groupId}-${action.payload.itemId}`] = {
+                    data:[...action.payload.peekData.risk],
+                    peek:action.payload.peek
+                }
+            } else {
+                actualState.risks[`${action.payload.groupId}-${action.payload.itemId}`] = {
+                    data:[],
+                    peek:action.payload.peek
+                }
+            }
+           
+            console.log(actualState);
+
         return {...actualState};
 
         case 'ADD_RISK_ANSWER_POSITION':
