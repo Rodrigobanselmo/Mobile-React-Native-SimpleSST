@@ -6,6 +6,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Bio from '../../assets/risks/biological-hazard.svg';
+//import Bio from '../../assets/risks/biohazard.svg';
+import Qim from '../../assets/risks/test-tube.svg';
+import Fis from '../../assets/risks/fire.svg';
+import Erg from '../../assets/risks/passenger.svg';
+import Aci from '../../assets/risks/accident.svg';
+//import Aci from '../../assets/risks/wounded.svg';
 
 export default function Icons({name,...props}) {
     switch (name) {
@@ -58,6 +65,18 @@ export default function Icons({name,...props}) {
             return <Ionicons name={'ios-trash-outline'} {...props} />
         case 'DoubleCheck':
             return <Ionicons name={'ios-checkmark-done'} {...props} />
+
+
+        case 'fis':
+            return <Fis width={25} height={25} {...props} />
+        case 'qim':
+            return <Qim width={25} height={25} {...props} />
+        case 'bio':
+            return <Bio width={25} height={25} {...props} />
+        case 'rrg':
+            return <Erg width={25} height={25} {...props} />
+        case 'aci':
+            return <Aci width={25} height={25} {...props} />
 
 /*         case 'Load':
             return (

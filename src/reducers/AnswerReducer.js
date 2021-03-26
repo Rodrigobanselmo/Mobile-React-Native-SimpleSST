@@ -10,7 +10,6 @@ export default (state = initialState, action) => {
         return {...action.payload};
 
         case 'ANSWER':
-            console.log('objecdddt')
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
             var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
@@ -46,6 +45,18 @@ export default (state = initialState, action) => {
         return {...list};
 
         case 'ANSWER_CHILD':
+            var list = {...state}
+            var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
+            var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
+            var childId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.childId)
+            //if (!list.data[groupId].questions[itemId]?.obs || (list.data[groupId].questions[itemId]?.obs && list.data[groupId].questions[itemId].obs!== action.payload.value)) {
+            list.data[groupId].questions[itemId].hide = true
+            //list.data[groupId].questions[itemId].selected = action.payload.peek
+            list.data[groupId].questions[childId].hide = false
+            //}
+        return {...list};
+
+        case 'ANSWER_RISK':
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
             var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)

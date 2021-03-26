@@ -657,7 +657,7 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.8.4":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.8.4":
   version "7.13.10"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.13.10.tgz#47d42a57b6095f4468da440388fdbad8bebf0d7d"
   integrity sha512-4QPkjJq6Ns3V/RgpEahRk+AGfL0eO6RHHtTWoNNr5mO49G6B5+X6d6THgWEAvTrznU5xYpbAlVKRYcsCgh/Akw==
@@ -1181,28 +1181,28 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-6.0.0.tgz#2a4d7190b508dd0c2293656c9c1aa068f6f60a71"
   integrity sha512-Z9M8VGcF2IZVOo2x+oUStvpCW/8HjIRi4+iQCu5n+PhC7OqCQX58KYAzdBr///alIfRXiu6oMb+lK+rXQH1FvQ==
 
-"@react-native-firebase/app@^11.1.1":
-  version "11.1.1"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-11.1.1.tgz#3817afd4a11d8da36f838c02af5d525ecf37371c"
-  integrity sha512-dJfTxCB1FWid5CYTX5bjTDyAWyvi8u3g3OHBBup68rDuuqvE40n1eRFI+5ve4TUr01T1RI1D70M77qyjSHDkrQ==
+"@react-native-firebase/app@^11.1.2":
+  version "11.1.2"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-11.1.2.tgz#b3497c2c242b560f80d168e48cf4dccc6fd54819"
+  integrity sha512-b9FaFu+o3cqpAHF+KCAUMgoREloByQKUudPERmeO31fXvYP74mvZ0ed+KPHR58+Z/eaJ7pRHWH1nMR7X4nKRUQ==
   dependencies:
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
-"@react-native-firebase/auth@^11.1.1":
-  version "11.1.1"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-11.1.1.tgz#3dde387cc14c1d5e552ba0180c04bb7dc90b593f"
-  integrity sha512-TU13JKeCs35KRzPh6dB11G/KPwOgfdh6ZhgaWwNb1O1SfHcyx7w0AFiBA7etw6gY2iaDzcR6XFwGG9ztogqkRg==
+"@react-native-firebase/auth@11.1.2":
+  version "11.1.2"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-11.1.2.tgz#f313c7edb9f38a700b4ce3b82b4873bd489667f6"
+  integrity sha512-YAaOrSkx9BNZkWJWXBwFkWzVRo9JKFwz/AQsMx9ubi+4L/Amrj4ICfB7Pjvq98tvE/Zpv3fuiTeX2FU/j2KEUA==
 
-"@react-native-firebase/firestore@^11.1.1":
-  version "11.1.1"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-11.1.1.tgz#1a29e709a5bfeb476640f2922c6e6dc29c0b19e1"
-  integrity sha512-jAjg/7yASS0t4xKB9gFTAHRIiW5seLta3+zyWh204KEP+XWxpJ+Q/sGawbZmLxMHVApgJcPmP2FDOIe7TAs33w==
+"@react-native-firebase/firestore@11.1.2":
+  version "11.1.2"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-11.1.2.tgz#57a759b96f6727e35a3f4d33e0ebb1d085a0ca95"
+  integrity sha512-MKZ8V1MO/QHpq6TSVXt9R6cuduV1tz+axgap0SncanbHKvqcqLqcIzOEw9RdzitRsdNrZ/PQxfEFc632/EgdNQ==
 
-"@react-native-firebase/storage@^11.1.1":
-  version "11.1.1"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-11.1.1.tgz#4ec2c0bc73c2c691ed51437a9d1f1f8cb22c3c2b"
-  integrity sha512-PWbpBQgT2bhwzCOiDUWaauMLDZxZ7A8kOCL2gpxQQhR6fAsmi2Yewm09sgpv24OgGoQgIhZKOhFwdqHqaEszBg==
+"@react-native-firebase/storage@11.1.2":
+  version "11.1.2"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-11.1.2.tgz#77471a866bdecdf7a4adc696eca6b3f66895a445"
+  integrity sha512-gJsP1i/+UO5lBxM/8sAI+lhiyejegcOQOgfyj9++DiznLUgBxSEvtEv8wiqWc1oaiinbNKNt3tELwswgJ1PSeg==
 
 "@react-navigation/bottom-tabs@^5.11.8":
   version "5.11.8"
@@ -5981,6 +5981,13 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
   integrity sha512-2qHaIQr2VLRFoxe2nASzsV6ef4yOOH+Fi9FBOVH6cqeSgUnoyySPZkxzLuzd+RYOQTRpROA0ztTMqxROKSb/nA==
+
+polished@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/polished/-/polished-4.1.1.tgz#40442cc973348e466f2918cdf647531bb6c29bfb"
+  integrity sha512-4MZTrfPMPRLD7ac8b+2JZxei58zw6N1hFkdBDERif5Tlj19y3vPoPusrLG+mJIlPTGnUlKw3+yWz0BazvMx1vg==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
 
 posix-character-classes@^0.1.0:
   version "0.1.1"

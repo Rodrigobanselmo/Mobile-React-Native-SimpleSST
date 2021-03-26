@@ -1,5 +1,6 @@
 import styled from "styled-components/native";
 import * as Animatable from 'react-native-animatable';
+import { transparentize } from 'polished';
 
 export const ContainerSafe = styled.SafeAreaView`
   justify-content: flex-start;
@@ -28,4 +29,31 @@ export const CardView = styled.View`
   border-color: ${({theme})=>theme.background.line};
   border-width: 4px;
   padding:10px 0px;
+`;
+
+
+export const SheetHandle = styled.View`
+  width: 40px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: ${({theme})=>transparentize(0.7,theme.text.title)};
+  margin-bottom: 10px;
+`;
+
+
+export const SheetHeaderCont = styled.View`
+  align-items: center;
+`;
+
+export const SheetHeader = styled.View`
+  background-color: ${({theme})=>theme.background.back};
+  padding-top: 20px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+`;
+export const SheetBody = styled.View`
+  background-color: ${({theme})=>theme.background.back};
+  padding: 3px 16px 16px 16px;
+  min-height: 460px;
+  flex-grow:1;
 `;

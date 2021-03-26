@@ -2,6 +2,8 @@ import {wordUpper} from '../../../helpers/StringHandle'
 import {AddUserData} from '../../../services/firestoreUser'
 import {addPhotoToStorage,deletePhotoFromStorage} from '../../../services/FirebaseStorage'
 import {infoNet} from '../../../helpers/infoNet'
+import { GetAllRisks,AddRisks } from '../../../services/FirestoreCard'
+import {v4} from "uuid";
 
 export const onAddPhotoToStorage = ({photo,reactModal,dispatch,user,imageId,itemId,groupId,setErrorMessage}) => {
 
@@ -59,6 +61,40 @@ export const onDeletePhotoFromStorage = ({data,reactModal,dispatch}) => {
     function checkError(error) {
         reactModal.alert({text:error,title:'Erro ao Deletar',type:'Warn'})
         dispatch({type: 'PHOTO_TO_DELETE',payload:{imageId:data.imageId,delete:'Não foi possível deletar a imagem, tente novamente.'}})
+    }
+
+};
+
+export const onGetAllRisks = ({user,reactModal,dispatch}) => {
+    
+    GetAllRisks({companyId:user?.company?.id,checkSuccess,checkError})
+
+    function checkSuccess(data) {
+        console.log('onGetAllRisks',data);
+        dispatch({type: 'CREATE_RISKS',payload:data})
+    }
+
+    function checkError(error) {
+        reactModal.alert({text:error,title:'Erro ao Tentar Buscar os Fatores de Risco',type:'Warn'})
+    }
+};
+
+export const onAddRisks = ({user,reactModal,dispatch}) => {
+
+    var readData = {
+        name:`Risco ${Math.floor(Math.random()*1000)}`,
+        type:'aci',
+        id:v4(),
+      }
+
+    AddRisks({data:readData,readData,companyId:user?.company?.id,checkSuccess,checkError})
+
+    function checkSuccess() {
+        onGetAllRisks({user,reactModal,dispatch})
+    }
+
+    function checkError(error) {
+        reactModal.alert({text:error,title:'Erro ao Criar Fator de Risco',type:'Warn'})
     }
 
 };

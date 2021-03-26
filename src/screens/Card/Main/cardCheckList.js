@@ -7,6 +7,7 @@ import styled,{css} from "styled-components/native";
 import {ButtonInitial,IconButton} from '../../../components/basicComponents/Button';
 import Icons from '../../../components/Icons'
 import * as Animatable from 'react-native-animatable';
+import { useSelector } from 'react-redux';
 
 import { TouchableOpacity,TextInput,FlatList } from 'react-native-gesture-handler';
 
@@ -68,14 +69,30 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
   const windowHeight = Dimensions.get('window').height
   const themeContext = useContext(ThemeContext);
   const reactModal = useReactModal();
+  const risk = useSelector(state => state.risk);
+  //const answers = useSelector(state => state.answer);
+  
   function onAnswer(peek) {
     if (item.action[peek]?.child) {
       dispatch({type: 'ANSWER_CHILD',payload:{peek,itemId:item.id,groupId,childId:item.action[peek].child}})
-    } else if (peek === 'goBack') {
-      dispatch({type: 'ANSWER_BACK',payload:{itemId:item.id,groupId,parentId:item.parent}})
-    } else {
+      //dispatch({type: 'REMOVE_RISK_ANSWER',payload:{itemId:item.id,groupId,riskId:item.action[peek].risk}})
+    }
+    if (item.action[peek]?.risk) {
+      sheetRef.current.snapTo(1)
       dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
     }
+    if (peek === 'goBack') {
+      dispatch({type: 'ANSWER_BACK',payload:{itemId:item.id,groupId,parentId:item.parent}})
+    }
+    if (item.action[peek] == 0) {
+      dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
+      //dispatch({type: 'REMOVE_RISK_ANSWER',payload:{itemId:item.id,groupId}})
+    }
+    if (item.action[peek]?.rec) {
+      dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
+      //dispatch({type: 'REMOVE_RISK_ANSWER',payload:{itemId:item.id,groupId}})
+    }
+    dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{peek,itemId:item.id,groupId}})
   }
 
   return (

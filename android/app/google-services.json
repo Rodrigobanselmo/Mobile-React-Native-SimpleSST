@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "827607237083-dgb3tbjp87fe89ogm7so40987bs43m4h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.simpledev",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
           "client_id": "827607237083-956286n2oq7bscctrgpc1nk95od6fp2u.apps.googleusercontent.com",
           "client_type": 3
         }

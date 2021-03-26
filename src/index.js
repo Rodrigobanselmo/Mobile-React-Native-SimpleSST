@@ -72,6 +72,14 @@ const theme = {
     borderButton:'#d2d2d2',
     backButton:'#e2e2e2',
     plus:'#565656',
+  },
+  risk: {
+    fis:'#1ca846',
+    bio:'#933d15',
+    qim:'#fa0014',
+    erg:'#9c9507',
+    aci:'#3d62ba',
+
   }
 };
 
