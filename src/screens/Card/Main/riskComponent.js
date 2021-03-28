@@ -17,6 +17,12 @@ const RiskText = styled.Text`
   color:${({theme})=>theme.text.third};
 `;
 
+const NoRiskText = styled.Text`
+  text-align:center;
+  padding:20px 0px;
+  color:${({theme})=>theme.text.third};
+`;
+
 const IconRiskContainer = styled.View`
   width: 45px;
   height: 45px;
@@ -44,7 +50,7 @@ const IconRiskContainer = styled.View`
 `;
 
 
-const ItemRiskConatiner = styled.View`
+const ItemRiskConatiner = styled.TouchableOpacity`
   width: 100%;
   padding: 10px 15px;
   flex-direction: row;
@@ -69,17 +75,37 @@ const ItemRiskConatiner = styled.View`
   `} */
 `;
 
+const NoItemRiskConatiner = styled.View`
+  width: 100%;
+  border-radius:15px;
+  align-items: center;
+  justify-content:center;
+  border-color:${({theme})=>theme.text.third};
+  border-style:dashed; 
+  border-width:1px;
+`;
+
 export function RiskComponent({type='qui',text='',...props}) {
 
   const themeContext = useContext(ThemeContext);
 
   return (
-    <ItemRiskConatiner type={type} {...props}>
+    <ItemRiskConatiner activeOpacity={0.8} type={type} {...props}>
       <IconRiskContainer type={type}>
         <Icons  name={type} fill={themeContext.status.text} />
       </IconRiskContainer>
       <RiskText>{text}</RiskText>
     </ItemRiskConatiner>
+
+  )
+}
+
+export function NoRiskComponent({...props}) {
+
+  return (
+    <NoItemRiskConatiner {...props}>
+      <NoRiskText>Nenhuma sugestão</NoRiskText>
+    </NoItemRiskConatiner>
 
   )
 }

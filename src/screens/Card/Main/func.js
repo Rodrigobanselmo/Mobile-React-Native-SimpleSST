@@ -5,14 +5,13 @@ import {infoNet} from '../../../helpers/infoNet'
 import { GetAllRisks,AddRisks } from '../../../services/FirestoreCard'
 import {v4} from "uuid";
 
-export const onAddPhotoToStorage = ({photo,reactModal,dispatch,user,imageId,itemId,groupId,setErrorMessage}) => {
+export const onAddPhotoToStorage = ({photo,checkListId,reactModal,dispatch,user,imageId,itemId,groupId,setErrorMessage}) => {
 
 
     if (!photo?.path) {return reactModal.alert({text:'Essa imagem possui diretório inexistente, isso pode ocorrer caso tenha apagado a imagem de seu dispositivo antes de ter sido completado o upload no servidor',title:'Error de Upload'});}
     
     
-    infoNet(()=>addPhotoToStorage({pathToFile:photo.path,filename:photo.id,user,setPercentage,checkSuccess,checkError}),reactModal,true,()=>{
-        console.log('123');
+    infoNet(()=>addPhotoToStorage({checkListId,pathToFile:photo.path,filename:photo.id,user,photo,setPercentage,checkSuccess,checkError}),reactModal,true,()=>{
         setErrorMessage('Falha em conectar-se com a internet')
         dispatch({type: 'PHOTO_UPDATED_PERCENTAGE',payload:{imageId,itemId,groupId,percentage:0,isUploading:false}})})
 

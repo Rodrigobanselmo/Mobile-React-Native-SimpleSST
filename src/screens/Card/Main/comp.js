@@ -1,5 +1,5 @@
 import React, {useState,useContext,useRef,useEffect} from 'react';
-import {TouchableHighlight, StatusBar,Dimensions,Animated as AnimatedReact,View,StyleSheet,Text} from 'react-native';
+import {TouchableHighlight, StatusBar,Dimensions,Animated as AnimatedReact,View,StyleSheet,Text, TouchableOpacity} from 'react-native';
 import {useReactModal} from '../../../context/ModalContext'
 import {ThemeContext} from "styled-components/native";
 import {Header} from '../../../components/basicComponents/Header';
@@ -8,7 +8,7 @@ import Icons from '../../../components/Icons'
 import { Directions, FlingGestureHandler,ScrollView, State } from 'react-native-gesture-handler';
 import {CardContainer} from './cardContainer'
 import {BackCard} from './backCard'
-import {RiskComponent,TitleText} from './riskComponent'
+import {NoRiskComponent,RiskComponent,TitleText} from './riskComponent'
 import {BackGroupView,CardView,Container,ContainerSafe,SheetHandle,SheetHeaderCont,SheetHeader,SheetBody} from './styles';
 
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -172,36 +172,48 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
     );
 }
 
-Card.BottomSheet = function Sheet({sheetRef,answers,riskAnswer,risk}) {
+Card.BottomSheet = function Sheet({sheetRef,dispatch,riskAnswer,risk}) {
 
   let fall = useRef(new Animated.Value(1)).current;
+  
   const themeContext = useContext(ThemeContext);
-
-  var groupIndex = answers.data.findIndex((i)=>i?.id && i.id===riskAnswer.position.groupId)
-  var itemIndex = answers.data[groupIndex]?.questions.findIndex((i)=>i?.id && i.id===riskAnswer.position.itemId)
-  var peek = riskAnswer.position.peek
-
-  console.log(riskAnswer.risks[`${riskAnswer.position.groupId}-${riskAnswer.position.itemId}`]);
+  const reactModal = useReactModal();
   
   const risks = riskAnswer.risks[`${riskAnswer.position.groupId}-${riskAnswer.position.itemId}`]?.data
-  
-  if (risks) {
 
-    console.log('risks',risks[0]);
-    console.log('risks',risk[risks[0]]?.name);
-    
+  function onChooseRisk(fator,riskId,) {
+    reactModal.alert({
+      title:'Adicionar Fator de Risco',
+      text:`Você deseja adicionar o fator de risco ${fator}?`,
+      confirmButton:'Adicionar',
+      warn:false,
+      option:true,
+      onConfirm:()=>dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{riskId:riskId,itemId:`${riskAnswer.position.groupId}-${riskAnswer.position.itemId}`}}),
+    })
   }
 
   const renderContent = () => {
     return (
       <SheetBody >
-        <TitleText>Fatorres de Risco Selecionados</TitleText>
-        <TitleText>Sugestões de Fatorres de Risco</TitleText>
-        {Array.isArray(risks) && risks.map((item,index)=>{
+        {Array.isArray(risks) && risks.filter(i=>i.choosen).map((item,index)=>{
           return(
-            <RiskComponent key={item} text={risk[risks[0]].name} type={risk[risks[0]].type} style={{marginTop:index==0 ? 0 : 15,marginBottom:0}}/>
+            <View key={item.id}>
+              {index == 0 && <TitleText>Fatorres de Risco Selecionados</TitleText>}
+              <RiskComponent key={item} text={risk[item.id]?.name} type={risk[item.id]?.type} style={{marginBottom:index+1 == risks.filter(i=>i.choosen).length? 25:15}}/>
+            </View>
           );
         })}
+        <TitleText>Sugestões de Fatorres de Risco</TitleText>
+        {Array.isArray(risks) && risks.filter(i=>!i.choosen).map((item,index)=>{
+          return(
+            <View key={item.id}>
+              <RiskComponent onPress={()=>onChooseRisk(risk[item.id]?.name,item.id)} text={risk[item.id]?.name} type={risk[item.id]?.type} style={{marginTop:index==0 ? 0 : 15,marginBottom:0}}/>
+            </View>
+          );
+        })}
+        {Array.isArray(risks) && risks.filter(i=>!i.choosen).length == 0  &&
+          <NoRiskComponent style={{marginTop:15}}/>
+        }
 
 
         

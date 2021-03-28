@@ -1,5 +1,6 @@
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
+import firebase from '@react-native-firebase/app';  
 
 import {v4} from "uuid";
 
@@ -44,10 +45,10 @@ export const errorCatch = (error) => {
   return errorMessage
 }
 
-export const addPhotoToStorage = async ({pathToFile,filename,user,setPercentage,checkSuccess,checkError}) => {
+export const addPhotoToStorage = async ({pathToFile,checkListId,filename,user,photo,setPercentage,checkSuccess,checkError}) => {
   
   //console.log(user);
-  const storageRef = storage().ref(`${/* user.company.id */'nDSBFRU9H180cpXyAbtE'}/${filename}`);
+  const storageRef = storage().ref(`${user.company.id}/${filename}`);
 
   const task = storageRef.putFile(pathToFile);
 
@@ -67,7 +68,17 @@ export const addPhotoToStorage = async ({pathToFile,filename,user,setPercentage,
     await task;
     const url = await storageRef.getDownloadURL();
     const meta = await storageRef.getMetadata();
-    checkSuccess(url,meta);
+    const readData = {
+      url,
+      contentType:meta.contentType,
+      timeCreated:meta.timeCreated,
+      fullPath:meta.fullPath,
+      title:photo.title,
+      description:photo.desc,
+      checkListId:checkListId
+    }
+    addPhotoToFirestore({readData,user,url,meta,checkSuccess,checkError})
+    //checkSuccess(url,meta);
 
   } catch (error) {
     checkError(errorCatch(error))
@@ -90,11 +101,43 @@ export const deletePhotoFromStorage = async ({data,checkSuccess,checkError}) => 
 
 }; 
 
-export function addPhotoToFirestore({data,checkSuccess,checkError}) {
-
-  var userRef = firestore().collection("users").doc(uid);
+export function addPhotoToFirestore({readData,user,url,meta,checkSuccess,checkError}) {
   
-  firestore()
+  const Ref = firestore().collection("company").doc(user.company.id)
+  const reduceRef = Ref.collection('reduceRead')
+  let docId = null;
+  const batch = firestore().batch();
+  
+  reduceRef.where("id", "==", 'photo').get()
+  .then(function(querySnapshot) {
+  querySnapshot.forEach(function(doc) {
+      if(doc.data().data.length < 500) docId=doc.id
+    })
+    if (docId !== null) {
+      batchCreate()
+    } else {
+      docId = v4()
+      reduceRef.doc(docId).set({
+        id:'photo',
+        data:[]
+      }).then(()=>{
+        batchCreate()
+      })
+    }
+    }).catch((error) => {
+      checkError(errorCatch(error))
+  });
+
+  function batchCreate() {
+    batch.update(reduceRef.doc(docId),{data:firebase.firestore.FieldValue.arrayUnion({...readData})})
+    batch.commit().then(() => {
+      checkSuccess(url,meta);
+    }).catch((error) => {
+      checkError(errorCatch(error))
+    });
+  }
+
+/*   firestore()
     .collection('posts')
     .add({
       userId: user.uid,
@@ -103,25 +146,15 @@ export function addPhotoToFirestore({data,checkSuccess,checkError}) {
       postTime: firestore.Timestamp.fromDate(new Date()),
       likes: null,
       comments: null,
-    })
-    .then(() => {
-      console.log('Post Added!');
-      Alert.alert(
-        'Post published!',
-        'Your post has been published Successfully!',
-      );
-      setPost(null);
-    })
-    .catch((error) => {
-      console.log('Something went wrong with added post to firestore.', error);
-    });
-  reference.putFile(pathToFile)
-  .then(() => {
-    checkSuccess("Document successfully updated!");
+    }) */
+  
+/*   .then(() => {
+    checkSuccess(url,meta);
   })
   .catch((error) => {
     checkError(errorCatch(error))
     console.error("Error updating document: ", error);
-  });  
+  });   */
 
 } 
+

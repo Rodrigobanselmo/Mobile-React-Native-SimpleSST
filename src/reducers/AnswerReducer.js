@@ -14,7 +14,7 @@ export default (state = initialState, action) => {
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
             var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
             if (list.data[groupId].questions[itemId].selected === action.payload.peek) {
-                list.data[groupId].questions[itemId].selected = ''
+                // list.data[groupId].questions[itemId].selected = '' // (desmarca)
             } else {
                 list.data[groupId].questions[itemId].selected = action.payload.peek
             }

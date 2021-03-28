@@ -148,7 +148,7 @@ export function CardCamera({onDeletePhotoFromStorage,onAddPhotoToStorage,dispatc
           {photos.length > 0  ?
             <FlatList
               data={photos.filter(i=>(i.groupId === groupId && i.itemId === item.id) )}
-              renderItem={({item:images,index})=>{return <CardUploaded photos={photos} images={images} index={index} item={item} onAddPhotoToStorage={onAddPhotoToStorage} reactModal={reactModal} user={user} groupId={groupId} dispatch={dispatch} onOpenModal={onOpenModal} setData={setData} setImage={setImage} themeContext={themeContext}/>}}
+              renderItem={({item:images,index})=>{return <CardUploaded checkListId={answers.id} photos={photos} images={images} index={index} item={item} onAddPhotoToStorage={onAddPhotoToStorage} reactModal={reactModal} user={user} groupId={groupId} dispatch={dispatch} onOpenModal={onOpenModal} setData={setData} setImage={setImage} themeContext={themeContext}/>}}
               keyExtractor={item => item.id}
               showsVerticalScrollIndicator={false}
               style={{paddingTop:10}}

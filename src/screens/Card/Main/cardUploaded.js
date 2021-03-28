@@ -45,7 +45,7 @@ const AnimatableTextProgress = styled(Animatable.Text)`
   `}
 `;
 
-export function CardUploaded({images,index,item,dispatch,groupId,user,onAddPhotoToStorage,reactModal,onOpenModal,setData,setImage,themeContext,photos}) {
+export function CardUploaded({checkListId,images,index,item,dispatch,groupId,user,onAddPhotoToStorage,reactModal,onOpenModal,setData,setImage,themeContext,photos}) {
 
   const [errorMessage, setErrorMessage] = useState('Upload falhou, Tente Novamente.')
 
@@ -60,7 +60,7 @@ export function CardUploaded({images,index,item,dispatch,groupId,user,onAddPhoto
   function onAddphoto() {
     if (!images.uploaded&& !images.isUploading) {
       dispatch({type: 'PHOTO_UPDATED_TRY',payload:{imageId:images.id,itemId:item.id,groupId}})
-      onAddPhotoToStorage({photo:images,reactModal,dispatch,user,itemId:item.id,groupId,imageId:images.id,setErrorMessage})
+      onAddPhotoToStorage({photo:images,checkListId,reactModal,dispatch,user,itemId:item.id,groupId,imageId:images.id,setErrorMessage})
     }
   }
 

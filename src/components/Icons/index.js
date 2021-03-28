@@ -73,7 +73,7 @@ export default function Icons({name,...props}) {
             return <Qim width={25} height={25} {...props} />
         case 'bio':
             return <Bio width={25} height={25} {...props} />
-        case 'rrg':
+        case 'erg':
             return <Erg width={25} height={25} {...props} />
         case 'aci':
             return <Aci width={25} height={25} {...props} />
