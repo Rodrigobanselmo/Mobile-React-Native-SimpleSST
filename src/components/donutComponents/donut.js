@@ -57,7 +57,7 @@ export default function Donut({
         <Text
           style={[
             StyleSheet.absoluteFillObject,
-            { fontSize: radius / 2.9, color: textColor ?? color},
+            { fontSize: radius / 2.7, color: textColor ?? color},
             styles.text,
           ]}
         >

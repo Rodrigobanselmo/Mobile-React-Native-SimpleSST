@@ -8,7 +8,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Bio from '../../assets/risks/biological-hazard.svg';
 //import Bio from '../../assets/risks/biohazard.svg';
-import Qim from '../../assets/risks/test-tube.svg';
+import Qui from '../../assets/risks/test-tube.svg';
 import Fis from '../../assets/risks/fire.svg';
 import Erg from '../../assets/risks/passenger.svg';
 import Aci from '../../assets/risks/accident.svg';
@@ -65,12 +65,14 @@ export default function Icons({name,...props}) {
             return <Ionicons name={'ios-trash-outline'} {...props} />
         case 'DoubleCheck':
             return <Ionicons name={'ios-checkmark-done'} {...props} />
+        case 'Search':
+            return <Ionicons name={'search'} {...props} />
 
 
         case 'fis':
             return <Fis width={25} height={25} {...props} />
-        case 'qim':
-            return <Qim width={25} height={25} {...props} />
+        case 'qui':
+            return <Qui width={25} height={25} {...props} />
         case 'bio':
             return <Bio width={25} height={25} {...props} />
         case 'erg':

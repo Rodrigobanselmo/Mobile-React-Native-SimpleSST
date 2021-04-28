@@ -6,33 +6,35 @@ export default (state = initialState, action) => {
 
 
     switch(action.type) {
-        case 'CREATE_RISKS':
-            var risksAll = {};
-            action.payload.map((item)=>{
-                risksAll[item.id] = item
-            })
-            //console.log('risksAll',risksAll);
-        return {...risksAll};
+        
+        case 'CREATE_CHECKLIST':
+            console.log('action.payload',action.payload)
+        return {...action.payload};
 
-/*         case 'GET_RISK':
-            var risksArray = [...state]
-            var risk = risksArray.findIndex((i)=>i?.id && i.id===action.payload.riskId)
-        return [...risksArray]; */
-
-        /* case 'ANSWER_RISK':
+        case 'CHECKLIST_CHILD':
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
             var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
             var childId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.childId)
             //if (!list.data[groupId].questions[itemId]?.obs || (list.data[groupId].questions[itemId]?.obs && list.data[groupId].questions[itemId].obs!== action.payload.value)) {
             list.data[groupId].questions[itemId].hide = true
-            list.data[groupId].questions[itemId].selected = action.payload.peek
+            //list.data[groupId].questions[itemId].selected = action.payload.peek
             list.data[groupId].questions[childId].hide = false
             //}
-        return {...list}; */
+        return {...list};
 
+        case 'CHECKLIST_BACK':
+            var list = {...state}
+            var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
+            var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
+            var parentId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.parentId)
+            list.data[groupId].questions[itemId].hide = true
+            list.data[groupId].questions[itemId].selected = 'none'
+            list.data[groupId].questions[parentId].hide = false
+            list.data[groupId].questions[parentId].selected = 'none'
+        return {...list};
 
-        case 'LOGOUT_RISK':
+        case 'LOGOUT_CHECKLIST':
             return {...initialState};
 
         default:

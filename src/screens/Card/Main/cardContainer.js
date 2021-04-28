@@ -11,6 +11,7 @@ import {BackCard} from './backCard'
 import {CardCamera} from './cardCamera'
 import {CardObservation} from './cardObservation'
 import {BackGroupView,CardView,Container,ContainerSafe} from './styles';
+import { useSelector, useDispatch } from 'react-redux';
 
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
@@ -24,7 +25,8 @@ export function CardContainer({onDeletePhotoFromStorage,onAddPhotoToStorage,shee
         const [isFront, setIsFront] = useState(true);
         const [value, setValue] = useState(data?.obs ? data.obs:'')
         const [image, setImage] = useState(data?.image ? data.image:[])
-
+        
+        const answers = useSelector(state => state.answer);
         useEffect(() => {
           if (previewIndex==index && (activeIndex-1 === index || activeIndex+1 === index)) {
               if (!(isFront===true)) onAnimatedFlip(0)
@@ -35,6 +37,8 @@ export function CardContainer({onDeletePhotoFromStorage,onAddPhotoToStorage,shee
         }, [activeIndex])
 
         const model = CHECK_LIST_MODEL.filter(i=>(i.groupId === groupId && i.questionId === item.id))[0]
+        const answer = answers.filter(i=>(i.groupId === groupId && i.questionId === item.id))[0]
+        
         const inputRange = [index - 1, index,index+1]
 
         const translateY = animatedValue.interpolate({
@@ -97,9 +101,9 @@ export function CardContainer({onDeletePhotoFromStorage,onAddPhotoToStorage,shee
                     </AnimatedReact.View>
                     <AnimatedReact.View  style={{position:'absolute',backfaceVisibility:'hidden', transform: [{translateY},{rotateY:animatedFlipFront},{translateX},{scale}],opacity,zIndex:data.length*2-index*2 ,elevation:data.length*2-index*2, left:(windowWidth-CARD_WIDTH)/2, top:0}}>
                         <CardView style={{height:CARD_HEIGHT, width:CARD_WIDTH,}} >
-                            <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false} style={{width:'100%',flex:1}}>
-                                <CardCheckList sheetRef={sheetRef} model={model} index={index} data={data} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} group={group} groupId={groupId} item={item} dispatch={dispatch}/>
-                            </ScrollView>
+                            {/* <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false} style={{width:'100%',flex:1}}> */}
+                                <CardCheckList sheetRef={sheetRef} answer={answer} model={model} index={index} data={data} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} group={group} groupId={groupId} item={item} dispatch={dispatch}/>
+                            {/* </ScrollView> */}
                         </CardView>
                     </AnimatedReact.View>
                 </View>

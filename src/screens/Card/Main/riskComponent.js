@@ -35,8 +35,8 @@ const IconRiskContainer = styled.View`
   ${props => props.type == 'fis' && css`
       background-color:${({theme})=>theme.risk.fis};
   `}
-  ${props => props.type == 'qim' && css`
-      background-color:${({theme})=>theme.risk.qim};
+  ${props => props.type == 'qui' && css`
+      background-color:${({theme})=>theme.risk.qui};
   `}
   ${props => props.type == 'bio' && css`
       background-color:${({theme})=>theme.risk.bio};
@@ -61,8 +61,8 @@ const ItemRiskConatiner = styled.TouchableOpacity`
 /*   ${props => props.type == 'fis' && css`
       background-color: ${({theme})=>lighten(0.58,theme.risk.fis)};
   `}
-  ${props => props.type == 'qim' && css`
-      background-color: ${({theme})=>lighten(0.49,theme.risk.qim)};
+  ${props => props.type == 'qui' && css`
+      background-color: ${({theme})=>lighten(0.49,theme.risk.qui)};
   `}
   ${props => props.type == 'bio' && css`
       background-color: ${({theme})=>lighten(0.64,theme.risk.bio)};

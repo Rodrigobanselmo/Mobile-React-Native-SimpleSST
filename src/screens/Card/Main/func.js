@@ -67,7 +67,6 @@ export const onDeletePhotoFromStorage = ({data,reactModal,dispatch}) => {
 export const onGetAllRisks = ({user,reactModal,dispatch}) => {
     
     GetAllRisks({companyId:user?.company?.id,checkSuccess,checkError})
-
     function checkSuccess(data) {
         //console.log('onGetAllRisks',data);
         dispatch({type: 'CREATE_RISKS',payload:data})
@@ -86,7 +85,7 @@ export const onAddRisks = ({user,reactModal,dispatch}) => {
         id:v4(),
       }
 
-    AddRisks({data:readData,readData,companyId:user?.company?.id,checkSuccess,checkError})
+    //AddRisks({data:readData,readData,companyId:user?.company?.id,checkSuccess,checkError})
 
     function checkSuccess() {
         onGetAllRisks({user,reactModal,dispatch})

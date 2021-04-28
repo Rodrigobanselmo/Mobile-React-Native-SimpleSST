@@ -83,13 +83,11 @@ export const errorCatch = (error) => {
 export function AddUserData(data,uid,checkSuccess,checkError) {
 
   var userRef = firestore().collection("users").doc(uid);
-  console.log(22)
 
   userRef.update({
     ...data
   })
   .then(() => {
-    console.log(2)
     checkSuccess("Document successfully updated!");
   })
   .catch((error) => {

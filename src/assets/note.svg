@@ -174,7 +174,6 @@ const SignInScreen = ({navigation}) => {
    
     return (
         <View style={styles.container} >
-                {console.log(2)}
         <StatusBar backgroundColor='#262626' barStyle="light-content"/>
             <Animated.View style={{flex:1,justifyContent:"center",alignItems:"center",opacity:1,transform:[{translateY:0}]}}>
             </Animated.View>

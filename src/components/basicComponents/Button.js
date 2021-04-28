@@ -25,7 +25,6 @@ const ViewContainerAnimated = styled(Animated.View)`
 const Touchable = styled.TouchableHighlight`
     flex:1;
     flex-direction:row;
-    max-width:350px;
     justify-content:center;
     align-items:center;
     border-radius:10px;
@@ -143,7 +142,7 @@ export function IconButton({badgeInfo=false,badgeWarn=false,info='',warn='',icon
         <View style={style}>
             <TouchableOpacity style={{paddingRight:8*scale,paddingLeft:8*scale}} {...props}>
             {(badgeInfo || info) ? <CircleInfo style={{height:15*scale,left:4*scale,width:15*scale,borderRadius:10*scale}}><TextCircle style={{fontSize:10*scale}}>{info}</TextCircle></CircleInfo>:null}
-            {(badgeInfo || info) ? <CircleWarn style={{height:15*scale,right:4*scale,width:15*scale,borderRadius:10*scale}}><TextCircle style={{fontSize:10*scale}}>{warn}</TextCircle></CircleWarn>:null}
+            {(badgeInfo || warn) ? <CircleWarn style={{height:15*scale,right:4*scale,width:15*scale,borderRadius:10*scale}}><TextCircle style={{fontSize:10*scale}}>{warn}</TextCircle></CircleWarn>:null}
                 <Icons style={{paddingRight:4*scale,paddingLeft:4*scale}} name={iconName} size={25*scale} color={color} {...iconProps} />
             </TouchableOpacity>
         </View>

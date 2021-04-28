@@ -28,7 +28,7 @@ export default ({ state, navigation }) => {
           <Ionicons name="ios-home" color={themeContext.tabBar.icons} size={23} style={{opacity: state.index===0? 1 : 0.5}} />
       </TouchableOpacity>
       <View style={{backgroundColor:themeContext.tabBar.backButton, marginTop: -20,borderRadius:40}}>
-        <TouchableOpacity onPress={()=>goTo('Card')} style={styles.TabItemCenter} >
+        <TouchableOpacity onPress={()=>goTo('NewCheck')} style={styles.TabItemCenter} >
           <Ionicons name="add" color={themeContext.tabBar.plus} size={40} style={{opacity: state.index===2? 1 : 0.7,backgroundColor:themeContext.tabBar.backButton,borderRadius:50,padding:0}} />
         </TouchableOpacity>
       </View>

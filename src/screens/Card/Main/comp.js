@@ -139,7 +139,7 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
     }
 
     return (
-      /* <FlingGesture> */
+      <FlingGesture>
         <Container >
           {backCardGroup &&
             <BackGroupView animation="fadeIn" duration={1000} style={{height:CARD_HEIGHT+23}}>
@@ -168,7 +168,7 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
             </TouchableHighlight>
           </View>
         </Container>
-      /* </FlingGesture> */
+      </FlingGesture>
     );
 }
 

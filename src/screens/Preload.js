@@ -18,12 +18,14 @@ export default ({navigation}) => {
 
       setUserLogin(false);
       if (initializing) {null}
-      else if ( !userLogin ) {
+      else if (/*  !userLogin */false ) {
         navigationReset({screen:'SignStack'})
       } else if (userLogin.emailVerified) {
-        navigationReset({screen:'TabStack'})
+        //navigationReset({screen:'TabStack'})
+        navigationReset({screen:'Card'})
       } else {
-        navigationReset({screen:'VerificationStack'})
+        navigationReset({screen:'Card'})
+        //navigationReset({screen:'VerificationStack'})
       }
     }, [initializing]);
 

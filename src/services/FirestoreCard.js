@@ -90,7 +90,6 @@ export const errorCatch = (error) => {
     ...data
   })
   .then(() => {
-    console.log(2)
     checkSuccess("Document successfully updated!");
   })
   .catch((error) => {
@@ -223,11 +222,19 @@ export function GetAllRisks({companyId,checkSuccess,checkError}) {
   .then(function(querySnapshot) {
     console.log(companyId);
     let response = []
+    let query = true
     querySnapshot.forEach(function(doc) {
+      query = false
+      console.log(query);
       if (doc.data().data === []) server()
       else response.push(...doc.data().data)
     })
-    if (response !== []) checkSuccess(response)
+    console.log('response',response.length>0);
+    if (response.length>0) checkSuccess(response)
+    else if (query) {
+      console.log('server()');
+      server()
+    }
   })
   .catch((error) => {
     console.log(error);
@@ -241,7 +248,6 @@ export function GetAllRisks({companyId,checkSuccess,checkError}) {
       querySnapshot.forEach(function(doc) {
         response.push(...doc.data().data)
       })
-      console.log(2);
       checkSuccess(response)
     })
     .catch((error) => {

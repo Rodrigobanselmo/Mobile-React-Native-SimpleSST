@@ -32,6 +32,9 @@ export const errorCatch = (error) => {
   else if (error.code === 'storage/server-file-wrong-size') {
     errorMessage = 'O arquivo no cliente não corresponde ao tamanho do arquivo recebido pelo servidor. Envie novamente.'
   }
+  else if (error.code === 'storage/unauthorized') {
+    errorMessage = 'Você não possui permisão para realizar essa ação!'
+  }
   else if (error.code === 'permission-denied') {
     errorMessage = 'Você não possui permisão para realizar essa ação!'
   }

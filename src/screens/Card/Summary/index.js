@@ -15,16 +15,15 @@ export default function App({navigation}) {
   changenavigationBarColor('#0d0d0d', false)
 
   const themeContext = useContext(ThemeContext);
-  const answers = useSelector(state => state.answer);
-  const dispatch = useDispatch();
-
+  const checklist = useSelector(state => state.checklist);
+  //const dispatch = useDispatch();
 
   return (
     <Summary navigation={navigation}>
       <StatusBar backgroundColor={themeContext.background.back} barStyle="dark-content"/>
       {/* <Summary.Info/> */}
-      {answers &&
-        <Summary.Data navigation={navigation} answers={answers}/>
+      {checklist &&
+        <Summary.Data navigation={navigation} answers={checklist}/>
       }
     </Summary>
   );
