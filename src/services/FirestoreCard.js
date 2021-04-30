@@ -28,232 +28,37 @@ export const errorCatch = (error) => {
   return errorMessage
 }
 
-/* export function CreatePendingUser(data,checkSuccess,checkError) {
-
-  const array = []
-  var batch = firestore().batch();
-  data.array.map((item)=>{
-    if (item?.id && item.id) {
-      var pendingUsers = firestore().collection("users").doc(item.id);
-      batch.update(pendingUsers,{
-        company: {name:data.currentUser.company.name, id:data.currentUser.company.id},
-        type: item.type,
-        creation:{start:(new Date() - 1),end:0},
-        admin:data.currentUser.company.name,
-        status: 'Ativo',
-        access:item.access,
-        image:item.icon,
-      })
-    } else {
-      var pendingUsers = firestore().collection("users").doc(item.email);
-      batch.set(pendingUsers,{
-        email: item.email,
-        company: {name:data.currentUser.company.name, id:data.currentUser.company.id},
-        type: item.type,
-        creation:{start:(new Date() - 1),end:0},
-        admin:data.currentUser.company.name,
-        status: 'Aguardando Autenticação',
-        access:item.access,
-        name:'Aguardando Autenticação',
-        image:item.icon,
-        uid:''
-      })
-    }
-    array.push({
-      email: item.email,
-      company: {name:data.currentUser.company.name, id:data.currentUser.company.id},
-      type: item.type,
-      creation:new Date(),
-      admin:data.currentUser.company.name,
-      status: 'Aguardando Autenticação',
-      access:item.access,
-      name:'Aguardando Autenticação',
-      image:item.icon,
-      uid:''
-    })
-  })
-
-
-  batch.commit().then(() => {
-    checkSuccess(array)
-  }).catch((error) => {
-    checkError(errorCatch(error))
-  });
-} */
-
-/* export function AddUserData(data,uid,checkSuccess,checkError) {
-
-  var userRef = firestore().collection("users").doc(uid);
-  console.log(22)
-
-  userRef.update({
-    ...data
-  })
-  .then(() => {
-    checkSuccess("Document successfully updated!");
-  })
-  .catch((error) => {
-    checkError(errorCatch(error))
-    console.error("Error updating document: ", error);
-  });  
-
-}  */
-
-/* export function GetUserData(userLogin,checkSuccess,checkError) {
-  var usersRef = firestore().collection("users").doc(userLogin.uid);
-
-
-  function checkPendingUser() {
-    let usersEmailRef = firestore().collection("users").doc(userLogin.email)
-    usersEmailRef.get().then((docSnapshots) => {
-      if (docSnapshots.exists) {
-        let docSnapshot = docSnapshots.data()
-        firestore().collection("users").doc(userLogin.uid).set({
-          uid:userLogin.uid,
-          email:userLogin.email,
-          company: docSnapshot.company,
-          type: docSnapshot.type,
-          creation:{start:(new Date() - 1),end:0},
-          admin:docSnapshot.admin,
-          status: 'Ativo',
-          access:docSnapshot.access,
-          image:docSnapshot.image,
-          name:'',
-        })
-        .then(()=>{
-          checkSuccess({
-            uid:userLogin.uid,
-            email:userLogin.email,
-            company: docSnapshot.company,
-            type: docSnapshot.type,
-            creation:{start:(new Date() - 1),end:0},
-            admin:docSnapshot.admin,
-            status: 'Ativo',
-            access:docSnapshot.access,
-            name:'',
-            image:docSnapshot.image,
-          },userLogin,docSnapshot.company.name)
-          usersEmailRef.delete().then(()=>console.log('user deleted'))
-        }).catch((err)=>{
-          checkError(errorCatch(err))
-        })
-      } else {
-        usersRef.set({
-          company:{id:false,name:false},
-          email:userLogin.email,
-          name:"",
-          uid:userLogin.uid,
-          info:{},
-        }).then(()=>{
-          checkSuccess({
-            company:{id:false,name:false},
-            email:userLogin.email,
-            uid:userLogin.uid,
-            name:"",
-            info:{},
-          },userLogin,true)
-        }).catch((err)=>{
-          checkError(errorCatch(err))
-        })
-      }
-    }).catch((err)=>{
-      checkError(errorCatch(err))
-    })
-  }
-
-
-  usersRef.get()
-  .then((docSnapshot) => {
-    if (docSnapshot.exists) {
-      checkSuccess(docSnapshot.data(),userLogin)
-    } else {
-      checkPendingUser()
-    }
-  }).catch((error) => {
-    checkError(errorCatch(error))
-  });
-} */
-
-/* export function SeeIfUserExists(email,companyId,checkSuccess,checkError) {
-  
-  var usersRef = firestore().collection("users")
-
-  usersRef.where("email", "==", email).get()
-  .then(function(querySnapshot) {
-    let response = [false,false]
-    querySnapshot.forEach(function(doc) {
-        var companyId = doc.data() && doc.data()?.company && doc.data().company?.id ? doc.data().company.id : false
-        if(doc.id !== email) response = [doc.id,companyId]
-      })
-      checkSuccess(response)
-    }).catch((error) => {
-      checkError(errorCatch(error))
-  });
-} */
-
-/* export function GetAllUsersCompany(companyId,checkSuccess,checkError) {
-  
-  var usersRef = firestore().collection("users")
-
-  usersRef.where("company.id", "==", companyId).get()
-  .then(function(querySnapshot) {
-    let response = []
-    querySnapshot.forEach(function(doc) {
-      var docx = doc.data()
-      docx.company = docx.company.name
-      docx.creation = docx.creation.start
-      response.push(docx)
-    })
-    checkSuccess(response)
-  })
-  .catch((error) => {
-      checkError(errorCatch(error))
-  });
-} */
-
 export function GetAllRisks({companyId,checkSuccess,checkError}) {
 
-  const dataRef = firestore().collection("company").doc(companyId).collection('reduceRead')
-  const getOptions = {
-    source: 'cache'
-  };
+  var dataRef = firestore().collection("company").doc(companyId).collection('reduceRead')
+  let risks = []
+  let data = []
 
-  dataRef.where("id", "==", 'risks').get(getOptions)
-  .then(function(querySnapshot) {
-    console.log(companyId);
-    let response = []
-    let query = true
-    querySnapshot.forEach(function(doc) {
-      query = false
-      console.log(query);
-      if (doc.data().data === []) server()
-      else response.push(...doc.data().data)
-    })
-    console.log('response',response.length>0);
-    if (response.length>0) checkSuccess(response)
-    else if (query) {
-      console.log('server()');
-      server()
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-    server()
-  });
-
-  function server() {
-    dataRef.where("id", "==", 'risks').get()
+  function getData() {
+    dataRef.where("id", "==", 'risksData').get()
     .then(function(querySnapshot) {
-      let response = []
       querySnapshot.forEach(function(doc) {
-        response.push(...doc.data().data)
+          data.push(...doc.data().data)
       })
-      checkSuccess(response)
+      checkSuccess({risks,data})
     })
     .catch((error) => {
         checkError(errorCatch(error))
     });
   }
+
+  dataRef.where("id", "==", 'risks').get()
+  .then(function(querySnapshot) {
+    querySnapshot.forEach(function(doc) {
+      risks.push(...doc.data().data)
+    })
+    getData()
+  })
+  .catch((error) => {
+      checkError(errorCatch(error))
+  });
+
+
 }
 
 export function AddRisks({data,readData,companyId,checkSuccess,checkError}) {
@@ -294,6 +99,68 @@ export function AddRisks({data,readData,companyId,checkSuccess,checkError}) {
       checkSuccess({...readData})
     }).catch((error) => {
       checkError(errorCatch(error))
+    });
+  }
+}
+
+
+
+export function GetAllRisksFromCache({companyId,checkSuccess,checkError}) {
+
+  const dataRef = firestore().collection("company").doc(companyId).collection('reduceRead')
+  let risks = []
+  let data = []
+  const getOptions = {
+    source: 'cache'
+  };
+
+
+  dataRef.where("id", "==", 'risks').get(getOptions)
+  .then(function(querySnapshot) {
+    console.log(companyId);
+    let query = true
+    querySnapshot.forEach(function(doc) {
+      query = false
+      console.log(query);
+      if (doc.data().data === []) server()
+      else risks.push(...doc.data().data)
+    })
+    console.log('risks',risks.length>0);
+    if (risks.length>0) getData('cache')
+    else if (query) {
+      console.log('server()');
+      server()
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+    server()
+  });
+
+  function server() {
+    dataRef.where("id", "==", 'risks').get()
+    .then(function(querySnapshot) {
+      let risks = []
+      querySnapshot.forEach(function(doc) {
+        risks.push(...doc.data().data)
+      })
+      getData('server')
+    })
+    .catch((error) => {
+        checkError(errorCatch(error))
+    });
+  }
+  
+  function getData(options) {
+    dataRef.where("id", "==", 'risksData').get({source: options})
+    .then(function(querySnapshot) {
+      querySnapshot.forEach(function(doc) {
+          data.push(...doc.data().data)
+      })
+      checkSuccess({risks,data})
+    })
+    .catch((error) => {
+        checkError(errorCatch(error))
     });
   }
 }

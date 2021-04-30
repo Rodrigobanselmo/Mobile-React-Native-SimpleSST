@@ -6,12 +6,13 @@ export default (state = initialState, action) => {
 
 
     switch(action.type) {
+        // case 'CREATE_RISKS':
+        // return [...action.payload];
         case 'CREATE_RISKS':
             var risksAll = {};
             action.payload.map((item)=>{
                 risksAll[item.id] = item
             })
-            //console.log('risksAll',risksAll);
         return {...risksAll};
 
 /*         case 'GET_RISK':

@@ -2,7 +2,7 @@ import {wordUpper} from '../../../helpers/StringHandle'
 import {AddUserData} from '../../../services/firestoreUser'
 import {addPhotoToStorage,deletePhotoFromStorage} from '../../../services/FirebaseStorage'
 import {infoNet} from '../../../helpers/infoNet'
-import { GetAllRisks,AddRisks } from '../../../services/FirestoreCard'
+import { GetAllRisks,AddRisks,GetAllRisksFromCache } from '../../../services/FirestoreCard'
 import {v4} from "uuid";
 
 export const onAddPhotoToStorage = ({photo,checkListId,reactModal,dispatch,user,imageId,itemId,groupId,setErrorMessage}) => {
@@ -67,9 +67,10 @@ export const onDeletePhotoFromStorage = ({data,reactModal,dispatch}) => {
 export const onGetAllRisks = ({user,reactModal,dispatch}) => {
     
     GetAllRisks({companyId:user?.company?.id,checkSuccess,checkError})
-    function checkSuccess(data) {
-        //console.log('onGetAllRisks',data);
-        dispatch({type: 'CREATE_RISKS',payload:data})
+
+    function checkSuccess(response) {
+        dispatch({ type: 'CREATE_RISKS_DATA', payload: [...response.data] })
+        dispatch({type: 'CREATE_RISKS',payload:[...response.risks]})
     }
 
     function checkError(error) {

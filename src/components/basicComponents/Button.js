@@ -60,7 +60,7 @@ export function ButtonInitial({animated=false,text='Click Aqui',disabledButton=f
                     :
                     null
                 }
-                <TextButtonAnimated disabled={disabledButton} secondary={secondary} style={{fontSize:scale*20,...textStyle}}>{text}</TextButtonAnimated>
+                <TextButtonAnimated disabled={disabledButton} numberOfLines={2} secondary={secondary} style={{fontSize:scale*20,paddingHorizontal:8,...textStyle}}>{text}</TextButtonAnimated>
                 </>
             </Touchable>
         </ViewContainerAnimated>
@@ -142,7 +142,7 @@ export function IconButton({badgeInfo=false,badgeWarn=false,info='',warn='',icon
         <View style={style}>
             <TouchableOpacity style={{paddingRight:8*scale,paddingLeft:8*scale}} {...props}>
             {(badgeInfo || info) ? <CircleInfo style={{height:15*scale,left:4*scale,width:15*scale,borderRadius:10*scale}}><TextCircle style={{fontSize:10*scale}}>{info}</TextCircle></CircleInfo>:null}
-            {(badgeInfo || warn) ? <CircleWarn style={{height:15*scale,right:4*scale,width:15*scale,borderRadius:10*scale}}><TextCircle style={{fontSize:10*scale}}>{warn}</TextCircle></CircleWarn>:null}
+            {(badgeInfo || warn) ? <CircleWarn style={{height:15*scale,right:6*scale,width:15*scale,borderRadius:10*scale}}><TextCircle style={{fontSize:10*scale}}>{warn}</TextCircle></CircleWarn>:null}
                 <Icons style={{paddingRight:4*scale,paddingLeft:4*scale}} name={iconName} size={25*scale} color={color} {...iconProps} />
             </TouchableOpacity>
         </View>

@@ -43,10 +43,15 @@ export const SheetHandle = styled.View`
 
 export const SheetHeaderCont = styled.View`
   align-items: center;
+  /* flex-direction:row;
+  justify-content:space-between;
+  padding:0 10px;
+  margin-bottom: 4px; */
 `;
 
 export const SheetHeader = styled.View`
   background-color: ${({theme})=>theme.background.back};
+  /* padding-top: 7px; */
   padding-top: 20px;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
@@ -54,6 +59,6 @@ export const SheetHeader = styled.View`
 export const SheetBody = styled.View`
   background-color: ${({theme})=>theme.background.back};
   padding: 3px 16px 16px 16px;
-  min-height: 410px;
+  min-height: 560px;
   flex-grow:1;
 `;

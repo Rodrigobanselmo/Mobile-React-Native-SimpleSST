@@ -27,6 +27,8 @@ export function CardContainer({onDeletePhotoFromStorage,onAddPhotoToStorage,shee
         const [image, setImage] = useState(data?.image ? data.image:[])
         
         const answers = useSelector(state => state.answer);
+        const riskAnswer = useSelector(state => state.riskAnswer);
+
         useEffect(() => {
           if (previewIndex==index && (activeIndex-1 === index || activeIndex+1 === index)) {
               if (!(isFront===true)) onAnimatedFlip(0)
@@ -35,6 +37,11 @@ export function CardContainer({onDeletePhotoFromStorage,onAddPhotoToStorage,shee
               //if (image.length >= 1 && (data?.image||value!==data.obs)) dispatch({type: 'ANSWER_OBS',payload:{value,itemId:item.id,groupId}})
           }
         }, [activeIndex])
+
+        // useEffect(() => {
+        //         if (riskAnswer.position.itemId != item.id) dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{itemId:item.id,groupId}})
+        //         console.log('riskAnswer.position2',riskAnswer.position)
+        //   }, [])
 
         const model = CHECK_LIST_MODEL.filter(i=>(i.groupId === groupId && i.questionId === item.id))[0]
         const answer = answers.filter(i=>(i.groupId === groupId && i.questionId === item.id))[0]

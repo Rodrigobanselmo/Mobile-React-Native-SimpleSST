@@ -55,6 +55,10 @@ const ButtonOk = styled(TouchableOpacity)`
   flex:1;
   padding: 4px 10px;
   border-radius:5px;
+
+  ${props => props.disable && css`
+    background-color: ${({theme})=> theme.status.inactive};
+  `}
 `;
 
 const ButtonCancel = styled(ButtonOk)`
@@ -78,7 +82,7 @@ const TextCancel = styled(TextOk)`
   color: ${({theme})=>theme.text.third};
 `;
 
-export const ModalAlertTitle = ({onConfirmPress,children,text,title,style={},option=false,warn=true,invert=false,onConfirm=false,open,onClose,confirmButton='Confirmar',cancelButton='Cancelar'}) => {
+export const ModalAlertTitle = ({onConfirmPress,fullWidth,disable,children,text,title,style={},optionHide,option=false,warn=true,invert=false,onConfirm=false,open,onClose,confirmButton='Confirmar',cancelButton='Cancelar'}) => {
   return(
     <TouchableWithoutFeedback onPress={onClose}>
       <Container>
@@ -86,17 +90,19 @@ export const ModalAlertTitle = ({onConfirmPress,children,text,title,style={},opt
           <ViewContainer style={[styles.shadow,{...style}]}>
               {title && <TextTitle >{title}</TextTitle>}
               {text && <TextSub >{text}</TextSub>}
-              {children}
+              {children?children(onConfirmPress,onClose):null}
               <ContainerButtons invert={invert} >
                   {option ?
                   <ButtonCancel option={option} invert={invert} activeOpacity={0.5} onPress={onClose}>
                       <TextCancel>{cancelButton}</TextCancel>
                   </ButtonCancel>
                   :null }
-                  <ButtonOk option={option} warn={warn} activeOpacity={0.7} onPress={onConfirmPress} >
+                  {!optionHide ?
+                  <ButtonOk disabled={Boolean(disable)} disable={disable} option={option} warn={warn} activeOpacity={0.7} onPress={onConfirmPress} >
                       <TextOk>{confirmButton}</TextOk>
                   </ButtonOk>
-              </ContainerButtons>
+                  :null }
+                  </ContainerButtons>
           </ViewContainer>
         </TouchableWithoutFeedback>
       </Container>
@@ -104,7 +110,7 @@ export const ModalAlertTitle = ({onConfirmPress,children,text,title,style={},opt
   )
 }
 
-const ReactModal = ({children,text,title,style={},option=false,warn=true,invert=false,onConfirm=false,open,onClose,confirmButton='Confirmar',cancelButton='Cancelar'}) => {
+const ReactModal = ({children,fullWidth,optionHide,disable,text,title,style={},option=false,warn=true,invert=false,onConfirm=false,open,onClose,confirmButton='Confirmar',cancelButton='Cancelar'}) => {
 
   function onConfirmPress() {
     if (onConfirm) {
@@ -119,12 +125,14 @@ const ReactModal = ({children,text,title,style={},option=false,warn=true,invert=
       <Modal animationType={'fade'}  visible={open} transparent={true} onRequestClose={onClose}>
           <ModalAlertTitle 
             onConfirmPress={onConfirmPress}
-            children={children}
             text={text} 
+            fullWidth={fullWidth}
+            optionHide={optionHide}
             title={title} 
             style={style} 
             option={option} 
             warn={warn} 
+            disable={disable} 
             invert={invert} 
             onConfirm={onConfirm} 
             onClose={onClose} 

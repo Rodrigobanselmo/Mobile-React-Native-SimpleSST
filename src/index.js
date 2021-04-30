@@ -64,7 +64,7 @@ const theme = {
     light:'#ddd',
     inactive:'#b0b3b5',
     messageInfo:'#3d71a4',
-    messageWarn:'#d11a1e',
+    messageWarn:'#a1161b',
   },
   tabBar:{
     icons:'#565656',

@@ -11,10 +11,10 @@ export default (state = initialState, action) => {
         return [...action.payload];
 
         case 'ANSWER':
-            const newAnswer = {groupId:action.payload.groupId,questionId:action.payload.itemId,selected:action.payload.peek}
+            var newAnswer = {groupId:action.payload.groupId,questionId:action.payload.itemId,selected:action.payload.peek}
             var list = [...state]
 
-            const indexAnswer = list.findIndex(i=>i.groupId == action.payload.groupId&&i.questionId == action.payload.itemId)
+            var indexAnswer = list.findIndex(i=>i.groupId == action.payload.groupId&&i.questionId == action.payload.itemId)
             if (indexAnswer != -1) {
                 if (list[indexAnswer]?.selected == action.payload.peek) { //selecionar reposta ja selecionada
                     list.splice(indexAnswer, 1);
@@ -24,6 +24,39 @@ export default (state = initialState, action) => {
             } else { //nenhum selecionada
                 list.push({...newAnswer})
             }
+        return [...list];
+
+        case 'ANSWER_LATER':
+            var newAnswer = {groupId:action.payload.groupId,questionId:action.payload.itemId,later:true}
+            var list = [...state]
+
+            var indexAnswer = list.findIndex(i=>i.groupId == action.payload.groupId&&i.questionId == action.payload.itemId)
+            if (indexAnswer != -1) {
+                if (list[indexAnswer]?.later) { 
+                    delete list[indexAnswer]['later']
+                } else { //selecionar outra resposta
+                    list[indexAnswer].later = true
+                }
+            } else { //nenhum selecionada
+                list.push({...newAnswer})
+            }
+        return [...list];
+
+        case 'ANSWER_CLEAN_PARENT':
+            var parentId = action.payload.parentId
+            var childId = action.payload.itemId
+            var groupId = action.payload.groupId
+            var list = [...state]
+
+            var indexAnswer = list.findIndex(i=>i.groupId == groupId && i.questionId == parentId)
+            if (indexAnswer != -1) {
+                    list.splice(indexAnswer, 1);
+            } 
+
+            var indexChildAnswer = list.findIndex(i=>i.groupId == groupId && i.questionId == childId)
+            if (indexAnswer != -1) {
+                    list.splice(indexChildAnswer, 1);
+            } 
         return [...list];
 
         // case 'ANSWER':

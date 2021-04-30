@@ -48,8 +48,6 @@ export default function App({navigation,route}) {
   const themeContext = useContext(ThemeContext);
 
   const user = useSelector(state => state.user);
-  const risk = useSelector(state => state.risk);
-  const riskAnswer = useSelector(state => state.riskAnswer);
   const checklist = useSelector(state => state.checklist);
   const model = useSelector(state => state.model);
   const title = checklist?.title ?? 'Checklist'
@@ -58,22 +56,22 @@ export default function App({navigation,route}) {
   //console.log('risk',risk)
 
   useEffect(() => {
-    !checklist?.data && dispatch({type: 'CREATE_CHECKLIST',payload:CheckListData})
-    !(model?.length) && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
+    //!checklist?.data && dispatch({type: 'CREATE_CHECKLIST',payload:CheckListData})
+    //!(model?.length) && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
     onGetAllRisks({user,reactModal,dispatch});
   }, [])
 
-  function teste() {
-    onAddRisks({user,reactModal,dispatch});
-    //console.log(user);
-  }
+  // function teste() {
+  //   onAddRisks({user,reactModal,dispatch});
+  //   //console.log(user);
+  // }
   
   return (
     <>
       <Card navigation={navigation} title={title}>
           {checklist?.data && <Card.Component onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} route={route} CHECK_LIST_MODEL={model} CheckListData={checklist} dispatch={dispatch}/>}
       </Card>
-      {checklist?.data && <Card.BottomSheet riskAnswer={riskAnswer} risk={risk} sheetRef={sheetRef} dispatch={dispatch}/>}
+      {checklist?.data && <Card.BottomSheet sheetRef={sheetRef} dispatch={dispatch} checklist={checklist}/>}
     </>
 
   );

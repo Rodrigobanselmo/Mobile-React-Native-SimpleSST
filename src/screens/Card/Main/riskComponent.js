@@ -50,14 +50,10 @@ const IconRiskContainer = styled.View`
 `;
 
 
-const ItemRiskConatiner = styled.TouchableOpacity`
+const ItemRiskContainer = styled.TouchableOpacity`
   width: 100%;
-  padding: 10px 15px;
   flex-direction: row;
-  border-radius:15px;
   align-items: center;
-  elevation: 12;
-  background-color: ${({theme})=>theme.background.paper};
 /*   ${props => props.type == 'fis' && css`
       background-color: ${({theme})=>lighten(0.58,theme.risk.fis)};
   `}
@@ -75,7 +71,15 @@ const ItemRiskConatiner = styled.TouchableOpacity`
   `} */
 `;
 
-const NoItemRiskConatiner = styled.View`
+const Container = styled.View`
+  width: 100%;
+  padding: 10px 15px;
+  border-radius:15px;
+  elevation: 12;
+  background-color: ${({theme})=>theme.background.paper};
+`;
+
+const NoItemRiskContainer = styled.View`
   width: 100%;
   border-radius:15px;
   align-items: center;
@@ -83,29 +87,59 @@ const NoItemRiskConatiner = styled.View`
   border-color:${({theme})=>theme.text.third};
   border-style:dashed; 
   border-width:1px;
+  padding: 0px 20px;
+`;
+const AddRecContainer = styled.TouchableOpacity`
+  width: 100%;
+  border-radius:15px;
+  align-items: center;
+  justify-content:center;
+  border-color:${({theme})=>theme.text.third};
+  border-style:dashed; 
+  border-width:1px;
+  padding: 0px 20px;
 `;
 
-export function RiskComponent({type='qui',text='',...props}) {
+const AddRecText = styled.Text`
+  text-align:center;
+  padding:5px 0px;
+  color:${({theme})=>theme.text.third};
+`;
+
+export function RiskComponent({type='qui',text='',children,...props}) {
 
   const themeContext = useContext(ThemeContext);
 
   return (
-    <ItemRiskConatiner activeOpacity={0.8} type={type} {...props}>
+    <Container>
+    <ItemRiskContainer activeOpacity={0.8} type={type} {...props}>
       <IconRiskContainer type={type}>
         <Icons  name={type} fill={themeContext.status.text} />
       </IconRiskContainer>
       <RiskText>{text}</RiskText>
-    </ItemRiskConatiner>
+    </ItemRiskContainer>
+    {children}
+    </Container>
 
   )
 }
 
-export function NoRiskComponent({...props}) {
+export function NoRiskComponent({text='Nenhuma sugestão',...props}) {
 
   return (
-    <NoItemRiskConatiner {...props}>
-      <NoRiskText>Nenhuma sugestão</NoRiskText>
-    </NoItemRiskConatiner>
+    <NoItemRiskContainer {...props}>
+      <NoRiskText>{text}</NoRiskText>
+    </NoItemRiskContainer>
+
+  )
+}
+
+export function AddRecComponent({text='Adicionar',...props}) {
+
+  return (
+    <AddRecContainer {...props}>
+      <AddRecText>{text}</AddRecText>
+    </AddRecContainer>
 
   )
 }

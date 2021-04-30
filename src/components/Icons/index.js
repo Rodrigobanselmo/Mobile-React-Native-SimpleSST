@@ -51,6 +51,14 @@ export default function Icons({name,...props}) {
             return <Ionicons name={'finger-print-outline'} {...props} />
         case 'Plus':
             return <AntDesign name={'plus'} {...props} />
+        case 'Question':
+            return <Ionicons name={'help-circle-outline'} {...props} />
+        case 'QuestionFill':
+            return <Ionicons name={'help-circle'} {...props} />
+        case 'Info':
+            return <Ionicons name={'information-circle-outline'} {...props} />
+        case 'Exclamation':
+            return <Ionicons name={'alert-circle-outline'} {...props} />
         case 'Help':
             return <Ionicons name={'ios-help-circle-outline'} {...props} />
         case 'Image':
