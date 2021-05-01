@@ -1,4 +1,4 @@
-const initialState = []
+const initialState = []//{groupId,questionId,selected}
 
 
 export default (state = initialState, action) => {

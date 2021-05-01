@@ -46,7 +46,17 @@ export default function ModalProvider(props) {
       {state.typeModal === 'loader' && <LoaderModal open={open}/>}
       {state.typeModal === 'loaderScreen' && <ModalLoadScreen  open={open} onClose={()=>dispatch('')} {...state}/>}
       {state.typeModal === 'animated' &&<AnimatedModal random={state.random} dispatch={()=>dispatch('')} type={state.type} position={state.position} text={state.text} HEIGHT={state.height}/>}
-      {state.typeModal === 'alertModal' && <ModalAlert open={open} onClose={()=>dispatch('')} {...state}/>}
+      {state.typeModal === 'alertModal' && 
+        <ModalAlert 
+          open={open} 
+          dispatch 
+          onClose={()=>{
+            dispatch('')
+            if (state.onCloseModal) state.onCloseModal()
+          }}
+          {...state}
+        />
+      }
         {props.children}
       </View>
     </ModalContext.Provider>

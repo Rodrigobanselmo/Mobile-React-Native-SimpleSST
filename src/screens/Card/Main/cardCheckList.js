@@ -6,6 +6,7 @@ import {useReactModal} from '../../../context/ModalContext'
 import styled,{css} from "styled-components/native";
 import {ButtonInitial,IconButton} from '../../../components/basicComponents/Button';
 import Icons from '../../../components/Icons'
+import {Modal} from './comp'
 import {Ascendent} from '../../../helpers/Sort'
 import * as Animatable from 'react-native-animatable';
 import { useSelector } from 'react-redux';
@@ -77,6 +78,7 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
   function onAnswer(peek,selected) {
     //console.log(item.action[peek])
     console.log('riskAnswer',riskAnswer.risks)
+    //item.action[peek].data.map(i=>console.log('i.risk',i.risk))
     
 
     function onGoBack() {
@@ -86,44 +88,64 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
       }
     }
 
-    // if (item.action[peek]) {
-      // console.log(21)
-      // if (item.action[peek]?.data && item.action[peek].data.length > 0 && !(item.action[peek].data.length == 1 && item.action[peek].data[0].man)) { //se existe dados a adicionar e is not man
-        
-      //   if (answers.findIndex(i=>i.questionId==item.id) == -1) { // nenhuma respondida
-      //     sheetRef.current.snapTo(1)
-      //     console.log('primeira vez respondendo')
-      //   } else if (!(answers[answers.findIndex(i=>i.questionId==item.id)] && answers[answers.findIndex(i=>i.questionId==item.id)].selected == peek)) { // se nao for mesma resposta
-      //     sheetRef.current.snapTo(1)
-      //     console.log('trocando resposta')
-      //   } else if (answers[answers.findIndex(i=>i.questionId==item.id)] && answers[answers.findIndex(i=>i.questionId==item.id)].selected == peek) { //se for mesma resposta
-      //     console.log('retirando resposta')
-      //   }
-
-      //   dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item}})
-      // } else if (item.action[peek].data.length == 1 && item.action[peek].data[0].man) { // if question is man
-
-      //   if (answers.findIndex(i=>i.questionId==item.id) == -1) { // nenhuma respondida
-      //     sheetRef.current.snapTo(1)
-      //     console.log('primeira vez respondendo')
-      //   } else if (!(answers[answers.findIndex(i=>i.questionId==item.id)] && answers[answers.findIndex(i=>i.questionId==item.id)].selected == peek)) { // se nao for mesma resposta
-      //     sheetRef.current.snapTo(1)
-      //     console.log('trocando resposta')
-      //   } else if (answers[answers.findIndex(i=>i.questionId==item.id)] && answers[answers.findIndex(i=>i.questionId==item.id)].selected == peek) { //se for mesma resposta
-      //     console.log('retirando resposta')
-      //   }
-
-      //   dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item}})
-      // }
-
       function onChild() {
         if (item.action[peek]?.child) {
           dispatch({type: 'CHECKLIST_CHILD',payload:{peek,itemId:item.id,groupId,childId:item.action[peek].child}})
         }
       }
 
-      function openSheet() {
-        if (item.action[peek]?.data && item.action[peek].data.length > 0 && !(item.action[peek].data.length == 1 && item.action[peek].data[0].man)) {
+      function openSheet(remove) {
+        if (!(item.action[peek]?.data && item.action[peek].data.length > 0)) return 
+
+        function onChooseRisk(modalData,back) {
+          if (modalData.length == 0) {
+            if (remove) {
+              remove()
+              dispatch({type: 'CHOOSE_MULT_RISK_ANSWER',payload:back})
+              item.action[peek].data.map(i=>{
+                if (riskAnswer.risks[i.risk]) {
+                  dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item:i,data:{},answer:{selected:peek,questionId:item.id,groupId}}})
+                }
+              })
+              return
+            }
+            dispatch({type: 'CHOOSE_MULT_RISK_ANSWER',payload:back})
+            dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item,peek,groupId}})//item == {action:{},id:'',parent?,hide?,... }
+            dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
+            item.action[peek].data.map(i=>{
+              if (riskAnswer.risks[i.risk]) {
+                dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item:i,data:{},answer:{selected:peek,questionId:item.id,groupId}}})
+              }
+            })
+            onChild()
+            return
+          }
+          const MODAL_DATA = [...modalData]
+          const Value = MODAL_DATA[0]
+          MODAL_DATA.splice(0,1)
+
+          setTimeout(() => {
+            reactModal.alert({
+              confirmButton:'Adicionar',
+              optionHide:true,
+              children:(onConfirm,onClose)=>Modal(Value.fator,Value.item,onClose,{selected:peek,questionId:item.id,groupId},riskAnswer,dispatch,(callback)=>onChooseRisk(MODAL_DATA,back?[...back,callback]:[callback]),true,{...item}),
+              onConfirm:()=>{},
+            })
+          }, 400);
+        }
+        
+        const modalData = []
+        item.action[peek].data.map(i=>{
+          if (i.man) modalData.push({fator:risk[i.risk]?.name,item:i})
+        })
+        if (modalData.length > 0) {
+          onChooseRisk(modalData)
+        } else {
+          item.action[peek].data.map(i=>{
+            if (riskAnswer.risks[i.risk]) {
+              dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item:i,data:{},answer:{selected:peek,questionId:item.id,groupId}}})
+            }
+          })
           sheetRef.current.snapTo(1)
         }
       }
@@ -134,10 +156,21 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
           const riskIds = []
           Object.keys(riskAnswer.risks).map(key=>{
             console.log(riskAnswer.risks[key])
-            if ( riskAnswer.risks[key].created.questionId == item.id || (Array.isArray(riskAnswer.risks[key].data) && riskAnswer.risks[key].data.filter(it=>it.questionId == item.id).length > 0)) riskIds.push(key)
+            if ( riskAnswer.risks[key].created.findIndex(i=>i.questionId == item.id) != 1 || (Array.isArray(riskAnswer.risks[key].data) && riskAnswer.risks[key].data.filter(it=>it.questionId == item.id).length > 0) || (Array.isArray(riskAnswer.risks[key].suggest) && riskAnswer.risks[key].suggest.filter(it=>it.questionId == item.id).length > 0)) riskIds.push(key)
           })
           console.log('riskIds',riskIds)
-          dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item}})
+
+          if (type.includes('openSheet') && item.action[peek].data && item.action[peek].data.filter(i=>i.man).length > 0) {
+            openSheet(()=>{
+              dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item,peek,groupId}})
+              dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
+              dispatch({type: 'REMOVE_RISK_ANSWER',payload:{risksId:[...riskIds],questionId:item.id}})
+              if (type.includes('onChild')) onChild()
+            })
+            return
+          }
+          
+          dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item,peek,groupId}})
           dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
           dispatch({type: 'REMOVE_RISK_ANSWER',payload:{risksId:[...riskIds],questionId:item.id}})
           if (type.includes('openSheet')) openSheet()
@@ -157,6 +190,14 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
       function removeGoBack() {
 
         function onConfirm() {
+          const riskIds = []
+          Object.keys(riskAnswer.risks).map(key=>{
+            console.log(riskAnswer.risks[key])
+            if ( riskAnswer.risks[key].created.findIndex(i=>i.questionId == item.id) != 1 || (Array.isArray(riskAnswer.risks[key].data) && riskAnswer.risks[key].data.filter(it=>it.questionId == item.id).length > 0) || (Array.isArray(riskAnswer.risks[key].suggest) && riskAnswer.risks[key].suggest.filter(it=>it.questionId == item.id).length > 0)) riskIds.push(key)
+            if ( riskAnswer.risks[key].created.findIndex(i=>i.questionId == item.parent) != 1 || (Array.isArray(riskAnswer.risks[key].data) && riskAnswer.risks[key].data.filter(it=>it.questionId == item.parent).length > 0) || (Array.isArray(riskAnswer.risks[key].suggest) && riskAnswer.risks[key].suggest.filter(it=>it.questionId == item.parent).length > 0)) riskIds.push(key)
+          })
+          console.log('riskIds',riskIds)
+          dispatch({type: 'REMOVE_RISK_ANSWER',payload:{risksId:[...riskIds],questionId:item.id,parentId:item.parent}})
           onGoBack()
         }
 
@@ -173,14 +214,19 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
       const answerIndex = answers.findIndex(i=>i.questionId==item.id) 
 
       if (peek === 'goBack') { 
-        if (answerIndex == -1) onGoBack()
+        if (answerIndex == -1) removeGoBack('remove')
         else removeGoBack()
 
       } else if (answerIndex == -1) { // nenhuma respondida
-        dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item}})
+        if (item.action[peek].data && item.action[peek].data.filter(i=>i.man).length > 0) {
+          openSheet()
+          return
+        }
+        
+        dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item,peek,groupId}})
         dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
-        openSheet()
         onChild()
+        openSheet()
         //console.log('primeira vez respondendo')
       } else if (!(answers[answerIndex] && answers[answerIndex].selected == peek)) { // se nao for mesma resposta
         removeAnswer(['onChild','openSheet'])
@@ -189,18 +235,6 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
         removeAnswer([])
         //console.log('retirando resposta')
       }
-
-
-    // }
-
-    // if (item.action[peek]?.rec === '' || item.action[peek]?.rec) {
-    //   dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
-    // }
-    if (selected !== peek ) {
-      //dispatch({type: 'ADD_RISK_ANSWER',payload:{peek,itemId:item.id,groupId,peekData:/* selected !== peek ?  */item.action[peek] /* : {} */}}) //o removido foi para caso ao reclicar na mesma opicao retirar dados
-    } else {
-      //dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{peek,itemId:item.id,groupId}}) //o removido foi para caso ao reclicar na mesma opicao retirar dados
-    }
   }
 
   function later() {

@@ -11,6 +11,23 @@ export const TitleText = styled.Text`
   margin-bottom:15px;
 `;
 
+export const TitleRecText = styled.Text`
+  text-align:left;
+  color:${({theme})=>theme.text.third};
+  margin-bottom:7px;
+  margin-top:15px;
+  font-weight:bold;
+  font-size:16px;
+
+  ${props => props.sub && css`
+    font-size:15px;
+    text-align:left;
+    font-weight:normal;
+    margin-bottom:7px;
+    margin-top:5px;
+  `}
+`;
+
 const RiskText = styled.Text`
   padding-right: 55px;
   text-align:left;
@@ -77,6 +94,7 @@ const Container = styled.View`
   border-radius:15px;
   elevation: 12;
   background-color: ${({theme})=>theme.background.paper};
+  margin-bottom:5px;
 `;
 
 const NoItemRiskContainer = styled.View`
@@ -98,6 +116,8 @@ const AddRecContainer = styled.TouchableOpacity`
   border-style:dashed; 
   border-width:1px;
   padding: 0px 20px;
+  margin-bottom:10px;
+  margin-top:5px;
 `;
 
 const AddRecText = styled.Text`

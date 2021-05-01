@@ -6,6 +6,7 @@ import UserReducer from './UserReducer';
 import RiskReducer from './RiskReducer';
 import RiskDataReducer from './RiskDataReducer';
 import RiskAnswerReducer from './RiskAnswerReducer';
+import RiskPositionReducer from './RiskPositionReducer';
 import ChecklistReducer from './ChecklistReducer';
 
 export default combineReducers({
@@ -16,5 +17,6 @@ export default combineReducers({
     model: ModelReducer, 
     photo: PhotoReaducer, 
     user: UserReducer,
-    checklist: ChecklistReducer
+    checklist: ChecklistReducer,
+    riskPosition: RiskPositionReducer
 });
