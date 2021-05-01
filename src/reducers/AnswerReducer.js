@@ -17,9 +17,10 @@ export default (state = initialState, action) => {
             var indexAnswer = list.findIndex(i=>i.groupId == action.payload.groupId&&i.questionId == action.payload.itemId)
             if (indexAnswer != -1) {
                 if (list[indexAnswer]?.selected == action.payload.peek) { //selecionar reposta ja selecionada
-                    list.splice(indexAnswer, 1);
+                    //list.splice(indexAnswer, 1);
+                    if (list[indexAnswer].selected) delete list[indexAnswer]['selected']
                 } else { //selecionar outra resposta
-                    list[indexAnswer] = {...newAnswer}
+                    list[indexAnswer] = {...list[indexAnswer],...newAnswer}
                 }
             } else { //nenhum selecionada
                 list.push({...newAnswer})
@@ -33,11 +34,11 @@ export default (state = initialState, action) => {
             var indexAnswer = list.findIndex(i=>i.groupId == action.payload.groupId&&i.questionId == action.payload.itemId)
             if (indexAnswer != -1) {
                 if (list[indexAnswer]?.later) { 
-                    delete list[indexAnswer]['later']
-                } else { //selecionar outra resposta
+                    if (list[indexAnswer].later) delete list[indexAnswer]['later']
+                } else { 
                     list[indexAnswer].later = true
                 }
-            } else { //nenhum selecionada
+            } else { 
                 list.push({...newAnswer})
             }
         return [...list];
@@ -50,12 +51,14 @@ export default (state = initialState, action) => {
 
             var indexAnswer = list.findIndex(i=>i.groupId == groupId && i.questionId == parentId)
             if (indexAnswer != -1) {
-                    list.splice(indexAnswer, 1);
+                if (list[indexAnswer].selected) delete list[indexAnswer]['selected']
+                    //list.splice(indexAnswer, 1);
             } 
 
             var indexChildAnswer = list.findIndex(i=>i.groupId == groupId && i.questionId == childId)
-            if (indexAnswer != -1) {
-                    list.splice(indexChildAnswer, 1);
+            if (indexChildAnswer != -1) {
+                    if (list[indexChildAnswer].selected) delete list[indexChildAnswer]['selected']
+                    //list.splice(indexChildAnswer, 1);
             } 
         return [...list];
 
@@ -72,15 +75,17 @@ export default (state = initialState, action) => {
         // return {...list};
 
         case 'ANSWER_OBS':
-            var list = {...state}
-            var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
-            var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
-            console.log('itemId',itemId)
-            console.log('groupId',groupId)
-            //if (!list.data[groupId].questions[itemId]?.obs || (list.data[groupId].questions[itemId]?.obs && list.data[groupId].questions[itemId].obs!== action.payload.value)) {
-            list.data[groupId].questions[itemId].obs = action.payload.value.trim()
-            //}
-        return {...list};
+            var newAnswer = {groupId:action.payload.groupId,questionId:action.payload.itemId,obs:action.payload.value.trim()}
+            var list = [...state]
+
+            var indexAnswer = list.findIndex(i=>i.groupId == action.payload.groupId&&i.questionId == action.payload.itemId)
+            if (indexAnswer != -1) {
+                list[indexAnswer].obs = action.payload.value.trim()
+            } else { 
+                list.push({...newAnswer})
+            }
+        return [...list];
+        //list.data[groupId].questions[itemId].obs = action.payload.value.trim()
 
         case 'ANSWER_CONFIRM':
             var list = {...state}

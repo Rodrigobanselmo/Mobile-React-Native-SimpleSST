@@ -66,7 +66,7 @@ const TextProgress = styled.Text`
 `;
 
 
-export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,dispatch,model,answer,sheetRef}) {
+export function CardCheckList({isMother,setactiveSlide,item,group,groupId,onAnimatedFlip,index,data,dispatch,model,answer,sheetRef}) {
 
   const windowHeight = Dimensions.get('window').height
   const themeContext = useContext(ThemeContext);
@@ -83,6 +83,7 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
 
     function onGoBack() {
       if (peek === 'goBack') {
+        if (isMother || ( item?.mother|| item?.subMother)) setactiveSlide(0)
         dispatch({type: 'CHECKLIST_BACK',payload:{itemId:item.id,groupId,parentId:item.parent}})
         dispatch({type: 'ANSWER_CLEAN_PARENT',payload:{parentId:item.parent,groupId,itemId:item.id}})
       }
@@ -128,7 +129,7 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
             reactModal.alert({
               confirmButton:'Adicionar',
               optionHide:true,
-              children:(onConfirm,onClose)=>Modal(Value.fator,Value.item,onClose,{selected:peek,questionId:item.id,groupId},riskAnswer,dispatch,(callback)=>onChooseRisk(MODAL_DATA,back?[...back,callback]:[callback]),true,{...item}),
+              childrenComponent:(onConfirm,onClose)=>Modal(Value.fator,Value.item,onClose,{selected:peek,questionId:item.id,groupId},riskAnswer,dispatch,(callback)=>onChooseRisk(MODAL_DATA,back?[...back,callback]:[callback]),true,{...item}),
               onConfirm:()=>{},
             })
           }, 400);
@@ -166,10 +167,12 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
               dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
               dispatch({type: 'REMOVE_RISK_ANSWER',payload:{risksId:[...riskIds],questionId:item.id}})
               if (type.includes('onChild')) onChild()
+              if (isMother) setactiveSlide(0)
             })
             return
           }
           
+          if (isMother|| ( item?.mother|| item?.subMother)) setactiveSlide(0)
           dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item,peek,groupId}})
           dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
           dispatch({type: 'REMOVE_RISK_ANSWER',payload:{risksId:[...riskIds],questionId:item.id}})
@@ -214,10 +217,10 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
       const answerIndex = answers.findIndex(i=>i.questionId==item.id) 
 
       if (peek === 'goBack') { 
-        if (answerIndex == -1) removeGoBack('remove')
+        if (answerIndex == -1 || (answers[answerIndex] && !answers[answerIndex].selected)) removeGoBack('remove')
         else removeGoBack()
 
-      } else if (answerIndex == -1) { // nenhuma respondida
+      } else if (answerIndex == -1 || (answers[answerIndex] && !answers[answerIndex].selected)) { // nenhuma respondida
         if (item.action[peek].data && item.action[peek].data.filter(i=>i.man).length > 0) {
           openSheet()
           return
@@ -228,7 +231,7 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
         onChild()
         openSheet()
         //console.log('primeira vez respondendo')
-      } else if (!(answers[answerIndex] && answers[answerIndex].selected == peek)) { // se nao for mesma resposta
+      } else if ((answers[answerIndex] && answers[answerIndex].selected) && !(answers[answerIndex] && answers[answerIndex].selected == peek)) { // se nao for mesma resposta
         removeAnswer(['onChild','openSheet'])
         //console.log('trocando resposta')
       } else if (answers[answerIndex] && answers[answerIndex].selected == peek) { //se for mesma resposta
@@ -245,8 +248,8 @@ export function CardCheckList({item,group,groupId,onAnimatedFlip,index,data,disp
     <View style={{flex:1}}>
       <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false} style={{width:'100%',flex:1}}>
       <View style={{flexDirection:'row',justifyContent:'space-between',marginHorizontal:15}}>
-          <TextGroup ellipsizeMode={'tail'} numberOfLines={1} >{group}</TextGroup>
-          <TextProgress>{`${index+1}/${data.length}`}</TextProgress>
+          <TextGroup ellipsizeMode={'tail'} numberOfLines={1} >{item?.group ?? 'Geral'}</TextGroup>
+          {!isMother&&<TextProgress>{`${index+1}/${data.length}`}</TextProgress>}
       </View>
       <View style={{flex:1,overflow:'visible'}}>
         <ViewTextContent windowHeight={windowHeight} style={{elevation:5}}>

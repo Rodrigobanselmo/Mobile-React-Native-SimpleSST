@@ -11,6 +11,9 @@ const initialState = {
     },
 }
 
+function removeDuplicatedId(array,type) {
+    return [...array.filter((item, i) => array.findIndex(i=>i[type]==item[type]) === i)]
+}
 
 export default (state = initialState, action) => {
 
@@ -173,7 +176,7 @@ export default (state = initialState, action) => {
         case 'CHOOSE_RISK_ANSWER_DATA':
             var actualState = {...state}
             actualStateRisk = {...actualState.risks[action.payload.riskId]}
-            actualStateRisk.data = [...actualStateRisk.data,...actualStateRisk.suggest.filter(i=>i.id == action.payload.dataId)]
+            actualStateRisk.data = removeDuplicatedId([...actualStateRisk.data,...actualStateRisk.suggest.filter(i=>i.id == action.payload.dataId)],'id')
             actualStateRisk.suggest = [...actualStateRisk.suggest.filter(i=>i.id != action.payload.dataId)]
             actualState.risks[action.payload.riskId] = {...actualStateRisk}
         return {...actualState};
@@ -182,7 +185,7 @@ export default (state = initialState, action) => {
             var actualState = {...state}
             actualStateRisk = {...actualState.risks[action.payload.riskId]}
             actualStateRisk.suggest = [...actualStateRisk.suggest,...actualStateRisk.data.filter(i=>i.id == action.payload.dataId)]
-            actualStateRisk.data = [...actualStateRisk.data.filter(i=>i.id != action.payload.dataId)]
+            actualStateRisk.data = removeDuplicatedId([...actualStateRisk.data.filter(i=>i.id != action.payload.dataId)],'id')
             actualState.risks[action.payload.riskId] = {...actualStateRisk}
         return {...actualState};
 

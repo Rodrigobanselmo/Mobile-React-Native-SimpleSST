@@ -112,42 +112,18 @@ const ContainerButtons = styled(View)`
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
 
-export default function Card({title,children,navigation, ...restProps }) {
+export default function Card({children,navigation, ...restProps }) {
   const themeContext = useContext(ThemeContext);
+  const header = useSelector(state => state.header);
+  
   return (
         <ContainerSafe {...restProps}>
           <StatusBar backgroundColor={themeContext.background.card} barStyle="dark-content"/>
-          <Header text={title} type="Close" secondScreenName={'CardSummary'} navigation={navigation} secondIcon /* iconProps={{color:themeContext.primary.lighter}}  */secondIconProps={{color:themeContext.primary.lighter}}/>
+          <Header text={header} type="Close" secondScreenName={'CardSummary'} navigation={navigation} secondIcon /* iconProps={{color:themeContext.primary.lighter}}  */secondIconProps={{color:themeContext.primary.lighter}}/>
           <View style={{height:(windowHeight-60),width:'100%'}}>
             {children}
           </View>
         </ContainerSafe>
-    );
-}
-
-function CardBottomButton({sheetRef,data,activeIndex}) {
-
-  const answers = useSelector(state => state.answer);
-
-  const onOpenSheet = () => {
-    sheetRef.current.snapTo(1)
-    //console.log('index',answers[answers.findIndex(i=>i.questionId==data[activeIndex].id)])
-  }
-
-  return (
-      <ButtonAnimated
-        //secondary={secondary}
-        secondary={false}
-        //style={{backgroundColor:animatedInitialButton,marginHorizontal:20}}
-        style={{marginHorizontal:20}}
-        //textStyle={{fontWeight:'bold'}}
-        //onPress={()=>onConfirmed()}
-        onPress={onOpenSheet}
-        scale={windowHeight/1000}
-        elevation={true}
-        text='Fatores de risco'
-        //disabled={!secondary}
-      />
     );
 }
 
@@ -170,16 +146,28 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
     const VISIBLE_ITEMS =1;
 
     const themeContext = useContext(ThemeContext);
+    const answers = useSelector(state => state.answer);
     const reactModal = useReactModal();
 
     const animatedValue = useRef(new AnimatedReact.Value(0)).current
     const reactiveAnimated = useRef(new AnimatedReact.Value(0)).current
     // const animatedButton = useRef(new AnimatedReact.Value(0)).current;
 
+    function cardsData() {
+      var mother = false
+      data.filter(i=>(i?.mother || i?.subMother)).map(i=>{
+          if (answers.findIndex(fi=>fi.questionId==i.id) == -1 || (answers.findIndex(fi=>fi.questionId==i.id) != -1 && !answers[answers.findIndex(fi=>fi.questionId==i.id)]?.selected)) mother = true
+      })
+      if (mother) return [...data.filter(i=>i?.mother || i?.subMother)]
+      return [...data]
+    }
+    
+    const isMother = cardsData().length == 1 && (cardsData()[0]?.mother ||cardsData()[0]?.subMother) ?cardsData().length:cardsData().length+1
+
     useEffect(() => {
       AnimatedReact.timing(animatedValue, {
         toValue:reactiveAnimated,
-        duration:300,
+        duration:200,
         useNativeDriver:true
         }).start();
     }, [])
@@ -200,16 +188,17 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
     //   else onAnimatedButton(0)
     // }, [CheckListData,activeIndex,_id])
 
-    useEffect(() => {
-      console.log(backCardGroup);
-    }, [backCardGroup])
+    // useEffect(() => {
+    //   console.log(backCardGroup);
+    // }, [backCardGroup])
 
     const setactiveSlide = (newIndex) => {
         setActiveIndex(newIndex);
         reactiveAnimated.setValue(newIndex)
         setPreviewIndex(activeIndex)
-        if (activeIndex == data.length-1) {
+        if (newIndex == isMother) {
           if (!backCardGroup) setBackCardGroup(true)
+          return
         }
         if (backCardGroup) setBackCardGroup(false)
     }
@@ -217,8 +206,8 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
 
     const onOpenSheet = () => {
       sheetRef.current.snapTo(1)
-      dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:data[activeIndex]})
-      console.log('index',data[activeIndex].action.q_1.data)
+      dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:isMother == 1 ?cardsData()[activeIndex]:cardsData()[activeIndex-1]})
+      //console.log('index',cardsData()[activeIndex].action.q_1.data)
       //console.log('index',answers[answers.findIndex(i=>i.questionId==data[activeIndex].id)])
     }
 
@@ -247,7 +236,7 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
       return (
         <FlingGestureHandler key='LEFT' direction={Directions.LEFT} onHandlerStateChange={ev=>{
           if (ev.nativeEvent.state === State.END) {
-            if (activeIndex === data.length) {
+            if (activeIndex === isMother) {
                 return;
             } else {
               setactiveSlide(activeIndex+1)
@@ -273,11 +262,11 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
         <Container >
           {backCardGroup &&
             <BackGroupView animation="fadeIn" duration={1000} style={{height:CARD_HEIGHT+23}}>
-              <BackCard setId={setId} setactiveSlide={setactiveSlide} groupIndex={_key} data={CheckListData.data}/>
+              <BackCard setId={setId} dispatch={dispatch} setactiveSlide={setactiveSlide} groupIndex={_key} data={CheckListData.data}/>
             </BackGroupView>
           }
         
-          <CardContainer onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} group={group} groupId={groupId} CARD_WIDTH={CARD_WIDTH} previewIndex={previewIndex} data={data} CARD_HEIGHT={CARD_HEIGHT} activeIndex={activeIndex} dispatch={dispatch} CHECK_LIST_MODEL={CHECK_LIST_MODEL} animatedValue={animatedValue} VISIBLE_ITEMS={VISIBLE_ITEMS}  />
+          <CardContainer isMother={isMother == 1} setactiveSlide={setactiveSlide} onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} group={group} groupId={groupId} CARD_WIDTH={CARD_WIDTH} previewIndex={previewIndex} data={cardsData()} CARD_HEIGHT={CARD_HEIGHT} activeIndex={activeIndex} dispatch={dispatch} CHECK_LIST_MODEL={CHECK_LIST_MODEL} animatedValue={animatedValue} VISIBLE_ITEMS={VISIBLE_ITEMS}  />
 
           <View style={{height:CONTROLLER_HEIGHT,width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
             <TouchableHighlight activeOpacity={0.5} underlayColor={themeContext.background.hover} style={{zIndex:1000,padding:9,borderRadius:30}} onLongPress={() => {setactiveSlide(0)}} onPress={() => {if (activeIndex!== 0) setactiveSlide(activeIndex-1)}}>
@@ -296,7 +285,7 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
               text='Fatores de risco'
               //disabled={!secondary}
             />
-            <TouchableHighlight activeOpacity={0.5} underlayColor={themeContext.background.hover} style={{zIndex:1000,padding:9,borderRadius:30}} onLongPress={() => {setactiveSlide(data.length-1)}} onPress={() => {if (activeIndex < data.length) setactiveSlide(activeIndex+1)}}>
+            <TouchableHighlight activeOpacity={0.5} underlayColor={themeContext.background.hover} style={{zIndex:1000,padding:9,borderRadius:30}} onLongPress={() => {setactiveSlide(isMother)}} onPress={() => {if (activeIndex < isMother) setactiveSlide(activeIndex+1)}}>
                 <Icons  name={'ArrowRight'} size={25*windowHeight/1000+8.0} color={themeContext.text.third} />
             </TouchableHighlight>
           </View>
@@ -311,8 +300,14 @@ export function Modal(fator,item,onClose,answers,riskPosition,dispatch,callBack,
   const [expo, setExpo] = useState(item?.exp?item.exp:0)
   const [primary, setPrimary] = useState(item?.primary?item.primary:false)
 
+  function answerIndex() {
+    console.log()
+    if (answers.findIndex(i=>i.questionId==riskPosition.position.id) != -1) return answers[answers.findIndex(i=>i.questionId==riskPosition.position.id)]
+    if (riskPosition.parent[riskPosition.position.id] && answers.findIndex(i=>i.questionId==riskPosition.parent[riskPosition.position.id][riskPosition.parent[riskPosition.position.id].length-1].questionId) !=-1) return answers[answers.findIndex(i=>i.questionId==riskPosition.parent[riskPosition.position.id][riskPosition.parent[riskPosition.position.id].length-1].questionId)]
+  }
+
   function onConfirm() {
-    if (!notDispatch) dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},answer:answers[answers.findIndex(i=>i.questionId==riskPosition.position.id)]}})
+    if (!notDispatch) dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},answer:answerIndex()}})
     onClose()
     if (callBack) callBack({item,data:{exp:expo,prob:active,primary},answer:answers})
   }
@@ -377,7 +372,7 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
     reactModal.alert({
       confirmButton:'Adicionar',
       optionHide:true,
-      children:(onConfirm,onClose)=>Modal(fator,item,onClose,answers,riskPosition,dispatch),
+      childrenComponent:(onConfirm,onClose)=>Modal(fator,item,onClose,answers,riskPosition,dispatch),
       onConfirm:()=>{},
     })
   }
@@ -404,7 +399,7 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
       returnedData.push(...riskPosition.position.action[selectedAnswer].data.filter(i=>Object.keys(riskAnswer.risks).includes(i.risk)))
     }
     
-    return [...returnedData.filter((item, i) => returnedData.findIndex(i=>i.risk==item.risk) === i)]
+    return [...returnedData.filter((item, i) => returnedData.findIndex(i=>i.risk==item.risk) === i)] //retirar duplicatas  
   }
 
   function riskParentSuggest() {

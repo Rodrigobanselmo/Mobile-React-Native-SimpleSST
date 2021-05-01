@@ -50,7 +50,7 @@ export default function App({navigation,route}) {
   const user = useSelector(state => state.user);
   const checklist = useSelector(state => state.checklist);
   const model = useSelector(state => state.model);
-  const title = checklist?.title ?? 'Checklist'
+  //const title = checklist?.title ?? 'Checklist'
   const dispatch = useDispatch();
 
   //console.log('risk',risk)
@@ -58,6 +58,7 @@ export default function App({navigation,route}) {
   useEffect(() => {
     //!checklist?.data && dispatch({type: 'CREATE_CHECKLIST',payload:CheckListData})
     //!(model?.length) && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
+    checklist?.data && checklist.data[0] && dispatch({type:'SET_HEADER',payload:checklist.data[0].group})
     onGetAllRisks({user,reactModal,dispatch});
   }, [])
 
@@ -68,7 +69,7 @@ export default function App({navigation,route}) {
   
   return (
     <>
-      <Card navigation={navigation} title={title}>
+      <Card navigation={navigation} /* title={title} */>
           {checklist?.data && <Card.Component onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} route={route} CHECK_LIST_MODEL={model} CheckListData={checklist} dispatch={dispatch}/>}
       </Card>
       {checklist?.data && <Card.BottomSheet sheetRef={sheetRef} dispatch={dispatch} checklist={checklist}/>}

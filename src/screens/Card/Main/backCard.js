@@ -30,7 +30,7 @@ const TextGroup = styled.Text`
 /*   background-color: ${({theme})=>theme.text.primary}; */
 `;
 
-export function BackCard({data,groupIndex,setId,setactiveSlide}) {
+export function BackCard({data,groupIndex,setId,setactiveSlide,dispatch}) {
 
   const themeContext = useContext(ThemeContext);
   const reactModal = useReactModal();
@@ -45,6 +45,8 @@ export function BackCard({data,groupIndex,setId,setactiveSlide}) {
   }, [])
 
   function onGroup(item) {
+    console.log(item)
+    dispatch({type:'SET_HEADER',payload:item.group})
     setactiveSlide(0)
     setId(item.id)
   }

@@ -7,6 +7,7 @@ import {ButtonAnimated} from '../../../components/basicComponents/Button';
 import Icons from '../../../components/Icons'
 import { Directions, FlingGestureHandler,ScrollView, State } from 'react-native-gesture-handler';
 import {CardCheckList} from './cardCheckList'
+import {CardInitial} from './cardInitial'
 import {BackCard} from './backCard'
 import {CardCamera} from './cardCamera'
 import {CardObservation} from './cardObservation'
@@ -19,21 +20,26 @@ import Animated from 'react-native-reanimated';
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
 
-export function CardContainer({onDeletePhotoFromStorage,onAddPhotoToStorage,sheetRef,group, groupId ,CARD_WIDTH,  previewIndex, data,CARD_HEIGHT,activeIndex,dispatch,CHECK_LIST_MODEL,animatedValue,VISIBLE_ITEMS}) {
-  
+export function CardContainer({isMother,setactiveSlide,onDeletePhotoFromStorage,onAddPhotoToStorage,sheetRef,group, groupId ,CARD_WIDTH,  previewIndex, data,CARD_HEIGHT,activeIndex,dispatch,CHECK_LIST_MODEL,animatedValue,VISIBLE_ITEMS}) {
+    
+    const checklist = useSelector(state => state.checklist);
+    const categoryIndex = checklist.data.findIndex(i=>i.id==groupId)
+    const answers = useSelector(state => state.answer);
+    
     function Card({item,index}) {
+        const answersIndex = answers.findIndex(i=>i.questionId==item.id)
+        
         const [isFront, setIsFront] = useState(true);
-        const [value, setValue] = useState(data?.obs ? data.obs:'')
+        const [value, setValue] = useState((answersIndex != -1 && answers[answersIndex].obs) ? answers[answersIndex].obs:'')
         const [image, setImage] = useState(data?.image ? data.image:[])
         
-        const answers = useSelector(state => state.answer);
-        const riskAnswer = useSelector(state => state.riskAnswer);
+
 
         useEffect(() => {
           if (previewIndex==index && (activeIndex-1 === index || activeIndex+1 === index)) {
               if (!(isFront===true)) onAnimatedFlip(0)
               //console.log('value',value);
-              if (value!=='' && (data?.obs||value!==data.obs)) dispatch({type: 'ANSWER_OBS',payload:{value,itemId:item.id,groupId}})
+              if (value!=='' && ((answersIndex != -1 && answers[answersIndex].obs)||value!==answersIndex != -1 && answers[answersIndex].obs)) dispatch({type: 'ANSWER_OBS',payload:{value,itemId:item.id,groupId}})
               //if (image.length >= 1 && (data?.image||value!==data.obs)) dispatch({type: 'ANSWER_OBS',payload:{value,itemId:item.id,groupId}})
           }
         }, [activeIndex])
@@ -109,7 +115,11 @@ export function CardContainer({onDeletePhotoFromStorage,onAddPhotoToStorage,shee
                     <AnimatedReact.View  style={{position:'absolute',backfaceVisibility:'hidden', transform: [{translateY},{rotateY:animatedFlipFront},{translateX},{scale}],opacity,zIndex:data.length*2-index*2 ,elevation:data.length*2-index*2, left:(windowWidth-CARD_WIDTH)/2, top:0}}>
                         <CardView style={{height:CARD_HEIGHT, width:CARD_WIDTH,}} >
                             {/* <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false} style={{width:'100%',flex:1}}> */}
-                                <CardCheckList sheetRef={sheetRef} answer={answer} model={model} index={index} data={data} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} group={group} groupId={groupId} item={item} dispatch={dispatch}/>
+                                {item == 'initial' ?
+                                    <CardInitial setactiveSlide={setactiveSlide} answer={answer} model={model} index={index-1} data={data} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} group={group} groupId={groupId} item={item} dispatch={dispatch}/>
+                                :
+                                    <CardCheckList setactiveSlide={setactiveSlide} isMother={isMother} sheetRef={sheetRef} answer={answer} model={model} index={index-1} data={data} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} group={group} groupId={groupId} item={item} dispatch={dispatch}/>
+                                }
                             {/* </ScrollView> */}
                         </CardView>
                     </AnimatedReact.View>
@@ -119,9 +129,19 @@ export function CardContainer({onDeletePhotoFromStorage,onAddPhotoToStorage,shee
         return null
     }
 
+    function cardsData() {
+        var mother = false
+        data.filter(i=>(i?.mother || i?.subMother)).map(i=>{
+            if (answers.findIndex(fi=>fi.questionId==i.id) == -1 || (answers.findIndex(fi=>fi.questionId==i.id) != -1 && !answers[answers.findIndex(fi=>fi.questionId==i.id)]?.selected)) mother = true
+        })
+        if (mother) return data.filter(i=>i?.mother || i?.subMother)
+        if (checklist.data[categoryIndex].groups.length > 1) return ['initial',...data]
+        return data
+    }
+
     return (
     <View style={{height:CARD_HEIGHT,marginTop:10}}>
-        {data.map((item,index)=> {return <Card key={item.id} item={item} index={index}/>}
+        {cardsData().map((item,index)=> {return <Card key={item?.id ?? item} item={item} index={index}/>}
         )}
     </View>
   )

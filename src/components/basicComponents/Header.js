@@ -14,7 +14,9 @@ const TextHeader = styled(Text)`
     font-size:20px;
     color: ${({theme})=>theme.text.secondary};
     font-weight:bold;
-    padding:15px 0px 15px ${ ({align,type} )=> align === 'left' && type ? '50px': align === 'left'? '20px' : '0px' } ;
+    width: 60%;
+    padding:15px 0px 15px 0 ;
+    text-align:center;
 `
 
 
@@ -60,7 +62,7 @@ export function Header({text,navigation,style,type, align='center',
             </TouchableOpacity>
             }
             {text ? 
-            <TextHeader align={align} type={Boolean(type)}>{text}</TextHeader>
+            <TextHeader numberOfLines={1} ellipsizeMode={'tail'} align={align} type={Boolean(type)}>{text}</TextHeader>
             :null}
         </View>
     );

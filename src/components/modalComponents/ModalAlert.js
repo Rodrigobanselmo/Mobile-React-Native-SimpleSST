@@ -82,7 +82,7 @@ const TextCancel = styled(TextOk)`
   color: ${({theme})=>theme.text.third};
 `;
 
-export const ModalAlertTitle = ({onConfirmPress,fullWidth,disable,children,text,title,style={},optionHide,option=false,warn=true,invert=false,onConfirm=false,open,onClose,confirmButton='Confirmar',cancelButton='Cancelar'}) => {
+export const ModalAlertTitle = ({onConfirmPress,fullWidth,disable,childrenComponent,children,text,title,style={},optionHide,option=false,warn=true,invert=false,onConfirm=false,open,onClose,confirmButton='Confirmar',cancelButton='Cancelar'}) => {
   return(
     <TouchableWithoutFeedback onPress={onClose}>
       <Container>
@@ -90,7 +90,8 @@ export const ModalAlertTitle = ({onConfirmPress,fullWidth,disable,children,text,
           <ViewContainer style={[styles.shadow,{...style}]}>
               {title && <TextTitle >{title}</TextTitle>}
               {text && <TextSub >{text}</TextSub>}
-              {children?children(onConfirmPress,onClose):null}
+              {children}
+              {childrenComponent?childrenComponent(onConfirmPress,onClose):null}
               <ContainerButtons invert={invert} >
                   {option ?
                   <ButtonCancel option={option} invert={invert} activeOpacity={0.5} onPress={onClose}>
@@ -110,7 +111,7 @@ export const ModalAlertTitle = ({onConfirmPress,fullWidth,disable,children,text,
   )
 }
 
-const ReactModal = ({children,fullWidth,optionHide,disable,text,title,style={},option=false,warn=true,invert=false,onConfirm=false,open,onClose,confirmButton='Confirmar',cancelButton='Cancelar'}) => {
+const ReactModal = ({children,childrenComponent,fullWidth,optionHide,disable,text,title,style={},option=false,warn=true,invert=false,onConfirm=false,open,onClose,confirmButton='Confirmar',cancelButton='Cancelar'}) => {
 
   function onConfirmPress() {
     if (onConfirm) {
@@ -139,6 +140,7 @@ const ReactModal = ({children,fullWidth,optionHide,disable,text,title,style={},o
             confirmButton={confirmButton} 
             cancelButton={cancelButton} 
             children={children} 
+            childrenComponent={childrenComponent} 
           />
       </Modal>
     );

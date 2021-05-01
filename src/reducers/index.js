@@ -7,7 +7,9 @@ import RiskReducer from './RiskReducer';
 import RiskDataReducer from './RiskDataReducer';
 import RiskAnswerReducer from './RiskAnswerReducer';
 import RiskPositionReducer from './RiskPositionReducer';
+import HeaderReducer from './HeaderReducer';
 import ChecklistReducer from './ChecklistReducer';
+import JumpReducer from './JumpReducer';
 
 export default combineReducers({
     risk: RiskReducer, 
@@ -18,5 +20,7 @@ export default combineReducers({
     photo: PhotoReaducer, 
     user: UserReducer,
     checklist: ChecklistReducer,
-    riskPosition: RiskPositionReducer
+    header: HeaderReducer,
+    riskPosition: RiskPositionReducer,
+    jump: JumpReducer
 });

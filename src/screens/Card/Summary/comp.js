@@ -50,7 +50,7 @@ Summary.Data = function SummaryData({answers,navigation}) {
 
   const MapAnswer = ({index,item,group}) => {
     return (
-        <TouchableOpacity onPress={()=>navigation.navigate('CardMain',{groupId:group.id,cardIndex:index})} style={{width:(windowWidth-30)/4,justifyContent:'center',paddingVertical:7,marginBottom:10,alignItems:'center'}}>
+        <TouchableOpacity onPress={()=>navigation.navigate('CardMain',{groupId:group.id,cardIndex:index+1})} style={{width:(windowWidth-30)/4,justifyContent:'center',paddingVertical:7,marginBottom:10,alignItems:'center'}}>
           <TextNum style={{textAlign:'center'}}>{`${index+1}`}</TextNum>
           <Circle large fill={item?.confirmed ?? item?.selected ?? 'none'}/>
         </TouchableOpacity>
