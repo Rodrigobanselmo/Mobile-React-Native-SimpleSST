@@ -140,6 +140,12 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
     const group = CheckListData.data[_key].group
     const groupId = CheckListData.data[_key].id ?? _id
 
+    function onJumpData() {
+      return CheckListData.data[_key]?.jump ?CheckListData.data[_key].jump:[]
+    }
+
+    const memoJump = React.useMemo(() => onJumpData(), [group]);
+
     const CARD_WIDTH =windowWidth*0.85
     const CARD_HEIGHT =(windowHeight-70)*0.85;
     const CONTROLLER_HEIGHT =(windowHeight-70)*0.15;
@@ -153,17 +159,43 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
     const reactiveAnimated = useRef(new AnimatedReact.Value(0)).current
     // const animatedButton = useRef(new AnimatedReact.Value(0)).current;
 
+
     function cardsData() {
+
+      // function isSelected(i) {
+      //   if (answers[answers.findIndex(fi=>fi.questionId==i.id)]?.selected && Array.isArray(answers[answers.findIndex(fi=>fi.questionId==i.id)]?.selected)) return
+      //   if () return
+      // }
+
       var mother = false
+      var newData = [...data]
       data.filter(i=>(i?.mother || i?.subMother)).map(i=>{
           if (answers.findIndex(fi=>fi.questionId==i.id) == -1 || (answers.findIndex(fi=>fi.questionId==i.id) != -1 && !answers[answers.findIndex(fi=>fi.questionId==i.id)]?.selected)) mother = true
       })
-      if (mother) return [...data.filter(i=>i?.mother || i?.subMother)]
-      return [...data]
+      if (mother) newData = [...data.filter(i=>i?.mother || i?.subMother)]
+      else {
+        memoJump.map(i=>{
+          const ansInd = answers.findIndex(fi=>fi.questionId==i.questionId)
+          if (ansInd == -1 || (answers[ansInd] && (answers[ansInd].selected == i.selected || !answers[ansInd].selected || (Array.isArray(answers[ansInd].selected) && answers[ansInd].selected.includes(i.selected))))) {
+            if (i?.g && i.g.length > 0) newData = [...newData.filter(fi=>fi.id==i.questionId||!i.g.includes(fi.group))]
+            if (i?.q && i.q.length > 0) newData = [...newData.filter(fi=>!i.q.includes(fi.id))]
+          }
+        })
+      }
+
+      const sortedObj = newData.sort((a, b) => {
+        return (
+          CheckListData.data[_key].groups.indexOf(a.group) - CheckListData.data[_key].groups.indexOf(b.group)
+        );
+    });
+    
+
+      return [...sortedObj]
     }
     
     const isMother = cardsData().length == 1 && (cardsData()[0]?.mother ||cardsData()[0]?.subMother) ?cardsData().length:cardsData().length+1
 
+    
     useEffect(() => {
       AnimatedReact.timing(animatedValue, {
         toValue:reactiveAnimated,
@@ -266,7 +298,7 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
             </BackGroupView>
           }
         
-          <CardContainer isMother={isMother == 1} setactiveSlide={setactiveSlide} onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} group={group} groupId={groupId} CARD_WIDTH={CARD_WIDTH} previewIndex={previewIndex} data={cardsData()} CARD_HEIGHT={CARD_HEIGHT} activeIndex={activeIndex} dispatch={dispatch} CHECK_LIST_MODEL={CHECK_LIST_MODEL} animatedValue={animatedValue} VISIBLE_ITEMS={VISIBLE_ITEMS}  />
+          <CardContainer isMother={isMother == 1} setactiveSlide={setactiveSlide} groupIndex={_key} onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} group={group} groupId={groupId} CARD_WIDTH={CARD_WIDTH} previewIndex={previewIndex} data={cardsData()} CARD_HEIGHT={CARD_HEIGHT} activeIndex={activeIndex} dispatch={dispatch} CHECK_LIST_MODEL={CHECK_LIST_MODEL} animatedValue={animatedValue} VISIBLE_ITEMS={VISIBLE_ITEMS}  />
 
           <View style={{height:CONTROLLER_HEIGHT,width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
             <TouchableHighlight activeOpacity={0.5} underlayColor={themeContext.background.hover} style={{zIndex:1000,padding:9,borderRadius:30}} onLongPress={() => {setactiveSlide(0)}} onPress={() => {if (activeIndex!== 0) setactiveSlide(activeIndex-1)}}>
@@ -294,20 +326,32 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
     );
 }
 
-export function Modal(fator,item,onClose,answers,riskPosition,dispatch,callBack,notDispatch,RiskAnswer) {
+export function Modal(fator,item,onClose,answers,riskPosition,dispatch,callBack,notDispatch,RiskAnswer) {  //item.risk
 
   const [active, setActive] = useState(item?.prob?item.prob:0)
   const [expo, setExpo] = useState(item?.exp?item.exp:0)
   const [primary, setPrimary] = useState(item?.primary?item.primary:false)
 
   function answerIndex() {
-    console.log()
     if (answers.findIndex(i=>i.questionId==riskPosition.position.id) != -1) return answers[answers.findIndex(i=>i.questionId==riskPosition.position.id)]
     if (riskPosition.parent[riskPosition.position.id] && answers.findIndex(i=>i.questionId==riskPosition.parent[riskPosition.position.id][riskPosition.parent[riskPosition.position.id].length-1].questionId) !=-1) return answers[answers.findIndex(i=>i.questionId==riskPosition.parent[riskPosition.position.id][riskPosition.parent[riskPosition.position.id].length-1].questionId)]
   }
 
-  function onConfirm() {
-    if (!notDispatch) dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},answer:answerIndex()}})
+  function onConfirm() { //{selected:peek,questionId:item.id,groupId}
+    if (!notDispatch) {
+      if (Array.isArray(answerIndex().selected)) {
+        //const returnedData = []
+        answerIndex().selected.map(ans=>{
+            if (ans && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[ans] && riskPosition.position.action[ans].data) {
+              if (riskPosition.position.action[ans].data.findIndex(i=>i.risk == item.risk) != -1) {
+                dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},answer:{selected:ans,questionId:riskPosition.position.id,groupId:answerIndex().groupId}}})
+              }
+            }
+          })
+        //const newReturn = [...returnedData.filter((item, i) => returnedData.findIndex(i=>i.risk==item.risk) === i)]
+      }
+      else dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},answer:answerIndex()}}) //erro aqui
+    }
     onClose()
     if (callBack) callBack({item,data:{exp:expo,prob:active,primary},answer:answers})
   }
@@ -368,7 +412,7 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
   //erro aqui
   const selectedAnswer = answers[answers.findIndex(i=>i.questionId==riskPosition.position.id)] ? answers[answers.findIndex(i=>i.questionId==riskPosition.position.id)].selected : null
 
-  function onChooseRisk(fator,item) {
+  function onChooseRisk(fator,item) {  //item.risk
     reactModal.alert({
       confirmButton:'Adicionar',
       optionHide:true,
@@ -380,6 +424,7 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
   function onChooseRiskData(item,riskId) {
     dispatch({type: 'CHOOSE_RISK_ANSWER_DATA',payload:{dataId:item.id,riskId}})
   }
+  
   function onRemoveRiskData(item,riskId) {
     dispatch({type: 'REMOVE_RISK_ANSWER_DATA',payload:{dataId:item.id,riskId}})
   }
@@ -395,18 +440,23 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
       })
     }
 
-    if (selectedAnswer && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[selectedAnswer] && riskPosition.position.action[selectedAnswer].data) {
+    if (Array.isArray(selectedAnswer)) {
+      selectedAnswer.map(ans=>{
+        if (ans && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[ans] && riskPosition.position.action[ans].data) {
+          returnedData.push(...riskPosition.position.action[ans].data.filter(i=>Object.keys(riskAnswer.risks).includes(i.risk)))
+        }
+      })
+    } else if (selectedAnswer && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[selectedAnswer] && riskPosition.position.action[selectedAnswer].data) {
       returnedData.push(...riskPosition.position.action[selectedAnswer].data.filter(i=>Object.keys(riskAnswer.risks).includes(i.risk)))
     }
     
     return [...returnedData.filter((item, i) => returnedData.findIndex(i=>i.risk==item.risk) === i)] //retirar duplicatas  
   }
 
+
   function riskParentSuggest() {
     //console.log('teste',[{id:1},{id:2},{id:1}].filter((item, i) => [{id:1},{id:2},{id:1}].findIndex(i=>i.id==item.id) === i))
       const returnedData = []
-      console.log('riskPosition.parent',riskPosition.parent)
-      if (riskPosition.parent) console.log('riskPosition.parent[riskPosition.position.id]',riskPosition.parent[riskPosition.position.id])
 
       if (riskPosition.parent && riskPosition.parent[riskPosition.position.id])  {
         riskPosition.parent[riskPosition.position.id].map(position=>{
@@ -416,12 +466,19 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
         })
       }
   
-      if (selectedAnswer && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[selectedAnswer] && riskPosition.position.action[selectedAnswer].data) {
+      if (Array.isArray(selectedAnswer)) {
+        selectedAnswer.map(ans=>{
+          if (ans && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[ans] && riskPosition.position.action[ans].data) {
+            returnedData.push(...riskPosition.position.action[ans].data.filter(i=>!Object.keys(riskAnswer.risks).includes(i.risk)))
+          }
+        })
+      } else if (selectedAnswer && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[selectedAnswer] && riskPosition.position.action[selectedAnswer].data) {
         returnedData.push(...riskPosition.position.action[selectedAnswer].data.filter(i=>!Object.keys(riskAnswer.risks).includes(i.risk)))
       }
       
       return [...returnedData.filter((item, i) => returnedData.findIndex(i=>i.risk==item.risk) === i)]
   }
+
 
   const renderContent = () => {
     return (
@@ -450,7 +507,7 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
                             }
                             <RecView onPress={()=>onRemoveRiskData(itemSel,item.risk)} rec activeOpacity={0.8}>
                               <RecText >{riskData[itemSel.id].text}</RecText>
-                              <IconsPlusMinus  name={'PlusStroke'} size={16} color={themeContext.text.third} />
+                              <IconsPlusMinus  name={'MinusStroke'} size={16} color={themeContext.text.third} />
                             </RecView>
                           </View>
                       )})}
@@ -474,7 +531,7 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
                             }
                             <RecView onPress={()=>onChooseRiskData(itemSug,item.risk)} activeOpacity={0.8}>
                               <RecText>{riskData[itemSug.id].text}</RecText>
-                              <IconsPlusMinus  name={'MinusStroke'} size={17} color={themeContext.text.third} />
+                              <IconsPlusMinus  name={'PlusStroke'} size={17} color={themeContext.text.third} />
                             </RecView>
                           </View>
                       )})}
@@ -495,8 +552,9 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
             </View>
           );
         })}
+        {}
         {(selectedAnswer && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[selectedAnswer] && riskPosition.position.action[selectedAnswer].data && riskPosition.position.action[selectedAnswer]
-        .data.filter(i=>!Object.keys(riskAnswer.risks).includes(i.risk)).length != 0 ) || (riskPosition.parent && riskPosition.parent[riskPosition.position.id] && riskPosition.parent[riskPosition.position.id] != 0) ? null :
+        .data.filter(i=>!Object.keys(riskAnswer.risks).includes(i.risk)).length != 0 ) || (riskPosition.parent && riskPosition.parent[riskPosition.position.id] && riskPosition.parent[riskPosition.position.id] != 0) || Array.isArray(selectedAnswer) ? null :
           <NoRiskComponent style={{marginTop:15}}/>
         }
         {!selectedAnswer && (riskPosition.parent && riskPosition.parent[riskPosition.position.id] && riskPosition.parent[riskPosition.position.id] == 0) &&

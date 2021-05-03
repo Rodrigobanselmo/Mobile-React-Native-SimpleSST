@@ -53,8 +53,6 @@ export default function App({navigation,route}) {
   //const title = checklist?.title ?? 'Checklist'
   const dispatch = useDispatch();
 
-  //console.log('risk',risk)
-
   useEffect(() => {
     //!checklist?.data && dispatch({type: 'CREATE_CHECKLIST',payload:CheckListData})
     //!(model?.length) && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})

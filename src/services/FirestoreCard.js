@@ -125,7 +125,6 @@ export function GetAllRisksFromCache({companyId,checkSuccess,checkError}) {
       if (doc.data().data === []) server()
       else risks.push(...doc.data().data)
     })
-    console.log('risks',risks.length>0);
     if (risks.length>0) getData('cache')
     else if (query) {
       console.log('server()');

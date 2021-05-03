@@ -93,7 +93,7 @@ const TextProgress = styled.Text`
 `;
 
 
-export function CardInitial({item,groupId,onAnimatedFlip,index,data,dispatch,model,answer,setactiveSlide}) {
+export function CardInitial({allGroups,item,groupId,onAnimatedFlip,index,data,dispatch,model,answer,setactiveSlide}) {
 
   const windowHeight = Dimensions.get('window').height
   const themeContext = useContext(ThemeContext);
@@ -107,10 +107,16 @@ export function CardInitial({item,groupId,onAnimatedFlip,index,data,dispatch,mod
 
   function onChooseGroup(group) {
     
-    console.log(checklist.data[categoryIndex].questions.findIndex(i=>i.group == group))
-    setactiveSlide(checklist.data[categoryIndex].questions.filter(i=>!(i?.hide&&i.hide)).findIndex(i=>i.group == group)+1)
+    console.log(data.findIndex(i=>i.group == group))
+    if (data.findIndex(i=>i.group == group) >= 0) setactiveSlide(data.findIndex(i=>i.group == group)+1)
     //dispatch({type: 'ANSWER_LATER',payload:{itemId:item.id,groupId}})
   }
+
+  const sortedObj = allGroups.sort((a, b) => {
+    return (
+      checklist.data[categoryIndex].groups.indexOf(a) - checklist.data[categoryIndex].groups.indexOf(b)
+    );
+  });
 
   return (
     <View style={{flex:1}}>
@@ -119,7 +125,7 @@ export function CardInitial({item,groupId,onAnimatedFlip,index,data,dispatch,mod
           <TextGroup ellipsizeMode={'tail'} numberOfLines={1} >{'Grupos'}</TextGroup>
       </View>
         <View style={{flex:1,justifyContent:'flex-start',marginHorizontal:20}}>
-          {checklist.data[categoryIndex].groups.map((group,index)=>{
+          {sortedObj.map((group,index)=>{
             return ( 
               <ContainerGroup activeOpacity={0.7} first={index == 0} key={group} windowHeight={windowHeight} onPress={()=>onChooseGroup(group)}>
                 <Group numberOfLines={2}>{group}</Group>

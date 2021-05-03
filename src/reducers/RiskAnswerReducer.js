@@ -46,11 +46,10 @@ export default (state = initialState, action) => {
         return {...actualState};
 
         case 'CHOOSE_RISK_ANSWER':
-            console.log('log',action.payload)
             var actualState = {...state}
             var data = {questionId:action.payload.answer.questionId,selected:action.payload.answer.selected}
             var validate = actualState.risks[action.payload.item.risk]
-            var actualStateRisk = validate ? {...validate,created:validate.created?[...validate.created,data]:[data],...action.payload.data} : {created:[data],data:[],suggest:[],...action.payload.data};
+            var actualStateRisk = validate ? {...validate,created:validate.created?[...validate.created.filter(i=>!(i.questionId == data.questionId && i.selected == data.selected)),{...data}]:[{...data}],...action.payload.data} : {created:[{...data}],data:[],suggest:[],...action.payload.data};
             ['rec','med','font'].map((item)=>{
                 if (action.payload.item[item]) {
                     action.payload.item[item].map(itemId=>{
@@ -78,15 +77,10 @@ export default (state = initialState, action) => {
             
             actualState.risks[action.payload.item.risk] = {...actualStateRisk}
         
-            console.log('actualState.risks',actualState.risks);
-            console.log('data',action.payload.data);
-            console.log('action.payload.answer',action.payload.answer);
-
         return {...actualState};
 
         case 'CHOOSE_MULT_RISK_ANSWER':
             var actualState = {...state}
-            console.log('Payloas',action.payload)
             action.payload.map(actionPayload=>{
                 var data = {questionId:actionPayload.answer.questionId,selected:actionPayload.answer.selected}
                 var validate = actualState.risks[actionPayload.item.risk]
@@ -124,13 +118,13 @@ export default (state = initialState, action) => {
         case 'REMOVE_RISK_ANSWER':
             var actualState = {...state}
 
-            action.payload.risksId.map(riskId=>{
+            Object.keys(actualState.risks).map(riskId=>{
                 if (actualState.risks[riskId]) {
 
                     var actualStateRisk = {...actualState.risks[riskId]}
-                    actualStateRisk.data = actualStateRisk.data ? [...actualStateRisk.data.filter(i=>i.questionId != action.payload.questionId)] : []
-                    actualStateRisk.suggest = actualStateRisk.suggest ? [...actualStateRisk.suggest.filter(i=>i.questionId != action.payload.questionId)] : []
-                    actualStateRisk.created = [...actualState.risks[riskId].created.filter(i=>i.questionId != action.payload.questionId)]
+                    actualStateRisk.data = actualStateRisk.data ? [...actualStateRisk.data.filter(i=>!action.payload.questionId.includes(i.questionId))] : []
+                    actualStateRisk.suggest = actualStateRisk.suggest ? [...actualStateRisk.suggest.filter(i=>!action.payload.questionId.includes(i.questionId))] : []
+                    actualStateRisk.created = [...actualState.risks[riskId].created.filter(i=>!action.payload.questionId.includes(i.questionId))]
 
                     if (action.payload.parentId) {
                         actualStateRisk.data = actualStateRisk.data ? [...actualStateRisk.data.filter(i=>i.questionId != action.payload.parentId)] : []
@@ -147,29 +141,25 @@ export default (state = initialState, action) => {
                 }
             })
 
-            // console.log('action.payload',action.payload)
-            // var riskId = action.payload.risk
-            // var rec = action.payload.rec
-            // var med = action.payload.med
-            // var font = action.payload.font
-            // var recSug = action.payload.recSug
-            // var medSug = action.payload.medSug
-            // var fontSug = action.payload.fontSug
+        case 'REMOVE_RISK_ANSWER_MULT':
+            var actualState = {...state}
 
-            // var actualStateRisk = actualState.risks[action.payload.risk]
+            Object.keys(actualState.risks).map(riskId=>{
+                if (actualState.risks[riskId]) {
 
-            // if (actualStateRisk) {
+                    var actualStateRisk = {...actualState.risks[riskId]}
+                    actualStateRisk.data = actualStateRisk.data ? [...actualStateRisk.data.filter(i=>!(action.payload.questionId == i.questionId && action.payload.peek == i.selected))] : []
+                    actualStateRisk.suggest = actualStateRisk.suggest ? [...actualStateRisk.suggest.filter(i=>!(action.payload.questionId == i.questionId && action.payload.peek == i.selected))] : []
+                    actualStateRisk.created = [...actualState.risks[riskId].created.filter(i=>!(action.payload.questionId == i.questionId && action.payload.peek == i.selected))]
 
-            // }
-
-            // if (action.payload.rec) {
-            //     action.payload.rec.map(recId=>{
-            //        if (actualStateRisk.findIndex(i=>i.id==recId) == -1) actualStateRisk.push({id:recId,type:'rec'})
-            //     })
-            // }
-            // actualState.risks[action.payload.risk] = [...actualStateRisk]
-        
-            // console.log(actualState.risks);
+                    if (actualStateRisk.created.length == 0) {
+                        delete actualState.risks[riskId]
+                    } else {
+                        actualState.risks[riskId]={...actualStateRisk}
+                    }
+                    
+                }
+            })
 
         return {...actualState};
 

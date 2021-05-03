@@ -5,6 +5,7 @@ import {Dimensions,View, } from 'react-native';
 import {useReactModal} from '../../../context/ModalContext'
 import styled,{css} from "styled-components/native";
 import Icons from '../../../components/Icons'
+import { useSelector, useDispatch } from 'react-redux';
 
 import { TouchableOpacity,TextInput } from 'react-native-gesture-handler';
 
@@ -20,15 +21,19 @@ const TextProgress = styled.Text`
   `}
 `;
 
-export function CardObservation({onAnimatedFlip,setValue,value,model}) {
+export function CardObservation({dispatch,groupId,item,onAnimatedFlip,model}) {
 
   const windowHeight = Dimensions.get('window').height
+  const obs = useSelector(state => state.obs);
+  const obsIndex = obs.findIndex(i=>i.questionId==item.id)
 
   const themeContext = useContext(ThemeContext);
   const reactModal = useReactModal();
+  const [value, setValue] = React.useState((obs[obsIndex] && obs[obsIndex].obs) ? obs[obsIndex].obs:'')
 
   function onChengeTextInput(value) {
     setValue(value)
+    dispatch({type: 'ANSWER_OBS',payload:{value,itemId:item.id,groupId}})
   }
   function onConfirm(value) {
     setValue(model?.obs ?? '')

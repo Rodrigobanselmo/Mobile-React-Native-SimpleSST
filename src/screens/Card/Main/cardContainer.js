@@ -20,34 +20,31 @@ import Animated from 'react-native-reanimated';
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
 
-export function CardContainer({isMother,setactiveSlide,onDeletePhotoFromStorage,onAddPhotoToStorage,sheetRef,group, groupId ,CARD_WIDTH,  previewIndex, data,CARD_HEIGHT,activeIndex,dispatch,CHECK_LIST_MODEL,animatedValue,VISIBLE_ITEMS}) {
+export function CardContainer({isMother,groupIndex,setactiveSlide,onDeletePhotoFromStorage,onAddPhotoToStorage,sheetRef,group, groupId ,CARD_WIDTH,  previewIndex, data,CARD_HEIGHT,activeIndex,dispatch,CHECK_LIST_MODEL,animatedValue,VISIBLE_ITEMS}) {
     
     const checklist = useSelector(state => state.checklist);
     const categoryIndex = checklist.data.findIndex(i=>i.id==groupId)
     const answers = useSelector(state => state.answer);
     
+    function allGroups() {
+        const array = []
+        data.map(i=>{
+          if (i.group && !array.includes(i.group)) array.push(i.group)
+        })
+        return array
+    }
+
     function Card({item,index}) {
         const answersIndex = answers.findIndex(i=>i.questionId==item.id)
         
         const [isFront, setIsFront] = useState(true);
-        const [value, setValue] = useState((answersIndex != -1 && answers[answersIndex].obs) ? answers[answersIndex].obs:'')
-        const [image, setImage] = useState(data?.image ? data.image:[])
-        
-
-
-        useEffect(() => {
-          if (previewIndex==index && (activeIndex-1 === index || activeIndex+1 === index)) {
-              if (!(isFront===true)) onAnimatedFlip(0)
-              //console.log('value',value);
-              if (value!=='' && ((answersIndex != -1 && answers[answersIndex].obs)||value!==answersIndex != -1 && answers[answersIndex].obs)) dispatch({type: 'ANSWER_OBS',payload:{value,itemId:item.id,groupId}})
-              //if (image.length >= 1 && (data?.image||value!==data.obs)) dispatch({type: 'ANSWER_OBS',payload:{value,itemId:item.id,groupId}})
-          }
-        }, [activeIndex])
+        const [value, setValue] = useState((answers[answersIndex] && answers[answersIndex].obs) ? answers[answersIndex].obs:'')
 
         // useEffect(() => {
-        //         if (riskAnswer.position.itemId != item.id) dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{itemId:item.id,groupId}})
-        //         console.log('riskAnswer.position2',riskAnswer.position)
-        //   }, [])
+        //   if (previewIndex==index && (activeIndex-1 === index || activeIndex+1 === index)) {
+        //       if (!(isFront===true)) onAnimatedFlip(0)
+        //   }
+        // }, [activeIndex])
 
         const model = CHECK_LIST_MODEL.filter(i=>(i.groupId === groupId && i.questionId === item.id))[0]
         const answer = answers.filter(i=>(i.groupId === groupId && i.questionId === item.id))[0]
@@ -107,7 +104,7 @@ export function CardContainer({isMother,setactiveSlide,onDeletePhotoFromStorage,
                                   <CardCamera onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} dispatch={dispatch}/*  image={image} setImage={setImage} */ onAnimatedFlip={onAnimatedFlip} groupId={groupId} item={item}/>
                                 :
                                   <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false} style={{width:'100%'}}>
-                                    <CardObservation model={model} value={value} setValue={setValue} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} item={item}/>
+                                    <CardObservation dispatch={dispatch} groupId={groupId} model={model} value={value} setValue={setValue} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} item={item}/>
                                   </ScrollView>
                                 }
                         </CardView>
@@ -116,9 +113,9 @@ export function CardContainer({isMother,setactiveSlide,onDeletePhotoFromStorage,
                         <CardView style={{height:CARD_HEIGHT, width:CARD_WIDTH,}} >
                             {/* <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false} style={{width:'100%',flex:1}}> */}
                                 {item == 'initial' ?
-                                    <CardInitial setactiveSlide={setactiveSlide} answer={answer} model={model} index={index-1} data={data} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} group={group} groupId={groupId} item={item} dispatch={dispatch}/>
+                                    <CardInitial allGroups={allGroups()} setactiveSlide={setactiveSlide} answer={answer} model={model} index={index-1} data={data} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} group={group} groupId={groupId} item={item} dispatch={dispatch}/>
                                 :
-                                    <CardCheckList setactiveSlide={setactiveSlide} isMother={isMother} sheetRef={sheetRef} answer={answer} model={model} index={index-1} data={data} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} group={group} groupId={groupId} item={item} dispatch={dispatch}/>
+                                    <CardCheckList groupIndex={groupIndex} activeIndex={activeIndex} setactiveSlide={setactiveSlide} isMother={isMother} sheetRef={sheetRef} answer={answer} model={model} index={index-1} data={data} setIsFront={setIsFront} onAnimatedFlip={onAnimatedFlip} group={group} groupId={groupId} item={item} dispatch={dispatch}/>
                                 }
                             {/* </ScrollView> */}
                         </CardView>
@@ -135,7 +132,7 @@ export function CardContainer({isMother,setactiveSlide,onDeletePhotoFromStorage,
             if (answers.findIndex(fi=>fi.questionId==i.id) == -1 || (answers.findIndex(fi=>fi.questionId==i.id) != -1 && !answers[answers.findIndex(fi=>fi.questionId==i.id)]?.selected)) mother = true
         })
         if (mother) return data.filter(i=>i?.mother || i?.subMother)
-        if (checklist.data[categoryIndex].groups.length > 1) return ['initial',...data]
+        if (checklist.data[categoryIndex].groups.length > 1 && allGroups().length>0) return ['initial',...data]
         return data
     }
 
