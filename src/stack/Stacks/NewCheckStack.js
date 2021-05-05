@@ -5,6 +5,7 @@ import { CardStyleInterpolators } from '@react-navigation/stack';
 
 import ChooseCheck from '../../screens/NewCheck/ChooseCheck';
 import ChooseCompany from '../../screens/NewCheck/ChooseCompany';
+import ChooseName from '../../screens/NewCheck/ChooseName';
 
 const NewCheck = createStackNavigator();
 
@@ -16,6 +17,7 @@ const NewCheckNav = ({navigation}) => {
         <NewCheck.Navigator headerMode='none' initialRouteName={'ChooseCheck'}>
             <NewCheck.Screen name="ChooseCheck" component={ChooseCheck} options={{cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS}}/>
             <NewCheck.Screen name="ChooseCompany" component={ChooseCompany} options={{cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS}}/>
+            <NewCheck.Screen name="ChooseName" component={ChooseName} options={{cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS}}/>
         </NewCheck.Navigator>
     );
 }

@@ -132,7 +132,7 @@ export function CardContainer({isMother,groupIndex,setactiveSlide,onDeletePhotoF
             if (answers.findIndex(fi=>fi.questionId==i.id) == -1 || (answers.findIndex(fi=>fi.questionId==i.id) != -1 && !answers[answers.findIndex(fi=>fi.questionId==i.id)]?.selected)) mother = true
         })
         if (mother) return data.filter(i=>i?.mother || i?.subMother)
-        if (checklist.data[categoryIndex].groups.length > 1 && allGroups().length>0) return ['initial',...data]
+        if (/* checklist.data[categoryIndex].groups.length > 1 &&  */allGroups().length>0) return ['initial',...data]
         return data
     }
 

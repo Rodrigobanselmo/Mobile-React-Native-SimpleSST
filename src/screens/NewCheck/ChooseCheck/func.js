@@ -26,8 +26,9 @@ export function onGetChecklist({itemId,user,reactModal,dispatch,navigation}) {
     GetChecklist(user.company.id,itemId,checkSuccess,checkError)
     
     function checkSuccess(response) {
+        const uid = Math.floor((1 + Math.random()) * 0x1000000000000000).toString(32).substring(1);
         reactModal.close()
-        dispatch({type: 'CREATE_CHECKLIST',payload:{...response}})
+        dispatch({type: 'CREATE_CHECKLIST',payload:{...response,checklistId:response.id,id:uid,type:'model',creation:new Date(),userId:user.uid,user:user.name}})
         navigation.navigate('ChooseCompany')
     }
 

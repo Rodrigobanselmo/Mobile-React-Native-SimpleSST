@@ -18,7 +18,10 @@ export default (state = initialState, action) => {
                 list.push({...newAnswer})
             }
         return [...list];
-
+        
+        
+        case 'LOGOUT_OBS':
+        return [...initialState];
 
         default:
         return state;

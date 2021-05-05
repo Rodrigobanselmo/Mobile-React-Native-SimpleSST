@@ -6,7 +6,7 @@ import {Header} from '../../../components/basicComponents/Header';
 import {ButtonInitial} from '../../../components/basicComponents/Button';
 import Icons from '../../../components/Icons'
 import {Container,ContainerSafe,Circle,TextTitle,TextNum,ContainerCard} from './styles';
-
+import { useSelector, useDispatch } from 'react-redux';
 
 
 
@@ -46,18 +46,76 @@ Summary.Info = function SummaryInfo() {
 }
 
 
-Summary.Data = function SummaryData({answers,navigation}) {
+Summary.Data = function SummaryData({navigation}) {
+  
+  const checklist = useSelector(state => state.checklist);
+  const answers = useSelector(state => state.answer);
+  const dispatch = useDispatch();
+  const themeContext = useContext(ThemeContext);
 
-  const MapAnswer = ({index,item,group}) => {
+  const MapAnswer = ({index,item,group,realItems}) => {
+
+    const inactive = realItems.findIndex(i=>i.id == item.id) == -1
+    const answer = answers.filter(i=>(i.groupId === group.id && i.questionId === item.id))[0]
+
+    function isSelected() {
+      if (answer?.selected && Array.isArray(answer.selected) && answer.selected.length>0) return 'confirmed'
+      if (answer?.selected) return 'confirmed'
+      return 'none'
+    }
+    
+    function onNavigate() {
+      if (inactive) return
+
+      dispatch({type:'SET_HEADER',payload:group.group})
+      navigation.navigate('CardMain',{groupId:group.id,cardIndex:index+1})
+    }
+
     return (
-        <TouchableOpacity onPress={()=>navigation.navigate('CardMain',{groupId:group.id,cardIndex:index+1})} style={{width:(windowWidth-30)/4,justifyContent:'center',paddingVertical:7,marginBottom:10,alignItems:'center'}}>
+        <TouchableOpacity onPress={onNavigate} style={{width:(windowWidth-30)/4,justifyContent:'center',paddingVertical:7,marginBottom:10,alignItems:'center'}}>
           <TextNum style={{textAlign:'center'}}>{`${index+1}`}</TextNum>
-          <Circle large fill={item?.confirmed ?? item?.selected ?? 'none'}/>
+          {answer?.later ?
+           <Icons  name={isSelected() == 'confirmed' ? 'QuestionFill':'Question'} style={{marginTop:-5}} size={32} color={isSelected() == 'confirmed' ?themeContext.primary.lighter:themeContext.background.line} />
+          :
+            <Circle large inactive={inactive} fill={isSelected()}/>
+          }
         </TouchableOpacity>
     )
   };
   
   const MapData = ({item}) => {
+
+    function onJumpData() {
+      return item?.jump ?item.jump:[]
+    }
+    console.log('answers',answers)
+    function cardsData() {
+      var mother = false
+      var newData = [...item.questions.filter(i=>!(i?.hide&&i.hide))]
+      newData.filter(i=>(i?.mother || i?.subMother)).map(i=>{
+          if (answers.findIndex(fi=>fi.questionId==i.id) == -1 || (answers.findIndex(fi=>fi.questionId==i.id) != -1 && !answers[answers.findIndex(fi=>fi.questionId==i.id)]?.selected)) mother = true
+      })
+      if (mother) newData = [...newData.filter(i=>i?.mother || i?.subMother)]
+      else {
+        onJumpData().map(i=>{
+          const ansInd = answers.findIndex(fi=>fi.questionId==i.questionId)
+          if (ansInd == -1 || (answers[ansInd] && (answers[ansInd].selected == i.selected || !answers[ansInd].selected || (Array.isArray(answers[ansInd].selected) && answers[ansInd].selected.includes(i.selected))))) {
+            if (i?.g && i.g.length > 0) newData = [...newData.filter(fi=>fi.id==i.questionId||!i.g.includes(fi.group))]
+            if (i?.q && i.q.length > 0) newData = [...newData.filter(fi=>!i.q.includes(fi.id))]
+          }
+        })
+      }
+  
+      const sortedObj = newData.sort((a, b) => {
+        return (
+          item.groups.indexOf(a.group) - item.groups.indexOf(b.group)
+        );
+      });
+    
+  
+      return [...sortedObj]
+    }
+
     console.log(item.id)
     return (
       <ContainerCard >
@@ -67,7 +125,7 @@ Summary.Data = function SummaryData({answers,navigation}) {
         <View style={{flexDirection:'row',flexWrap:'wrap',justifyContent:'flex-start',marginTop:10}}>
           {item.questions.filter(i=>!(i?.hide&&i.hide)).map((question,indexQuestion)=>{
             return (
-              <MapAnswer key={question.id} index={indexQuestion} item={question} group={item} />
+              <MapAnswer realItems={cardsData()} key={question.id} index={indexQuestion} item={question} group={item} />
             )
           })}
         </View>
@@ -77,7 +135,7 @@ Summary.Data = function SummaryData({answers,navigation}) {
 
   return (
       <FlatList
-        data={answers.data}
+        data={checklist.data}
         renderItem={MapData}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}

@@ -10,6 +10,9 @@ export default (state = initialState, action) => {
         case 'SET_HEADER':
             action.payload 
         return action.payload;
+        
+        case 'LOGOUT_HEADER':
+        return initialState;
 
         default:
             return state;

@@ -24,7 +24,9 @@ export function Header({text,navigation,style,type, align='center',
     secondIcon=false,
     secondIconProps={},
     iconProps={},
-    secondScreenName='Apps'
+    firstScreenName,
+    secondScreenName='Apps',
+    leftOnPress
 }) {
     
 
@@ -52,7 +54,7 @@ export function Header({text,navigation,style,type, align='center',
     return (
         <View style={{alignItems:"center",flexDirection:'row',width:'100%',justifyContent:align==='left'?'flex-start':'center',height:60,...style}} >
             {type &&
-            <TouchableOpacity style={{position:'absolute',top:17.5,left:17,zIndex:10,width:80,height:35}} onPress={()=>buttonPress()}>
+            <TouchableOpacity style={{position:'absolute',top:17.5,left:17,zIndex:10,width:80,height:35}} onPress={()=>leftOnPress?leftOnPress():buttonPress(firstScreenName)}>
                 <IconType {...iconProps}/>
             </TouchableOpacity>
             }

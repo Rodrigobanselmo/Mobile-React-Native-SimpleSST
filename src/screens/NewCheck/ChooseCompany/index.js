@@ -65,7 +65,7 @@ export default ({navigation}) => {
         style={{marginBottom:0,}}
         textStyle={{color:'#000'}}
         height={80}
-        onPress={()=>navigation.navigate('Card')}
+        onPress={()=>navigation.navigate('ChooseName')}
         scale={0.67}
         elevation={true}
         text='Pular'

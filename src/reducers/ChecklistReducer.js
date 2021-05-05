@@ -10,6 +10,22 @@ export default (state = initialState, action) => {
         case 'CREATE_CHECKLIST':
         return {...action.payload};
 
+        case 'NAME_CHECKLIST':
+            var list = {...state}
+            list.name =  action.payload
+        
+        return {...list};
+
+        case 'REMOVE_CHECKLIST_CHILD':
+            var list = {...state}
+            var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
+            action.payload.questionId.map(i=>{
+                var questionIndex = list.data[groupId].questions.findIndex((fi)=>fi.id==i.id)
+                if (i?.parent && i?.hide) list.data[groupId].questions[questionIndex].hide = false
+                else if ('hide' in i && !i.hide && !i?.parent) list.data[groupId].questions[questionIndex].hide = true
+            })
+        return {...list};
+
         case 'CHECKLIST_CHILD':
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
@@ -33,7 +49,7 @@ export default (state = initialState, action) => {
             list.data[groupId].questions[parentId].selected = 'none'
         return {...list};
 
-        case 'LOGOUT_CHECKLIST':
+        case 'CHECKLIST_LOGOUT':
             return {...initialState};
 
         default:

@@ -7,8 +7,8 @@ export default (state = initialState, action) => {
 
     switch(action.type) {
         
-        case 'JUMP':
-        return [...state];
+        case 'CREATE_ALL_MODELS':
+        return [...action.payload];
 
         default:
         return state;

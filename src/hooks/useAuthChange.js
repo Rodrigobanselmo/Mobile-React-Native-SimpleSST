@@ -11,6 +11,7 @@ const useAuth = (initializing,setInitializing,setUser) => {
  //LogOut()
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
+  const checklist = useSelector(state => state.checklist);
   const navigation = useNavigation();
   const reactModal = useReactModal();
 
@@ -42,7 +43,8 @@ const useAuth = (initializing,setInitializing,setUser) => {
         reactModal.close()
       } else if (userLogin.emailVerified && doc.name) {
         //reactModal.loaderScreen({onFunc:()=>navigationReset({screen:'TabStack'}),background:'#fff'})
-        navigationReset({screen:'TabStack'})
+        if (checklist && checklist.name) navigationReset({screen:'Card'})
+        else navigationReset({screen:'TabStack'})
         reactModal.close()
       } else {
           //reactModal.loaderScreen({onFunc:()=>navigationReset({screen:'VerificationStack'}),background:'#fff'})

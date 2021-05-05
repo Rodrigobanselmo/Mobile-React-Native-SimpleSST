@@ -22,7 +22,7 @@ export default function App({navigation}) {
       <StatusBar backgroundColor={themeContext.background.back} barStyle="dark-content"/>
       {/* <Summary.Info/> */}
       {checklist &&
-        <Summary.Data navigation={navigation} answers={checklist}/>
+        <Summary.Data navigation={navigation}/>
       }
     </Summary>
   );

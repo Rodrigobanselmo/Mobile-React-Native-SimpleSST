@@ -86,58 +86,8 @@ export default (state = initialState, action) => {
             } 
         return [...list];
 
-        // case 'ANSWER':
-        //     var list = {...state}
-        //     console.log('state',state)
-        //     var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
-        //     var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
-        //     if (list.data[groupId].questions[itemId].selected === action.payload.peek) {
-        //         // list.data[groupId].questions[itemId].selected = '' // (desmarca)
-        //     } else {
-        //         list.data[groupId].questions[itemId].selected = action.payload.peek
-        //     }
-        // return {...list};
-
-        case 'ANSWER_OBS+FAIL':
-            var newAnswer = {groupId:action.payload.groupId,questionId:action.payload.itemId,obs:action.payload.value.trim()}
-            var list = [...state]
-
-            var indexAnswer = list.findIndex(i=>i.groupId == action.payload.groupId&&i.questionId == action.payload.itemId)
-            if (indexAnswer != -1) {
-                list[indexAnswer].obs = action.payload.value.trim()
-            } else { 
-                list.push({...newAnswer})
-            }
-        return [...list];
-        //list.data[groupId].questions[itemId].obs = action.payload.value.trim()
-
-        case 'ANSWER_CONFIRM':
-            var list = {...state}
-            var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
-            var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
-            
-            if (list.data[groupId].questions[itemId].confirmed ==='confirmed') {
-                list.data[groupId].questions[itemId].confirmed = 'none'
-            } else {
-                list.data[groupId].questions[itemId].confirmed = 'confirmed'
-            }
-            
-        return {...list};
-
-        case 'ANSWER_RISK':
-            var list = {...state}
-            var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)
-            var itemId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.itemId)
-            var childId = list.data[groupId].questions.findIndex((i)=>i?.id && i.id===action.payload.childId)
-            //if (!list.data[groupId].questions[itemId]?.obs || (list.data[groupId].questions[itemId]?.obs && list.data[groupId].questions[itemId].obs!== action.payload.value)) {
-            list.data[groupId].questions[itemId].hide = true
-            list.data[groupId].questions[itemId].selected = action.payload.peek
-            list.data[groupId].questions[childId].hide = false
-            //}
-        return {...list};
-
         case 'LOGOUT_ANSWER':
-            return {...initialState};
+            return [...initialState];
 
         default:
         return state;

@@ -30,7 +30,7 @@ const TextGroup = styled.Text`
 /*   background-color: ${({theme})=>theme.text.primary}; */
 `;
 
-export function BackCard({data,groupIndex,setId,setactiveSlide,dispatch}) {
+export function BackCard({data,groupIndex,setId,answers,cardsData,setactiveSlide,dispatch}) {
 
   const themeContext = useContext(ThemeContext);
   const reactModal = useReactModal();
@@ -51,13 +51,51 @@ export function BackCard({data,groupIndex,setId,setactiveSlide,dispatch}) {
     setId(item.id)
   }
 
-  const renderItem = ({ item,index }) => (
-    <ItemContainer onPress={()=>onGroup(item)} style={index > 0 && {marginTop:13 }}>
-        <Donut strokeWidth={9} color={themeContext.primary.main} percentage={item.questions.filter(i=>(i?.selected && i.selected !=='none' && !(i?.hide&&i.hide))).length} max={item.questions.filter(i=>(!(i?.hide&&i.hide))).length} radius={25} />
+
+
+  const renderItem = ({ item,index }) => {
+
+    const _key = data.findIndex(i=>i.id==item.id)
+    const dataFilterHide = [...data[_key].questions.filter(i=>!(i?.hide&&i.hide))]
+
+  function onJumpData() { //todas as perguntas pulas e respondidas
+    return data[_key]?.jump ?data[_key].jump:[]
+  }
+  
+  function jumpData() {
+    var mother = false
+    var newData = []
+    dataFilterHide.filter(i=>(i?.mother || i?.subMother)).map(i=>{
+        if (answers.findIndex(fi=>fi.questionId==i.id) == -1 || (answers.findIndex(fi=>fi.questionId==i.id) != -1 && !answers[answers.findIndex(fi=>fi.questionId==i.id)]?.selected)) mother = true
+    })
+    if (mother) {newData = []}
+    else {
+      onJumpData().map(i=>{
+        const ansInd = answers.findIndex(fi=>fi.questionId==i.questionId)
+        if (ansInd != -1 ) console.log(answers[ansInd].selected)
+        if (ansInd != -1 && (answers[ansInd].selected == i.selected ||  (Array.isArray(answers[ansInd].selected) && answers[ansInd].selected.includes(i.selected)))) {
+          if (i?.g && i.g.length > 0) newData.push(...dataFilterHide.filter(fi=>fi.id!=i.questionId&&i.g.includes(fi.group)))  //= [...newData.filter(fi=>fi.id!=i.questionId&&i.g.includes(fi.group))]
+          if (i?.q && i.q.length > 0) newData.push(...newData.filter(fi=>i.q.includes(fi.id)))
+        }
+      })
+    }
+
+
+    return [...newData]
+  }
+
+  const jump = jumpData().length
+  const total = dataFilterHide.length
+  const selected = answers.filter((i,idx)=>i?.selected && dataFilterHide.findIndex(fi=>fi.id == i.questionId) != -1 && answers.findIndex(fi=>fi.questionId == i.questionId) == idx).length
+  //console.log(jump,total,selected)
+   if (total!=0) return <ItemContainer onPress={()=>onGroup(item)} style={index > 0 && {marginTop:13 }}>
+        <Donut strokeWidth={9} color={themeContext.primary.main} percentage={jump+selected} max={total} radius={25} />
         <TextGroup style={{marginRight:58}}>{item.group}</TextGroup>
         <TextGroup style={{position:'absolute',bottom:3,right:6,fontSize:8}}>{index+1}</TextGroup>
     </ItemContainer>
-  );
+
+  return null
+  };
 
   return (
     <Container style={{flex:1}}>

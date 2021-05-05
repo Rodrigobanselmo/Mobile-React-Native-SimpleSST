@@ -138,28 +138,39 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
     function filterJump() {
       var newData = [...data]
       newData = clone(newData)
+      var mother = false
 
       const newAnswers = [...setAnswer()]
-      onJumpData().map(i=>{
-        const ansInd = newAnswers.findIndex(fi=>fi.questionId==i.questionId)
-        if (ansInd == -1 || (newAnswers[ansInd] && (newAnswers[ansInd].selected == i.selected || !newAnswers[ansInd].selected))) {
-          if (i?.g && i.g.length > 0) newData = [...newData.filter(fi=>fi.id==i.questionId||!i.g.includes(fi.group))]
-          if (i?.q && i.q.length > 0) newData = [...newData.filter(fi=>!i.q.includes(fi.id))]
-        }
-      })
+      newData.filter(i=>(i?.mother || i?.subMother)).map(i=>{
+            if (newAnswers.findIndex(fi=>fi.questionId==i.id) == -1 || (newAnswers.findIndex(fi=>fi.questionId==i.id) != -1 && !newAnswers[newAnswers.findIndex(fi=>fi.questionId==i.id)]?.selected)) mother = true
+        })
+      if (mother) newData = [...data.filter(i=>i?.mother || i?.subMother)]
+      else {
+        onJumpData().map(i=>{
+          const ansInd = newAnswers.findIndex(fi=>fi.questionId==i.questionId)
+          if (ansInd == -1 || (newAnswers[ansInd] && (newAnswers[ansInd].selected == i.selected || !newAnswers[ansInd].selected || (Array.isArray(newAnswers[ansInd].selected) && newAnswers[ansInd].selected.includes(i.selected))))) {
+            if (i?.g && i.g.length > 0) newData = [...newData.filter(fi=>fi.id==i.questionId||!i.g.includes(fi.group))]
+            if (i?.q && i.q.length > 0) newData = [...newData.filter(fi=>!i.q.includes(fi.id))]
+          }
+        })
+      }
       return [...newData]
     }
 
     function filterExcludeJump() {
       const array = [];
+      const arrayAll = [];
       const jump = [];
       filterJump().map((item)=>{
         jump.push(item.id)
       })
       data.map(itm=>{
-        if (!jump.includes(itm.id)) array.push(itm.id)
+        if (!jump.includes(itm.id)) {
+          array.push(itm.id)
+          arrayAll.push(itm)
+        }
       })
-      return array
+      return [array,arrayAll]
     }
 
     function onGoBack() {
@@ -208,6 +219,12 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
           const Value = MODAL_DATA[0]
           MODAL_DATA.splice(0,1)
 
+          console.log(!!riskAnswer.risks[Value.item.risk]) 
+          if (!!riskAnswer.risks[Value.item.risk]) {
+            const callback = {item:Value.item,data:{},answer:{selected:peek,questionId:item.id,groupId}}
+            onChooseRisk({sheetOpen,modalData:MODAL_DATA,back:back?[...back,callback]:[callback]})
+            return
+          }
           setTimeout(() => {
             reactModal.alert({
               confirmButton:'Adicionar',
@@ -235,12 +252,14 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
       }
 
       function removeAnswer(type) {
-
         function onConfirm() {
+          const jumpEx = filterExcludeJump()
+          console.log('jumpEx[0]',jumpEx[0])
           if (type.includes('openSheet') && item.action[peek].data && item.action[peek].data.filter(i=>i.man).length > 0) {
             openSheet(()=>{
-              dispatch({type: 'REMOVE_RISK_ANSWER',payload:{questionId:[item.id,...filterExcludeJump()]}})
-              dispatch({type: 'ANSWER_REMOVE',payload:filterExcludeJump()})
+              dispatch({type: 'REMOVE_RISK_ANSWER',payload:{questionId:[item.id,...jumpEx[0]]}})
+              dispatch({type: 'REMOVE_CHECKLIST_CHILD',payload:{groupId,questionId:[...jumpEx[1]]}})
+              dispatch({type: 'ANSWER_REMOVE',payload:[...jumpEx[0]]})
               dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item,peek,groupId}})
               dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
               if (type.includes('onChild')) onChild()
@@ -250,8 +269,9 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
           }
           
           if (isMother|| ( item?.mother|| item?.subMother)) setactiveSlide(0)
-          dispatch({type: 'REMOVE_RISK_ANSWER',payload:{questionId:[item.id,...filterExcludeJump()]}})
-          dispatch({type: 'ANSWER_REMOVE',payload:filterExcludeJump()})
+          dispatch({type: 'REMOVE_RISK_ANSWER',payload:{questionId:[item.id,...jumpEx[0]]}})
+          dispatch({type: 'REMOVE_CHECKLIST_CHILD',payload:{groupId,questionId:[...jumpEx[1]]}})
+          dispatch({type: 'ANSWER_REMOVE',payload:[...jumpEx[0]]})
           dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item,peek,groupId}})
           dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
           if (type.includes('openSheet')) openSheet()
@@ -269,12 +289,14 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
       }
 
       function removeGoBack() {
-
+        
         function onConfirm() {
+          const jumpEx = filterExcludeJump()
           //console.log('teste3',filterJump() == data)
-          console.log('filterExcludeJump',filterExcludeJump())
-          dispatch({type: 'ANSWER_REMOVE',payload:filterExcludeJump()})
-          dispatch({type: 'REMOVE_RISK_ANSWER',payload:{questionId:[item.id,...filterExcludeJump()],parentId:item.parent}})
+          console.log('filterExcludeJump',jumpEx[0])
+          dispatch({type: 'ANSWER_REMOVE',payload:jumpEx[0]})
+          dispatch({type: 'REMOVE_CHECKLIST_CHILD',payload:{groupId,questionId:[...jumpEx[1]]}})
+          dispatch({type: 'REMOVE_RISK_ANSWER',payload:{questionId:[item.id,...jumpEx[0]],parentId:item.parent}})
           onGoBack()
         }
 
@@ -342,28 +364,40 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
     function filterJump() {
       var newData = [...data]
       newData = clone(newData)
+      var mother = false
 
       const newAnswers = [...setAnswer()]
-      onJumpData().map(i=>{
-        const ansInd = newAnswers.findIndex(fi=>fi.questionId==i.questionId)
-        if (ansInd == -1 || (newAnswers[ansInd] && (newAnswers[ansInd].selected == i.selected || !newAnswers[ansInd].selected))) {
-          if (i?.g && i.g.length > 0) newData = [...newData.filter(fi=>fi.id==i.questionId||!i.g.includes(fi.group))]
-          if (i?.q && i.q.length > 0) newData = [...newData.filter(fi=>!i.q.includes(fi.id))]
-        }
-      })
+      newData.filter(i=>(i?.mother || i?.subMother)).map(i=>{
+            if (newAnswers.findIndex(fi=>fi.questionId==i.id) == -1 || (newAnswers.findIndex(fi=>fi.questionId==i.id) != -1 && !newAnswers[newAnswers.findIndex(fi=>fi.questionId==i.id)]?.selected)) mother = true
+        })
+      if (mother) newData = [...data.filter(i=>i?.mother || i?.subMother)]
+      else {
+        onJumpData().map(i=>{
+          const ansInd = newAnswers.findIndex(fi=>fi.questionId==i.questionId)
+          if (ansInd == -1 || (newAnswers[ansInd] && (newAnswers[ansInd].selected == i.selected || !newAnswers[ansInd].selected || (Array.isArray(newAnswers[ansInd].selected) && newAnswers[ansInd].selected.includes(i.selected))))) {
+            if (i?.g && i.g.length > 0) newData = [...newData.filter(fi=>fi.id==i.questionId||!i.g.includes(fi.group))]
+            if (i?.q && i.q.length > 0) newData = [...newData.filter(fi=>!i.q.includes(fi.id))]
+          }
+        })
+      }
       return [...newData]
     }
+    
 
     function filterExcludeJump() {
       const array = [];
+      const arrayAll = [];
       const jump = [];
       filterJump().map((item)=>{
         jump.push(item.id)
       })
       data.map(itm=>{
-        if (!jump.includes(itm.id)) array.push(itm.id)
+        if (!jump.includes(itm.id)) {
+          array.push(itm.id)
+          arrayAll.push(itm)
+        }
       })
-      return array
+      return [array,arrayAll]
     }
 
 
@@ -387,6 +421,13 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
           const Value = MODAL_DATA[0]
           MODAL_DATA.splice(0,1)
 
+          //if (&& !riskAnswer.risks[MODAL_DATA.item.risk]) 
+          console.log(!!riskAnswer.risks[Value.item.risk]) 
+          if (!!riskAnswer.risks[Value.item.risk]) {
+            const callback = {item:Value.item,data:{},answer:{selected:peek,questionId:item.id,groupId}}
+            onChooseRisk({sheetOpen,modalData:MODAL_DATA,back:back?[...back,callback]:[callback]})
+            return
+          }
           setTimeout(() => {
             reactModal.alert({
               confirmButton:'Adicionar',
@@ -414,12 +455,13 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
       }
 
       function removeAnswer(type) {
-
+        const jumpEx = filterExcludeJump()
         function onConfirm() {
           if (isMother|| ( item?.mother|| item?.subMother)) setactiveSlide(0)
-          dispatch({type: 'REMOVE_RISK_ANSWER',payload:{questionId:[...filterExcludeJump()]}})
+          dispatch({type: 'REMOVE_RISK_ANSWER',payload:{questionId:[...jumpEx[0]]}})
           dispatch({type: 'REMOVE_RISK_ANSWER_MULT',payload:{questionId:item.id,peek}})
-          dispatch({type: 'ANSWER_REMOVE',payload:filterExcludeJump()})
+          dispatch({type: 'REMOVE_CHECKLIST_CHILD',payload:{groupId,questionId:[...jumpEx[1]]}})
+          dispatch({type: 'ANSWER_REMOVE',payload:jumpEx[0]})
           dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item,peek,groupId}})
           dispatch({type: 'ANSWER_MULT',payload:{peek,itemId:item.id,groupId}})
           if (type.includes('openSheet')) openSheet()
@@ -448,7 +490,6 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
           return
         }
 
-        console.log(answers)
         dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:{...item,peek,groupId}})
         dispatch({type: 'ANSWER_MULT',payload:{peek,itemId:item.id,groupId}})
         openSheet()

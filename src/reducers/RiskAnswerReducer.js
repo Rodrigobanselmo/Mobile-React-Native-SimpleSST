@@ -187,7 +187,7 @@ export default (state = initialState, action) => {
         // return {...actualState};
 
         case 'LOGOUT_RISK_ANSWER':
-            return {...initialState};
+        return {...initialState};
 
         default:
         return state;

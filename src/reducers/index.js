@@ -9,7 +9,7 @@ import RiskAnswerReducer from './RiskAnswerReducer';
 import RiskPositionReducer from './RiskPositionReducer';
 import HeaderReducer from './HeaderReducer';
 import ChecklistReducer from './ChecklistReducer';
-import JumpReducer from './JumpReducer';
+import AllModelReducer from './AllModelReducer';
 import ObsReducer from './ObsReducer';
 
 export default combineReducers({
@@ -23,6 +23,6 @@ export default combineReducers({
     checklist: ChecklistReducer,
     header: HeaderReducer,
     riskPosition: RiskPositionReducer,
-    jump: JumpReducer,
+    allModels: AllModelReducer,
     obs: ObsReducer,
 });

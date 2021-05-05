@@ -27,7 +27,7 @@ export const ItemContainer = styled.TouchableOpacity`
 `;
 
 export const TextGroup = styled.Text`
-  color: ${({theme})=>theme.text.fourth};
+  color: ${({theme})=>theme.text.third};
   flex: 1;
   margin-left: 20px;
   font-size:20px;

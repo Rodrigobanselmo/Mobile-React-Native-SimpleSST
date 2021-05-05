@@ -10,7 +10,7 @@ import {CardContainer} from './cardContainer'
 import {BackCard} from './backCard'
 import {NoRiskComponent,RiskComponent,TitleText,AddRecComponent,TitleRecText} from './riskComponent'
 import {BackGroupView,CardView,Container,ContainerSafe,SheetHandle,SheetHeaderCont,SheetHeader,SheetBody} from './styles';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
@@ -112,14 +112,19 @@ const ContainerButtons = styled(View)`
 const windowHeight = Dimensions.get('window').height
 const windowWidth = Dimensions.get('window').width
 
-export default function Card({children,navigation, ...restProps }) {
+export default function Card({children,navigation,dispatch, ...restProps }) {
   const themeContext = useContext(ThemeContext);
   const header = useSelector(state => state.header);
   
+  function leftPress() {
+    navigation.navigate('CardConfig')
+    //dispatch({type:'CHECKLIST_LOGOUT'})
+  }
+
   return (
         <ContainerSafe {...restProps}>
           <StatusBar backgroundColor={themeContext.background.card} barStyle="dark-content"/>
-          <Header text={header} type="Close" secondScreenName={'CardSummary'} navigation={navigation} secondIcon /* iconProps={{color:themeContext.primary.lighter}}  */secondIconProps={{color:themeContext.primary.lighter}}/>
+          <Header iconProps={{name:'Config'}} leftOnPress={leftPress} text={header} type="Close" secondScreenName={'CardSummary'} secondIcon navigation={navigation} /* iconProps={{color:themeContext.primary.lighter}}  secondIconProps={{color:themeContext.primary.lighter}}*/ />
           <View style={{height:(windowHeight-60),width:'100%'}}>
             {children}
           </View>
@@ -144,7 +149,7 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
       return CheckListData.data[_key]?.jump ?CheckListData.data[_key].jump:[]
     }
 
-    const memoJump = React.useMemo(() => onJumpData(), [group]);
+   // const memoJump = React.useMemo(() => onJumpData(), [group]);
 
     const CARD_WIDTH =windowWidth*0.85
     const CARD_HEIGHT =(windowHeight-70)*0.85;
@@ -174,7 +179,7 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
       })
       if (mother) newData = [...data.filter(i=>i?.mother || i?.subMother)]
       else {
-        memoJump.map(i=>{
+        onJumpData().map(i=>{
           const ansInd = answers.findIndex(fi=>fi.questionId==i.questionId)
           if (ansInd == -1 || (answers[ansInd] && (answers[ansInd].selected == i.selected || !answers[ansInd].selected || (Array.isArray(answers[ansInd].selected) && answers[ansInd].selected.includes(i.selected))))) {
             if (i?.g && i.g.length > 0) newData = [...newData.filter(fi=>fi.id==i.questionId||!i.g.includes(fi.group))]
@@ -187,13 +192,15 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
         return (
           CheckListData.data[_key].groups.indexOf(a.group) - CheckListData.data[_key].groups.indexOf(b.group)
         );
-    });
+      });
     
 
       return [...sortedObj]
     }
+
+    const cardsDataConst = cardsData();
     
-    const isMother = cardsData().length == 1 && (cardsData()[0]?.mother ||cardsData()[0]?.subMother) ?cardsData().length:cardsData().length+1
+    const isMother = cardsDataConst.length == 1 && (cardsDataConst[0]?.mother ||cardsDataConst[0]?.subMother) ?cardsDataConst.length:cardsDataConst.length+1
 
     
     useEffect(() => {
@@ -238,31 +245,8 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
 
     const onOpenSheet = () => {
       sheetRef.current.snapTo(1)
-      dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:isMother == 1 ?cardsData()[activeIndex]:cardsData()[activeIndex-1]})
-      //console.log('index',cardsData()[activeIndex].action.q_1.data)
-      //console.log('index',answers[answers.findIndex(i=>i.questionId==data[activeIndex].id)])
+      dispatch({type: 'ADD_RISK_ANSWER_POSITION',payload:isMother == 1 ?cardsDataConst[activeIndex]:cardsDataConst[activeIndex-1]})
     }
-
-    // const onConfirmed = () => {
-    //   if(data[activeIndex]?.selected && (data[activeIndex].selected === 'yes' || data[activeIndex].selected === 'na' || data[activeIndex].selected === 'no')) {
-    //     dispatch({type: 'ANSWER_CONFIRM',payload:{itemId:data[activeIndex].id,groupId}})
-    //   } else reactModal.animated({text:'Selecione uma resposta para confirmar.'})
-    // };
-
-    // const animatedInitialButton = animatedButton.interpolate({
-    //   inputRange:[0,1],
-    //   outputRange:[themeContext.status.inactive,themeContext.primary.lighter]
-    // })
-
-    // function onAnimatedButton(toValue) {
-    //   if(toValue == 1) setSecondary(true)
-    //   if(toValue == 0) setSecondary(false)
-    //   AnimatedReact.timing(animatedButton, {
-    //       toValue,
-    //       duration: 600,
-    //       useNativeDriver: false,
-    //   }).start();
-    // }
 
     function FlingGesture({children}) {
       return (
@@ -294,11 +278,11 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
         <Container >
           {backCardGroup &&
             <BackGroupView animation="fadeIn" duration={1000} style={{height:CARD_HEIGHT+23}}>
-              <BackCard setId={setId} dispatch={dispatch} setactiveSlide={setactiveSlide} groupIndex={_key} data={CheckListData.data}/>
+              <BackCard setId={setId} dispatch={dispatch} setactiveSlide={setactiveSlide} groupIndex={_key} answers={answers} cardsData={cardsDataConst} _key={_key} data={CheckListData.data}/>
             </BackGroupView>
           }
         
-          <CardContainer isMother={isMother == 1} setactiveSlide={setactiveSlide} groupIndex={_key} onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} group={group} groupId={groupId} CARD_WIDTH={CARD_WIDTH} previewIndex={previewIndex} data={cardsData()} CARD_HEIGHT={CARD_HEIGHT} activeIndex={activeIndex} dispatch={dispatch} CHECK_LIST_MODEL={CHECK_LIST_MODEL} animatedValue={animatedValue} VISIBLE_ITEMS={VISIBLE_ITEMS}  />
+          <CardContainer isMother={isMother == 1} setactiveSlide={setactiveSlide} groupIndex={_key} onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} group={group} groupId={groupId} CARD_WIDTH={CARD_WIDTH} previewIndex={previewIndex} data={cardsDataConst} CARD_HEIGHT={CARD_HEIGHT} activeIndex={activeIndex} dispatch={dispatch} CHECK_LIST_MODEL={CHECK_LIST_MODEL} animatedValue={animatedValue} VISIBLE_ITEMS={VISIBLE_ITEMS}  />
 
           <View style={{height:CONTROLLER_HEIGHT,width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
             <TouchableHighlight activeOpacity={0.5} underlayColor={themeContext.background.hover} style={{zIndex:1000,padding:9,borderRadius:30}} onLongPress={() => {setactiveSlide(0)}} onPress={() => {if (activeIndex!== 0) setactiveSlide(activeIndex-1)}}>

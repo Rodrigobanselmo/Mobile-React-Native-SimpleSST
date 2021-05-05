@@ -19,6 +19,12 @@ export default function Icons({name,...props}) {
 
         case 'Close':
             return <AntDesign name={'close'} {...props} />
+        case 'Config':
+            return <AntDesign name={'setting'} {...props} />
+        case 'Board':
+            return <MaterialCommunityIcons name={'clipboard-check-outline'} {...props} />
+        case 'Edit':
+            return <AntDesign name={'edit'} {...props} />
         case 'Check':
             return <Ionicons name={'ios-checkmark-circle-outline'} {...props} />
         case 'Warn':

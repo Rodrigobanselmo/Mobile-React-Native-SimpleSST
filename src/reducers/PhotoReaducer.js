@@ -84,7 +84,7 @@ export default (state = initialState, action) => {
         return [...photos];
 
         case 'LOGOUT_PHOTO':
-            return {...initialState};
+        return [];
 
         default:
         return state;

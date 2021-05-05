@@ -40,6 +40,12 @@ export const Circle = styled.View`
   ${props => props.fill==='confirmed' && css`
     background-color:${({theme})=>theme.primary.lighter};
   `}
+
+  ${props => props.inactive && css`
+    background-color:${({theme})=>theme.background.back};
+    opacity:0.7;
+
+  `}
   ${(props) => (props.fill==='yes' || props.fill==='no' || props.fill==='na') && css`
     border: 4px ${({theme})=>theme.primary.lighter} solid;
   `}

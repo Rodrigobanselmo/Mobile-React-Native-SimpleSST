@@ -11,6 +11,7 @@ export default ({navigation}) => {
     const [initializing, setInitializing] = useState(true);
     const [userLogin, setUserLogin] = useState(false);
     const [_,navigationReset] = useAuth(initializing,setInitializing,setUserLogin)
+    const checklist = useSelector(state => state.checklist);
 
     useEffect(()=> {
 
@@ -18,14 +19,17 @@ export default ({navigation}) => {
 
       setUserLogin(false);
       if (initializing) {null}
-      else if (/*  !userLogin */false ) {
+      else if (!userLogin) {
+      //else if (false) {
         navigationReset({screen:'SignStack'})
       } else if (userLogin.emailVerified) {
+        if (checklist && checklist.name) navigationReset({screen:'Card'})
+        else navigationReset({screen:'TabStack'})
         //navigationReset({screen:'TabStack'})
-        navigationReset({screen:'Card'})
+        // navigationReset({screen:'Card'})
       } else {
-        navigationReset({screen:'Card'})
-        //navigationReset({screen:'VerificationStack'})
+        // navigationReset({screen:'Card'})
+        navigationReset({screen:'VerificationStack'})
       }
     }, [initializing]);
 
