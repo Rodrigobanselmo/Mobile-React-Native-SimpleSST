@@ -9,6 +9,10 @@ export default (state = initialState, action) => {
 
 
     switch(action.type) {
+
+        case 'CREATE_RISK_ANSWER_POSITION':
+        return {...action.payload};
+
         case 'ADD_RISK_ANSWER_POSITION':
             var actualState = {...state}
             actualState.position = {...action.payload}

@@ -7,8 +7,9 @@ import styled, {css} from "styled-components/native";
 import Donut from '../../../components/donutComponents/donut';
 import {Header} from '../../../components/basicComponents/Header';
 import {NormalizeData} from '../../../helpers/DataHandler';
-import {onGetAllChecklistData} from './func';
+import {onGetAllChecklistData,onGetChecklistData} from './func';
 import { useSelector, useDispatch } from 'react-redux';
+import {ButtonInitial} from '../../../components/basicComponents/Button';
 
 const ChecklistContainer = styled.TouchableOpacity`
   background-color: ${({theme})=>theme.background.paper};
@@ -73,12 +74,16 @@ export default function App({navigation}) {
   useEffect(() => {
     onGetAllChecklistData({user,reactModal,navigation,dispatch})
   }, [])
+
+  function onEdit(item) {
+    onGetChecklistData({item,user,reactModal,navigation,dispatch})
+  }
   
   function ChecklistComponent({ item,index }) {
-    const date = new Date(parseInt(item?.creation?.seconds.toString() + item?.creation?.nanoseconds.toString().substring(0,3)))
+    const date = new Date(parseInt(item.creation.seconds.toString() + item.creation.nanoseconds.toString().substring(0,3)))
 
     return (
-      <ChecklistContainer activeOpacity={0.7} onPress={()=>setSelected(selected?null:item.id)}>
+      <ChecklistContainer activeOpacity={0.7} onPress={()=>setSelected(selected==item.id?null:item.id)}>
         <View style={{alignItems:"center",flexDirection:'row'}}>
           <View style={{flex:1}}>
             <TextTitle>{item.name}</TextTitle>
@@ -92,17 +97,24 @@ export default function App({navigation}) {
           <>
             <TextInfoAdd style={{}} numberOfLines={1}>Informações Adicionais</TextInfoAdd>
             <TextSub style={{marginTop:15}} >Modelo Geral:</TextSub>
-            <TextSubSub line style={{marginTop:6}} >{item?.title}</TextSubSub>
+            <TextSubSub  style={{marginTop:4}} >{item?.title}</TextSubSub>
             <TextSub style={{marginTop:15}} >Criado por:</TextSub>
-            <TextSubSub style={{marginTop:6}} >{item?.user}</TextSubSub>
+            <TextSubSub style={{marginTop:4}} >{item?.user}</TextSubSub>
             <TextSub style={{marginTop:15}} >Data de criação:</TextSub>
-            <TextSubSub style={{marginTop:6}} >{NormalizeData(date,'string')}</TextSubSub>
+            <TextSubSub style={{marginTop:4}} >{NormalizeData(date,'string')}</TextSubSub>
+            <ButtonInitial
+              secondary={true}
+              style={{marginBottom:0,marginTop:20}}
+              onPress={()=>onEdit(item)}
+              scale={0.6}
+              elevation={false}
+              text='Editar'
+            />
           </>
         }
       </ChecklistContainer>
     )
   }
-
 
   
   return (
@@ -111,7 +123,7 @@ export default function App({navigation}) {
       {/* <ScrollView showsVerticalScrollIndicator={false} style={{width:'100%'}}> */}
       <Header text='Verificar Email' />
       <FlatList
-        data={allModels}
+        data={allModels.filter(i=>i.userId == user.uid).sort(function(a, b) { return -(a.creation.seconds - b.creation.seconds);}).slice(0,5)}
         renderItem={ChecklistComponent}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}

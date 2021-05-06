@@ -51,6 +51,7 @@ Summary.Data = function SummaryData({navigation}) {
   const checklist = useSelector(state => state.checklist);
   const answers = useSelector(state => state.answer);
   const dispatch = useDispatch();
+  const reactModal = useReactModal();
   const themeContext = useContext(ThemeContext);
 
   const MapAnswer = ({index,item,group,realItems}) => {
@@ -65,7 +66,7 @@ Summary.Data = function SummaryData({navigation}) {
     }
     
     function onNavigate() {
-      if (inactive) return
+      if (inactive) return reactModal.animated({type:'warn',text:'Pergunta inativa.'})
 
       dispatch({type:'SET_HEADER',payload:group.group})
       navigation.navigate('CardMain',{groupId:group.id,cardIndex:index+1})

@@ -10,7 +10,7 @@ const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
     stateReconciler: hardSet,
-    blacklist: ['user','risk','answer','model','photo','riskAnswer','riskData','riskPosition','header','allModels','obs'] // user will not be persisted    ,'checklist'
+    blacklist: ['user','risk','answer','model','photo','riskAnswer','riskData','riskPosition','header','allModels','obs','company'] // user will not be persisted    ,'checklist'
 };
 
 const pReducer = persistReducer(persistConfig, rootReducer);

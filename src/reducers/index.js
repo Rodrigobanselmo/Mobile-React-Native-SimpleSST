@@ -11,6 +11,7 @@ import HeaderReducer from './HeaderReducer';
 import ChecklistReducer from './ChecklistReducer';
 import AllModelReducer from './AllModelReducer';
 import ObsReducer from './ObsReducer';
+import CompanyReducer from './CompanyReducer';
 
 export default combineReducers({
     risk: RiskReducer, 
@@ -25,4 +26,5 @@ export default combineReducers({
     riskPosition: RiskPositionReducer,
     allModels: AllModelReducer,
     obs: ObsReducer,
+    company: CompanyReducer,
 });

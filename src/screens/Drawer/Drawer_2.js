@@ -50,7 +50,7 @@ const RISK_FACTORS = [
 
 export default function App() {
 
-  changenavigationBarColor('#0d0d0d', false)
+  //changenavigationBarColor('#0d0d0d', false)
 
 
   const windowHeight = Dimensions.get('window').height

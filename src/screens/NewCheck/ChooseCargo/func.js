@@ -1,4 +1,4 @@
-import {GetAllCompanies,GetCompany} from '../../../services/firestoreChecklist'
+import {GetAllCompanies} from '../../../services/firestoreChecklist'
 import {infoNet} from '../../../helpers/infoNet'
 
 export function onGetAllCompanies({setData,user,reactModal,navigation}) {
@@ -25,17 +25,9 @@ export function onGetCompany({item,user,reactModal,navigation,dispatch}) {
     GetCompany(user.company.id,item.CNPJ,checkSuccess,checkError)
     
     function checkSuccess(response) {
-        let name = item.identificacao
-        if (!name) {
-          name = item.fantasia
-        }
-        if (!name) {
-          name = item.nome
-        }
         dispatch({type:'CREATE_COMPANY',payload:response})
-        dispatch({type:'COMPANY_CHECKLIST',payload:{cnpj:item.CNPJ,companyName:name}})
         reactModal.close()
-        navigation.navigate('ChooseCargo')
+        navigation.navigate('ChooseCompany')
     }
 
     function checkError(error) {

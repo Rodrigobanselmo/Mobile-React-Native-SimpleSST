@@ -38,11 +38,13 @@ export const Circle = styled.View`
   `}
   
   ${props => props.fill==='confirmed' && css`
+    opacity:0.8;
     background-color:${({theme})=>theme.primary.lighter};
+    border:1px ${({theme})=>theme.primary.main} solid;
   `}
 
   ${props => props.inactive && css`
-    background-color:${({theme})=>theme.background.back};
+    background-color:${({theme})=>theme.background.hover};
     opacity:0.7;
 
   `}

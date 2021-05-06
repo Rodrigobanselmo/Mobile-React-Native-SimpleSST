@@ -27,6 +27,7 @@ export default ({navigation}) => {
   const riskPosition = useSelector(state => state.riskPosition);
   const model = useSelector(state => state.model);
   const header = useSelector(state => state.header);
+  const company = useSelector(state => state.company);
 
   const [editing, setEditing] = useState('')
   const [data, setData] = useState(checklist.name)
@@ -82,7 +83,7 @@ export default ({navigation}) => {
 
   function SaveChecklist() {
     const allData ={
-      answer,obs,photo,riskAnswer,riskPosition,header,model
+      answer,obs,photo,riskAnswer,riskPosition,header,model,company
     }
     //console.log(checklist)
     onSaveChecklist({checklist:checklist,percentage:onPercentage(),allData:allData,user,reactModal,navigation,dispatch})
@@ -116,7 +117,9 @@ export default ({navigation}) => {
       <StatusBar backgroundColor={themeContext.background.back} barStyle="dark-content"/>
       <Header secondScreenName={'CardMain'} secondIconProps={{name:'Close'}} secondIcon text='Novo Checklist' navigation={navigation} style={{marginBottom:8}}/>
       {/* <Header secondScreenName={'CardMain'} secondIconProps={{name:'Board'}} secondIcon text='Novo Checklist' navigation={navigation} style={{marginBottom:8}}/> */}
-      <ComponentView>
+      <ComponentView
+        contentContainerStyle={{ flexGrow: 1,justifyContent:'space-between'}}
+      >
         <TextTitle>Nome</TextTitle>
         {!editing ?
           <TextAreaShow onPress={()=>setEditing(data)}>{data}</TextAreaShow>
@@ -167,17 +170,18 @@ export default ({navigation}) => {
             </View>
             <TextInfo>{checklist?.cnpj ?? '00/00000-0000-00'}</TextInfo>
             <TextTitle>Indentificação</TextTitle>
-            <TextInfo>{checklist?.cnpj ?? 'O Nome da EMpresa ë o que Voce quer que seja'}</TextInfo>
+            <TextInfo>{checklist?.companyName ?? 'O Nome da EMpresa ë o que Voce quer que seja'}</TextInfo>
             <TextTitle>Direcionamento</TextTitle>
             <TouchableOpacityAdd edit>
               <TextAdd>Setores e Cargo</TextAdd>
             </TouchableOpacityAdd>
           </>
         }
+        <View>
         <ButtonInitial
           secondary={true}
           disabledButton={data.length>0?false:true}
-          style={{marginBottom:0,marginHorizontal:20}}
+          style={{marginBottom:0,marginHorizontal:20,}}
           onPress={SaveChecklist}
           scale={0.7}
           elevation={false}
@@ -193,6 +197,7 @@ export default ({navigation}) => {
           elevation={false}
           text='DELETAR'
         />
+        </View>
       </ComponentView>
     </Container>
   );

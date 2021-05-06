@@ -342,8 +342,8 @@ export function Modal(fator,item,onClose,answers,riskPosition,dispatch,callBack,
 
   return (
     <View style={{}}>
-      <Text style={{fontWeight:'bold',marginBottom:12,width:windowWidth*0.8,maxWidth:400}}>{fator}</Text>
-      <ProbText style={{marginBottom:8}}>Exposião</ProbText>
+      <Text style={{fontSize:16,fontWeight:'bold',marginBottom:12,width:windowWidth*0.8,maxWidth:400}}>{fator}</Text>
+      <ProbText style={{marginBottom:8}}>Exposição</ProbText>
       <ExpoTouch activeOpacity={0.7} onPress={()=>setExpo('o')} active={'o' == expo} >
         <ProbText adjustsFontSizeToFit numberOfLines={1} active={'o' == expo}>Ocasional</ProbText>
       </ExpoTouch>
@@ -392,15 +392,16 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
   const riskPosition = useSelector(state => state.riskPosition);
   const [riskID, setRiskID] = useState(false)
   
+  console.log(riskAnswer)
   // aqui me da o valor de ex:'q_1'
   //erro aqui
   const selectedAnswer = answers[answers.findIndex(i=>i.questionId==riskPosition.position.id)] ? answers[answers.findIndex(i=>i.questionId==riskPosition.position.id)].selected : null
 
-  function onChooseRisk(fator,item) {  //item.risk
+  function onChooseRisk(factor,item) {  //item.risk
     reactModal.alert({
       confirmButton:'Adicionar',
       optionHide:true,
-      childrenComponent:(onConfirm,onClose)=>Modal(fator,item,onClose,answers,riskPosition,dispatch),
+      childrenComponent:(onConfirm,onClose)=>Modal(factor,item,onClose,answers,riskPosition,dispatch),
       onConfirm:()=>{},
     })
   }
@@ -463,16 +464,51 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
       return [...returnedData.filter((item, i) => returnedData.findIndex(i=>i.risk==item.risk) === i)]
   }
 
+  function onEditRisk(factor,item) {
+    onChooseRisk(factor,{...item,prob:riskAnswer.risks[item.risk].prob,primary:riskAnswer.risks[item.risk].primary,exp:riskAnswer.risks[item.risk].exp})
+  }
+
+  function onDeleteRisk(riskId) {
+    function onConfirm() {
+      dispatch({type: 'DELETE_RISK',payload:riskId})
+      setRiskID(false)
+    }
+    
+    reactModal.alert({
+      title:'Deletar Checklist',
+      text:`Você tem certeza que deseza deletar o fator de risco ${risk[riskId].name}?`,
+      confirmButton:'Deletar',
+      warn:true,
+      option:true,
+      onConfirm:onConfirm,
+    })
+  }
+
+  function HAS_MANDATORY(riskId) {
+    var bool = false
+    riskAnswer.risks[riskId].created.map(i=>{
+      const categoryIndex =  checklist.data.findIndex(fi=>fi.id==i.groupId)
+      const questionIndex =  checklist.data[categoryIndex].questions.findIndex(fi=>fi.id==i.questionId)
+      const actionDataIndex =  checklist.data[categoryIndex].questions[questionIndex].action[i.selected].data.findIndex(fi=>fi.risk==riskId)
+      if (actionDataIndex != -1) {
+        if (checklist.data[categoryIndex].questions[questionIndex].action[i.selected].data[actionDataIndex].man) {
+          bool = true
+        }
+      }
+    })
+    return bool
+  }
+
 
   const renderContent = () => {
     return (
-      <SheetBody >
+      <SheetBody windowHeight={windowHeight}>
         {riskParent().map((item,index)=>{
           if (!risk[item.risk]) return
           return(
             <View style={{marginBottom:index+1 == riskParent().length? 25:15}} key={item.risk}>
               {index == 0 && <TitleText>Fatorres de Risco Selecionados</TitleText>}
-              <RiskComponent onLongPress={()=>console.log(riskData)} onPress={()=>setRiskID(riskID?false:item.risk)} key={item} text={risk[item.risk]?.name} type={risk[item.risk]?.type}>
+              <RiskComponent onLongPress={()=>console.log(riskData)} onPress={()=>setRiskID(riskID==item.risk?false:item.risk)} key={item} text={risk[item.risk]?.name} type={risk[item.risk]?.type}>
                 {riskID == item.risk && ['font','rec','med'].map((type)=>{
                   return ( 
                     <View key={type}>
@@ -522,6 +558,29 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
                     </View>
                   )
                 })}
+                {riskID == item.risk && 
+                  <>
+                    <ButtonInitial
+                      secondary={true}
+                      style={{marginBottom:0,marginTop:30}}
+                      onPress={()=>onEditRisk(risk[item.risk]?.name,item)}
+                      scale={0.55}
+                      elevation={false}
+                      text='EDITAR'
+                    />
+                    {!HAS_MANDATORY(item.risk) &&
+                      <ButtonInitial
+                        secondary={true}
+                        style={{marginBottom:10,backgroundColor:'transparent' ,borderRadius:10,borderColor:themeContext.text.fourth,borderWidth:1}}
+                        onPress={()=>onDeleteRisk(item.risk)}
+                        textStyle={{color:themeContext.text.fourth}}
+                        scale={0.55}
+                        elevation={false}
+                        text='DELETAR'
+                      />
+                    }
+                  </>
+                }
               </RiskComponent>
 
             </View>
@@ -606,7 +665,7 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
     <>
       <BottomSheet
         ref={sheetRef}
-        snapPoints={[0, 600,400]}
+        snapPoints={[0, windowHeight*0.92]}
         springConfig={{        
           stiffness: 25,
         }}

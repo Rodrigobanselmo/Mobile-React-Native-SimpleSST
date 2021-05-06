@@ -16,6 +16,7 @@ export function onSaveChecklist({checklist,percentage,allData,user,reactModal,na
       dispatch({type: 'LOGOUT_PHOTO'})
       dispatch({type: 'LOGOUT_RISK_ANSWER'})
       dispatch({type: 'LOGOUT_RISK_POSITION'})
+      dispatch({type: 'LOGOUT_COMPANY'})
       navigation.dispatch(
         CommonActions.reset({
           index: 0,

@@ -198,7 +198,7 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
               dispatch({type: 'CHOOSE_MULT_RISK_ANSWER',payload:back})
               item.action[peek].data.map(i=>{
                 if (riskAnswer.risks[i.risk]) {
-                  dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item:i,data:{},answer:{selected:peek,questionId:item.id,groupId}}})
+                  dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item:i,man:true,data:{},answer:{selected:peek,questionId:item.id,groupId}}})
                 }
               })
               return
@@ -209,7 +209,7 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
             dispatch({type: 'ANSWER',payload:{peek,itemId:item.id,groupId}})
             item.action[peek].data.map(i=>{
               if (riskAnswer.risks[i.risk]) {
-                dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item:i,data:{},answer:{selected:peek,questionId:item.id,groupId}}})
+                dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item:i,man:true,data:{},answer:{selected:peek,questionId:item.id,groupId}}})
               }
             })
             onChild()
@@ -412,7 +412,7 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
             dispatch({type: 'ANSWER_MULT',payload:{peek,itemId:item.id,groupId}})
             item.action[peek].data.map(i=>{
               if (riskAnswer.risks[i.risk]) {
-                dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item:i,data:{},answer:{selected:peek,questionId:item.id,groupId}}})
+                dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item:i,man:true,data:{},answer:{selected:peek,questionId:item.id,groupId}}})
               }
             })
             return

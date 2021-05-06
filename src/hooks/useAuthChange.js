@@ -80,6 +80,7 @@ const useAuth = (initializing,setInitializing,setUser) => {
     } else {
       if (initializing) setInitializing(false);
     }
+    console.log('userLogin?.email',userLogin?.email)
     if (setUser && userLogin?.email) setUser(userLogin)
   }
 

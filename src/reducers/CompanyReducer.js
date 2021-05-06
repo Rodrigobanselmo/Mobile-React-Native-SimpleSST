@@ -1,4 +1,4 @@
-const initialState = []//pagina home
+const initialState = {}
 
 
 export default (state = initialState, action) => {
@@ -7,8 +7,8 @@ export default (state = initialState, action) => {
 
     switch(action.type) {
         
-        case 'CREATE_ALL_MODELS':
-        return [...action.payload];
+        case 'CREATE_COMPANY':
+        return {...action.payload};
 
         default:
         return state;

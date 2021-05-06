@@ -6,6 +6,8 @@ export default (state = initialState, action) => {
 
 
     switch(action.type) {
+        case 'CREATE_PHOTO':
+        return [...action.payload];
 
         case 'PHOTO_ADD_EDIT':
             var photos = [...state]

@@ -143,7 +143,8 @@ export function EmailVerification(email) {
         return false
     }  
 }
-export function TotalNumVerification(str,num) {
+
+export function TotalNumVerification(str,num) { //verifica somente os numero excluindo caracteres especiais
     if (str) {
         var patt1 = /[0-9]/g;
         var result = str.match(patt1);

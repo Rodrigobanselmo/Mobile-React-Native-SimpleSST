@@ -24,43 +24,18 @@ export default ({navigation}) => {
   const user = useSelector(state => state.user);
 
   useEffect(() => {
-    onGetAllCompanies({setData,user,reactModal,navigation})
+    //onGetAllCompanies({setData,user,reactModal,navigation})
   }, [])
 
   function getCompanyData(item) {
     //console.log(item)
-    onGetCompany({item,user,reactModal,navigation,dispatch})
+   // onGetCompany({item,user,reactModal,navigation,dispatch})
   }
-
-  const renderItem = ({ item,index }) => (
-    <ItemContainer activeOpacity={0.7} last={index == data.length-1} onPress={()=>getCompanyData(item)} >
-        <View style={{flex:1}}>
-          <TextGroup  numberOfLines={2}>{item.name}</TextGroup>
-          <TextGroup style={{fontSize:14}} numberOfLines={1}>{item.CNPJ}</TextGroup>
-        </View>
-        <Icons name="ArrowRight" color={themeContext.text.fourth} size={20}/>
-    </ItemContainer>
-  );
 
   return (
     <Container >
       <StatusBar backgroundColor={themeContext.background.back} barStyle="dark-content"/>
       <Header text='Novo Checklist' type="Back" navigation={navigation} style={{marginBottom:15}}/>
-      <InputSearch
-        placeholder="Pesquisar..."
-        clearButtonMode='while-editing'
-        keyboardType='default'
-        autoCompleteType='off'
-        value={search}
-        onChangeText={(val)=>setSearch(val)}
-        // returnKeyType="next"
-      />
-      <CheckFlatList
-        data={data.filter(i=>i?.name&&i.name.toLowerCase().normalize("NFD").replace(/[^a-zA-Z0-9s]/g, "").includes( search.toLowerCase().normalize("NFD").replace(/[^a-zA-Z0-9s]/g, "") )||i?.CNPJ&&i.CNPJ.toLowerCase().normalize("NFD").replace(/[^a-zA-Z0-9s]/g, "").includes( search.toLowerCase().normalize("NFD").replace(/[^a-zA-Z0-9s]/g, "") ))}
-        renderItem={renderItem}
-        keyExtractor={item => item.CNPJ}
-        showsVerticalScrollIndicator={false}
-      />
       <ButtonInitial
         secondary={false}
         style={{marginBottom:0,}}

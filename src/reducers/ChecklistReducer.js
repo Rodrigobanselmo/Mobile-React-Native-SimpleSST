@@ -16,6 +16,12 @@ export default (state = initialState, action) => {
         
         return {...list};
 
+        case 'COMPANY_CHECKLIST':
+            var list = {...state}
+            list.cnpj =  action.payload.cnpj
+            list.companyName =  action.payload.companyName
+        return {...list};
+
         case 'REMOVE_CHECKLIST_CHILD':
             var list = {...state}
             var groupId = list.data.findIndex((i)=>i?.id && i.id===action.payload.groupId)

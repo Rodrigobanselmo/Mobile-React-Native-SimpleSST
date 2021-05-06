@@ -2,7 +2,7 @@ const initialState = {
     risks:{
         // 'riskId':{
         //     data:[{id:'',type:'rec',questionId:''}],
-        //     creation:{questionId:'',slected:''},
+        //     created:[{questionId:'',slected:''}],
         //     exp:'',
         //     prob:'',
         //     primary:'',
@@ -20,34 +20,37 @@ export default (state = initialState, action) => {
 
 
     switch(action.type) {
-        case 'ADD_RISK_ANSWER':
-            var actualState = {...state}
+        case 'CREATE_RISK_ANSWER':
+        return {...action.payload};
 
-            actualState.position = {...actualState.position, itemId:action.payload.itemId,groupId:action.payload.groupId,peek:action.payload.peek}
+        // case 'ADD_RISK_ANSWER':
+        //     var actualState = {...state}
 
-            if (action.payload.peekData?.risk) {
-                var dataRisk = []
-                action.payload.peekData.risk.map(i=>{
-                    dataRisk.push({id:i,choosen:false})
-                })
-                actualState.risks[`${action.payload.groupId}-${action.payload.itemId}`] = {
-                    data:[...dataRisk],
-                    peek:action.payload.peek
-                }
-            } else {
-                actualState.risks[`${action.payload.groupId}-${action.payload.itemId}`] = {
-                    data:[],
-                    peek:action.payload.peek
-                }
-            }
+        //     actualState.position = {...actualState.position, itemId:action.payload.itemId,groupId:action.payload.groupId,peek:action.payload.peek}
+
+        //     if (action.payload.peekData?.risk) {
+        //         var dataRisk = []
+        //         action.payload.peekData.risk.map(i=>{
+        //             dataRisk.push({id:i,choosen:false})
+        //         })
+        //         actualState.risks[`${action.payload.groupId}-${action.payload.itemId}`] = {
+        //             data:[...dataRisk],
+        //             peek:action.payload.peek
+        //         }
+        //     } else {
+        //         actualState.risks[`${action.payload.groupId}-${action.payload.itemId}`] = {
+        //             data:[],
+        //             peek:action.payload.peek
+        //         }
+        //     }
            
-            console.log(actualState);
+        //     console.log(actualState);
 
-        return {...actualState};
+        // return {...actualState};
 
         case 'CHOOSE_RISK_ANSWER':
             var actualState = {...state}
-            var data = {questionId:action.payload.answer.questionId,selected:action.payload.answer.selected}
+            var data = {questionId:action.payload.answer.questionId,selected:action.payload.answer.selected,groupId:action.payload.answer.groupId}
             var validate = actualState.risks[action.payload.item.risk]
             var actualStateRisk = validate ? {...validate,created:validate.created?[...validate.created.filter(i=>!(i.questionId == data.questionId && i.selected == data.selected)),{...data}]:[{...data}],...action.payload.data} : {created:[{...data}],data:[],suggest:[],...action.payload.data};
             ['rec','med','font'].map((item)=>{
@@ -113,6 +116,11 @@ export default (state = initialState, action) => {
                 actualState.risks[actionPayload.item.risk] = {...actualStateRisk}
             })
             //delete actualState['await']
+        return {...actualState};
+        
+        case 'DELETE_RISK':
+            var actualState = {...state}
+            delete actualState.risks[action.payload]
         return {...actualState};
 
         case 'REMOVE_RISK_ANSWER':

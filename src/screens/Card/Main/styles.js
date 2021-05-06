@@ -59,6 +59,6 @@ export const SheetHeader = styled.View`
 export const SheetBody = styled.View`
   background-color: ${({theme})=>theme.background.back};
   padding: 3px 16px 16px 16px;
-  min-height: 560px;
+  min-height: ${({windowHeight})=>windowHeight?`${windowHeight*0.92-40}px`:'560px'};
   flex-grow:1;
 `;

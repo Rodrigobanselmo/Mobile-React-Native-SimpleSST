@@ -6,7 +6,9 @@ export default (state = initialState, action) => {
 
 
     switch(action.type) {
-  
+        case 'CREATE_OBS':
+        return [...action.payload];
+        
         case 'ANSWER_OBS':
             var newAnswer = {groupId:action.payload.groupId,questionId:action.payload.itemId,obs:action.payload.value.trim()}
             var list = [...state]

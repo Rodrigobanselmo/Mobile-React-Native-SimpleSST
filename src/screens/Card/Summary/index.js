@@ -11,7 +11,7 @@ import {onChange} from './func';
 
 export default function App({navigation}) {
 
-  changenavigationBarColor('#0d0d0d', false)
+  //changenavigationBarColor('#0d0d0d', false)
 
   const themeContext = useContext(ThemeContext);
   const checklist = useSelector(state => state.checklist);

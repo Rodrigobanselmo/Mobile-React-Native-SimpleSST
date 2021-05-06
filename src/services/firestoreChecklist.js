@@ -2,6 +2,7 @@ import {errorCatch} from './FirestoreCard'
 import firestore from '@react-native-firebase/firestore';
 import firebase from '@react-native-firebase/app';  
 import {v4} from "uuid";
+import {keepOnlyNumbers,formatCPFeCNPJeCEPeCNAE} from '../helpers/StringHandle';
 
 export function GetAllChecklist(companyId,checkSuccess,checkError) {
 
@@ -29,14 +30,45 @@ export function GetAllChecklistData(companyId,checkSuccess,checkError) {
   dataRef.where("id", "==", 'checklistsData').get()
   .then(function(querySnapshot) {
     querySnapshot.forEach(function(doc) {
-      console.log(doc.data().data)
       dataFirebase.push(...doc.data().data)
     })
-    console.log('dataFirebase',dataFirebase)
     checkSuccess([...dataFirebase])
   })
   .catch((error) => {
       checkError(errorCatch(error))
+  });
+
+}
+
+export function GetChecklistData(id,companyId,checkSuccess,checkError) {
+
+  var companyRef = firestore().collection("company").doc(companyId)
+  var dataRef = companyRef.collection('checklists').doc(id)
+  var dataAnswersRef = dataRef.collection('data').doc('0')
+  var data = {};
+  
+  function onGet() {
+    dataAnswersRef.get().then(function(docSnapshots) {
+      if (docSnapshots.exists) {
+        data.data = {...docSnapshots.data()}
+        checkSuccess(data)
+      } else {
+        checkError(`Dados do checklist não encontrado em seu banco de dados.`)
+      }
+    }).catch((error) => {
+      checkError(errorCatch(error))
+    });
+  }
+
+  dataRef.get().then(function(docSnapshots) {
+    if (docSnapshots.exists) {
+      data.checklist = {...docSnapshots.data()}
+      onGet()
+    } else {
+      checkError(`Checklist não encontrado em seu banco de dados.`)
+    }
+  }).catch((error) => {
+    checkError(errorCatch(error))
   });
 
 }
@@ -57,6 +89,23 @@ export function GetAllCompanies(companyId,checkSuccess,checkError) {
       checkError(errorCatch(error))
   });
 
+}
+
+export function GetCompany(companyId,cnpj,checkSuccess,checkError) {
+
+  var dataRef = firestore().collection("company").doc(companyId).collection('companies').doc(keepOnlyNumbers(cnpj))
+
+  dataRef.get()
+  .then(function(docSnapshots) {
+    if (docSnapshots.exists) {
+      checkSuccess(docSnapshots.data())
+    } else {
+      checkError(`A empresa com o CNPJ ${formatCPFeCNPJeCEPeCNAE(keepOnlyNumbers(cnpj))} não é cadastrado em sua empresa ou possui formato inválido`)
+    }
+  })
+  .catch((error) => {
+      checkError(errorCatch(error))
+  });
 }
 
 export function GetChecklist(companyId,itemId,checkSuccess,checkError) {
