@@ -29,7 +29,7 @@ const Input = styled.TextInput`
 
 
 
-export function InputSearch({secure,mask=false,password=false,onSecurityChange,icon=true,iconProps={},iconName='UserEmail',iconCheck=false,focused=false,isValid=true,warnText='',...props}) {
+export function InputSearch({secure,showClean,setCleanFunc,mask=false,password=false,onSecurityChange,icon=true,cleanIconProps={},iconProps={},iconName='UserEmail',iconCheck=false,focused=false,isValid=true,warnText='',...props}) {
   
     const themeContext = useContext(ThemeContext);
     
@@ -37,6 +37,11 @@ export function InputSearch({secure,mask=false,password=false,onSecurityChange,i
         <Container >
             <Icons name={'Search'} size={20} color={themeContext.text.third} {...iconProps}/>
             <Input {...props} />
+            {setCleanFunc && showClean &&
+              <TouchableOpacity onPress={setCleanFunc}>
+                <Icons name={'CloseCircle'} style={{padding:10}} size={20} color={themeContext.text.third} {...cleanIconProps}/>
+              </TouchableOpacity>
+            }
       </Container>
     );
   }

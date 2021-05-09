@@ -1,14 +1,15 @@
-import {GetAllCompanies} from '../../../services/firestoreChecklist'
+import {GetAllEmployee} from '../../../services/firestoreChecklist'
 import {infoNet} from '../../../helpers/infoNet'
 
-export function onGetAllCompanies({setData,user,reactModal,navigation}) {
+export function onGetAllEmployee({setData,company,user,reactModal,navigation,dispatch}) {
 
+    console.log('company',company.selectedWorkplace)
     reactModal.loader()
-    GetAllCompanies(user.company.id,checkSuccess,checkError)
+    GetAllEmployee(user.company.id,company.selectedWorkplace.id,company.selectedWorkplace.cnpj,checkSuccess,checkError)
     
     function checkSuccess(response) {
         reactModal.close()
-        setData([...response])
+        dispatch({type:'CREATE_EMPLOYEE',payload:response})
     }
 
     function checkError(error) {
@@ -19,22 +20,22 @@ export function onGetAllCompanies({setData,user,reactModal,navigation}) {
 
 }
 
-export function onGetCompany({item,user,reactModal,navigation,dispatch}) {
+// export function onGetCompany({item,user,reactModal,navigation,dispatch}) {
 
-    reactModal.loader()
-    GetCompany(user.company.id,item.CNPJ,checkSuccess,checkError)
+//     reactModal.loader()
+//     GetCompany(user.company.id,item.CNPJ,checkSuccess,checkError)
     
-    function checkSuccess(response) {
-        dispatch({type:'CREATE_COMPANY',payload:response})
-        reactModal.close()
-        navigation.navigate('ChooseCompany')
-    }
+//     function checkSuccess(response) {
+//         dispatch({type:'CREATE_COMPANY',payload:response})
+//         reactModal.close()
+//         navigation.navigate('ChooseCompany')
+//     }
 
-    function checkError(error) {
-        setTimeout(() => {
-            reactModal.alert({text:error,title:"Alerta de Erro"})
-        }, 500);
-    }
+//     function checkError(error) {
+//         setTimeout(() => {
+//             reactModal.alert({text:error,title:"Alerta de Erro"})
+//         }, 500);
+//     }
 
-}
+// }
   

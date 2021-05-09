@@ -1,4 +1,4 @@
-import styled from "styled-components/native";
+import styled, {css} from "styled-components/native";
 
 
 export const CheckFlatList = styled.FlatList`
@@ -21,15 +21,20 @@ export const ItemContainer = styled.TouchableOpacity`
   background-color: ${({theme})=>theme.background.paper};
   border-radius:10px;
   elevation:3;
-  min-height:75px;
+  min-height:${props=>props.tree?'60px':'75px'};
   margin-bottom: ${({last})=>last?'20px':'10px'};
-/*   background-color: ${({theme})=>theme.text.third}; */
+  
+  ${props => props.employee && css`
+      background-color: ${({theme})=>theme.background.paper};
+      elevation:0;
+      border: 2px ${props=>props.theme.background.line} solid;
+  `}
 `;
 
 export const TextGroup = styled.Text`
   color: ${({theme})=>theme.text.third};
   flex: 1;
   margin-left: 20px;
-  font-size:20px;
+  font-size:18px;
 /*   background-color: ${({theme})=>theme.text.primary}; */
 `;

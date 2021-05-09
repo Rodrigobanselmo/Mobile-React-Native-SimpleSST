@@ -19,6 +19,8 @@ export default function Icons({name,...props}) {
 
         case 'Close':
             return <AntDesign name={'close'} {...props} />
+        case 'CloseCircle':
+            return <AntDesign name={'closecircleo'} {...props} />
         case 'Config':
             return <AntDesign name={'setting'} {...props} />
         case 'Board':

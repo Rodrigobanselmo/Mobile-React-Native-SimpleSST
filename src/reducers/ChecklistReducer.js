@@ -21,6 +21,12 @@ export default (state = initialState, action) => {
             list.cnpj =  action.payload.cnpj
             list.companyName =  action.payload.companyName
         return {...list};
+ 
+        case 'WORKPLACE_CHECKLIST':
+            var list = {...state}
+            list.workplaceId =  action.payload.workplaceId
+            list.workplaceName =  action.payload.workplaceName
+        return {...list};
 
         case 'REMOVE_CHECKLIST_CHILD':
             var list = {...state}

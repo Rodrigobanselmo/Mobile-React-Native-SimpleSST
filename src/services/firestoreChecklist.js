@@ -91,6 +91,42 @@ export function GetAllCompanies(companyId,checkSuccess,checkError) {
 
 }
 
+export function GetAllEmployee(companyId,workplaceId,cnpj,checkSuccess,checkError) {
+
+  var dataRef = firestore().collection("company").doc(companyId).collection('companies').doc(keepOnlyNumbers(cnpj)).collection('employee')
+  let dataFirebase = []
+  console.log('workplaceId',workplaceId)
+
+  dataRef.where("id", "==", 'reduceRead').get()
+  .then(function(querySnapshot) {
+    querySnapshot.forEach(function(doc) {
+      dataFirebase.push(...doc.data().data.filter(i=>i.workplaceId == workplaceId))
+    })
+    checkSuccess([...dataFirebase])
+  })
+  .catch((error) => {
+      checkError(errorCatch(error))
+  });
+
+}
+
+export function GetWorkplace(companyId,cnpj,workplaceId,checkSuccess,checkError) {
+
+  var dataRef = firestore().collection("company").doc(companyId).collection('companies').doc(keepOnlyNumbers(cnpj)).collection('workplace').doc(workplaceId)
+
+  dataRef.get()
+  .then(function(docSnapshots) {
+    if (docSnapshots.exists) {
+      checkSuccess(docSnapshots.data())
+    } else {
+      checkError(`A empresa com o CNPJ ${formatCPFeCNPJeCEPeCNAE(keepOnlyNumbers(cnpj))} não é cadastrado em sua empresa ou possui formato inválido`)
+    }
+  })
+  .catch((error) => {
+      checkError(errorCatch(error))
+  });
+}
+
 export function GetCompany(companyId,cnpj,checkSuccess,checkError) {
 
   var dataRef = firestore().collection("company").doc(companyId).collection('companies').doc(keepOnlyNumbers(cnpj))

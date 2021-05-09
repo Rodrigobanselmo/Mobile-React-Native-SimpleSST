@@ -2,7 +2,7 @@ const initialState = {
     risks:{
         // 'riskId':{
         //     data:[{id:'',type:'rec',questionId:''}],
-        //     created:[{questionId:'',slected:''}],
+        //     created:[{questionId:'',selected:''}],
         //     exp:'',
         //     prob:'',
         //     primary:'',

@@ -164,9 +164,9 @@ export default ({navigation}) => {
           <>
             <View style={{justifyContent:'space-between',flexDirection:'row',alignItems:'center'}}>
               <TextTitle>CNPJ</TextTitle>
-              <TouchableOpacity>
+              {/* <TouchableOpacity>
                 <Icons style={{paddingRight:20,paddingLeft:20}} name='Edit' size={20} color={themeContext.text.third} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <TextInfo>{checklist?.cnpj ?? '00/00000-0000-00'}</TextInfo>
             <TextTitle>Indentificação</TextTitle>

@@ -10,6 +10,11 @@ export default (state = initialState, action) => {
         case 'CREATE_COMPANY':
         return {...action.payload};
 
+        case 'CREATE_WORKPLACE':
+            var company = {...state}
+            company.selectedWorkplace =  {...action.payload}
+        return {...company};
+
         default:
         return state;
     }

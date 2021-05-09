@@ -310,7 +310,7 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
     );
 }
 
-export function Modal(fator,item,onClose,answers,riskPosition,dispatch,callBack,notDispatch,RiskAnswer) {  //item.risk
+export function Modal({fator,item,onClose,answers,riskPosition,dispatch,callBack,notDispatch,RiskAnswer}) {  //item.risk
 
   const [active, setActive] = useState(item?.prob?item.prob:0)
   const [expo, setExpo] = useState(item?.exp?item.exp:0)
@@ -379,6 +379,76 @@ export function Modal(fator,item,onClose,answers,riskPosition,dispatch,callBack,
   )
 }
 
+export function ModalEmployee(fator,item,onClose,answers,riskPosition,dispatch,callBack,notDispatch,RiskAnswer) {  //item.risk
+
+  const [active, setActive] = useState(item?.prob?item.prob:0)
+  const [expo, setExpo] = useState(item?.exp?item.exp:0)
+  const [primary, setPrimary] = useState(item?.primary?item.primary:false)
+
+  function answerIndex() {
+    if (answers.findIndex(i=>i.questionId==riskPosition.position.id) != -1) return answers[answers.findIndex(i=>i.questionId==riskPosition.position.id)]
+    if (riskPosition.parent[riskPosition.position.id] && answers.findIndex(i=>i.questionId==riskPosition.parent[riskPosition.position.id][riskPosition.parent[riskPosition.position.id].length-1].questionId) !=-1) return answers[answers.findIndex(i=>i.questionId==riskPosition.parent[riskPosition.position.id][riskPosition.parent[riskPosition.position.id].length-1].questionId)]
+  }
+
+  function onConfirm() { //{selected:peek,questionId:item.id,groupId}
+    if (!notDispatch) {
+      if (Array.isArray(answerIndex().selected)) {
+        //const returnedData = []
+        answerIndex().selected.map(ans=>{
+            if (ans && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[ans] && riskPosition.position.action[ans].data) {
+              if (riskPosition.position.action[ans].data.findIndex(i=>i.risk == item.risk) != -1) {
+                dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},answer:{selected:ans,questionId:riskPosition.position.id,groupId:answerIndex().groupId}}})
+              }
+            }
+          })
+        //const newReturn = [...returnedData.filter((item, i) => returnedData.findIndex(i=>i.risk==item.risk) === i)]
+      }
+      else dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},answer:answerIndex()}}) //erro aqui
+    }
+    onClose()
+    if (callBack) callBack({item,data:{exp:expo,prob:active,primary},answer:answers})
+  }
+
+  return (
+    <View style={{}}>
+      <Text style={{fontSize:16,fontWeight:'bold',marginBottom:12,width:windowWidth*0.8,maxWidth:400}}>{fator}</Text>
+      <ProbText style={{marginBottom:8}}>Exposição</ProbText>
+      <ExpoTouch activeOpacity={0.7} onPress={()=>setExpo('o')} active={'o' == expo} >
+        <ProbText adjustsFontSizeToFit numberOfLines={1} active={'o' == expo}>Ocasional</ProbText>
+      </ExpoTouch>
+      <ExpoTouch activeOpacity={0.7} onPress={()=>setExpo('hp')} active={'hp' == expo} >
+        <ProbText adjustsFontSizeToFit numberOfLines={1} active={'hp' == expo}>Habitual/Permanente</ProbText>
+      </ExpoTouch>
+      <ExpoTouch activeOpacity={0.7} onPress={()=>setExpo('hi')} active={'hi' == expo} >
+        <ProbText adjustsFontSizeToFit numberOfLines={1} active={'hi' == expo}>Habitual/Intermitente</ProbText>
+      </ExpoTouch>
+      <View style={{flexDirection:'row',marginBottom:10,marginTop:10}}>
+        <ProbText >Marcar se exposição primária</ProbText>
+        <TouchableOpacity style={{flex:1,alignItems:'flex-end'}} activeOpacity={0.7} onPress={()=>setPrimary(primary=>!primary)}>
+          <Checkbox active={primary}/>
+        </TouchableOpacity>
+      </View>
+      <ProbText style={{marginTop:10,marginBottom:8}}>Probabilidade</ProbText>
+      <View style={{flexDirection:'row',marginBottom:10}}>
+        {[1,2,3,4,5].map(i=>
+          <ProbabilityTouch key={i} activeOpacity={0.7} onPress={()=>setActive(i)} active={i == active} last={i == 5} >
+            <ProbText active={i == active}>{i}</ProbText>
+          </ProbabilityTouch>
+        )}
+      </View>
+      <ContainerButtons style={{marginTop:20,marginBottom:0}}>
+        <ButtonCancel activeOpacity={0.5} onPress={onClose}>
+            <TextCancel>Calcelar</TextCancel>
+        </ButtonCancel>
+        <ButtonOk disabled={Boolean(active==0 || expo==0)} disable={active==0 || expo==0} activeOpacity={0.7} onPress={()=>onConfirm()} >
+            <TextOk>Adicionar</TextOk>
+        </ButtonOk>
+      </ContainerButtons>
+    </View>
+  )
+}
+
+
 Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
 
   let fall = useRef(new Animated.Value(1)).current;
@@ -387,6 +457,7 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
   const reactModal = useReactModal();
   const riskAnswer = useSelector(state => state.riskAnswer);
   const answers = useSelector(state => state.answer);
+  const employee = useSelector(state => state.employee);
   const risk = useSelector(state => state.risk);
   const riskData = useSelector(state => state.riskData);
   const riskPosition = useSelector(state => state.riskPosition);
@@ -401,7 +472,16 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
     reactModal.alert({
       confirmButton:'Adicionar',
       optionHide:true,
-      childrenComponent:(onConfirm,onClose)=>Modal(factor,item,onClose,answers,riskPosition,dispatch),
+      childrenComponent:(onConfirm,onClose)=>Modal({factor,item,onClose,answers,riskPosition,dispatch}),
+      onConfirm:()=>{},
+    })
+  }
+
+  function onChooseEmployee(factor,item) {  //item.risk
+    reactModal.alert({
+      confirmButton:'Adicionar',
+      optionHide:true,
+      childrenComponent:(onConfirm,onClose)=>ModalEmployee(factor,item,onClose,employee,dispatch),
       onConfirm:()=>{},
     })
   }

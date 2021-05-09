@@ -229,7 +229,7 @@ export function CardCheckList({isMother,activeIndex,groupIndex,setactiveSlide,it
             reactModal.alert({
               confirmButton:'Adicionar',
               optionHide:true,
-              childrenComponent:(onConfirm,onClose)=>Modal(Value.fator,Value.item,onClose,{selected:peek,questionId:item.id,groupId},riskAnswer,dispatch,(callback)=>onChooseRisk({sheetOpen,modalData:MODAL_DATA,back:back?[...back,callback]:[callback]}),true,{...item}),
+              childrenComponent:(onConfirm,onClose)=>Modal({fator:Value.fator,item:Value.item,onClose,answers:{selected:peek,questionId:item.id,groupId},riskPosition:riskAnswer,dispatch,callBack:(callback)=>onChooseRisk({sheetOpen,modalData:MODAL_DATA,back:back?[...back,callback]:[callback]}),notDispatch:true,RiskAnswer:{...item}}),
               onConfirm:()=>{},
             })
           }, 400);
