@@ -16,6 +16,22 @@ export default (state = initialState, action) => {
         
         return {...list};
 
+        case 'CREATE_CHECKLIST_DATA':
+            var list = {...state}
+            list.data =  [...action.payload]
+        
+        return {...list};
+
+        case 'TYPE_CHECKLIST':
+            var list = {...state}
+            if (action.payload) {
+                list['cargoAdd'] =  true
+            } else {
+                list['cargoAdd'] =  false
+            }
+        
+        return {...list};
+
         case 'COMPANY_CHECKLIST':
             var list = {...state}
             list.cnpj =  action.payload.cnpj

@@ -15,7 +15,6 @@ export default ({navigation}) => {
     const user = useSelector(state => state.user);
 
     useEffect(()=> {
-
       changeNavigationBarColor('#0d0d0d', false)
       console.log('userLogin',user)
 

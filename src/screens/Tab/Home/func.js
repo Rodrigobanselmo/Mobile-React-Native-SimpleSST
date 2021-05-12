@@ -43,6 +43,7 @@ export function onGetChecklistData({item,user,reactModal,navigation,dispatch}) {
         dispatch({type: 'CREATE_PHOTO', payload:[...response.data.photo]})
         dispatch({type: 'CREATE_RISK_ANSWER', payload:{...response.data.riskAnswer}})
         dispatch({type: 'CREATE_RISK_ANSWER_POSITION', payload:{...response.data.riskPosition}})
+        if (response.data?.employeeChosen) dispatch({type: 'CREATE_EMPLOYEE_CHOSEN', payload:{...response.data.employeeChosen}})
         navigation.dispatch(
           CommonActions.reset({
             index: 0,

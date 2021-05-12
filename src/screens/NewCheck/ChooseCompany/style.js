@@ -25,10 +25,24 @@ export const ItemContainer = styled.TouchableOpacity`
   margin-bottom: ${({last})=>last?'20px':'10px'};
   
   ${props => props.employee && css`
-      background-color: ${({theme})=>theme.background.paper};
+      background-color: ${({theme})=>'transparent'};
       elevation:0;
       border: 2px ${props=>props.theme.background.line} solid;
   `}
+`;
+
+export const ItemContainerButton = styled.TouchableOpacity`
+  /* margin:8px 12px; */
+  /* padding:12px 10px; */
+  opacity:0.8;
+  align-items: center;
+  justify-content: center;
+  height:30px;
+  width:30px;
+  /* border: 1px ${props=>props.theme.background.line} solid; */
+  background-color: ${({theme})=>theme.primary.lighter};
+  border-radius:20px;
+  elevation:3;
 `;
 
 export const TextGroup = styled.Text`

@@ -2,7 +2,7 @@ import {wordUpper} from '../../../helpers/StringHandle'
 import {AddUserData} from '../../../services/firestoreUser'
 import {addPhotoToStorage,deletePhotoFromStorage} from '../../../services/FirebaseStorage'
 import {infoNet} from '../../../helpers/infoNet'
-import { GetAllRisks,AddRisks,GetAllRisksFromCache } from '../../../services/FirestoreCard'
+import { GetAllRisks,GetAllPer,AddRisks,GetAllRisksFromCache } from '../../../services/FirestoreCard'
 import {v4} from "uuid";
 
 export const onAddPhotoToStorage = ({photo,checkListId,reactModal,dispatch,user,imageId,itemId,groupId,setErrorMessage}) => {
@@ -75,6 +75,20 @@ export const onGetAllRisks = ({user,reactModal,dispatch}) => {
 
     function checkError(error) {
         reactModal.alert({text:error,title:'Erro ao Tentar Buscar os Fatores de Risco',type:'Warn'})
+    }
+};
+
+export const onGetAllPer = ({user,reactModal,dispatch}) => {
+    
+    GetAllPer({companyId:user?.company?.id,checkSuccess,checkError})
+
+    function checkSuccess(response) {
+        dispatch({type: 'CREATE_RISKS',payload:[...response.data]})
+        dispatch({ type: 'CREATE_PER_DATA', payload: {...response.info} })
+    }
+
+    function checkError(error) {
+        reactModal.alert({text:error,title:'Erro ao Tentar Buscar os Atividades Periculosas',type:'Warn'})
     }
 };
 

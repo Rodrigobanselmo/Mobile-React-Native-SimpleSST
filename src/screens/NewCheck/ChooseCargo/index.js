@@ -47,15 +47,21 @@ export default ({navigation}) => {
   const user = useSelector(state => state.user);
   const company = useSelector(state => state.company);
   const employee = useSelector(state => state.employee);
+  const employeeChosen = useSelector(state => state.employeeChosen);
 
   useEffect(() => {
-    onGetAllEmployee({setData:setEmployees,company,user,reactModal,navigation,dispatch})
+    onGetAllEmployee({company,user,reactModal,navigation,dispatch})
   }, [])
 
   function onAddCargo() {
     if (company.selectedWorkplace?.org && company.selectedWorkplace.org?.children) {
       navigation.push('ChooseCompany',{tree:company.selectedWorkplace.org.children,text:'Adicionar Todos os Cargos da Empresa',type:'all'})
     } else reactModal.animated({text:'Organograma não cadastrado.',type:'warn'});
+  }
+
+  function onContinue() {
+    if (Object.keys(employeeChosen.chosen).length>0) navigation.navigate('ChooseName')
+    else reactModal.alert({text:'Selecione ao menos um cargo e/ou área para continuar.',title:"Só mais um pouco."})
   }
 
   function onDeleteCargo(item) {
@@ -72,7 +78,7 @@ export default ({navigation}) => {
 
   const renderItem = ({ item,index }) => (
     <ItemContainer activeOpacity={0.7} last={index == data.length-1} onPress={()=>onDeleteCargo(item)} >
-        <TextGroup  numberOfLines={2}>{employee.chosen[item].text}</TextGroup>
+        <TextGroup  numberOfLines={2}>{employeeChosen.chosen[item].text}</TextGroup>
         <Icons name="Trash" color={themeContext.text.fourth} size={20}/>
     </ItemContainer>
   );
@@ -87,9 +93,9 @@ export default ({navigation}) => {
         </AddRecText>
       </AddRecContainer>
       <CheckFlatList
-        data={Object.keys(employee.chosen)}
+        data={Object.keys(employeeChosen.chosen)}
         renderItem={renderItem}
-        keyExtractor={(item,index)=> employee.chosen[item].id}
+        keyExtractor={(item,index)=> employeeChosen.chosen[item].id}
         showsVerticalScrollIndicator={false}
       />
       <ButtonInitial
@@ -97,7 +103,7 @@ export default ({navigation}) => {
         style={{marginBottom:0,}}
         textStyle={{color:'#000'}}
         height={80}
-        onPress={()=>navigation.navigate('ChooseName')}
+        onPress={onContinue}
         scale={0.67}
         elevation={true}
         text='Continuar'

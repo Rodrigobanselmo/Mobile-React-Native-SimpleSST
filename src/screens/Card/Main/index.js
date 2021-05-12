@@ -5,9 +5,10 @@ import {SafeAreaView, StyleSheet,StatusBar,Dimensions, Text,Animated,View, Scrol
 import {useReactModal} from '../../../context/ModalContext'
 import changenavigationBarColor from 'react-native-navigation-bar-color';
 import Card from './comp'
-import {onAddPhotoToStorage,onDeletePhotoFromStorage,onGetAllRisks,onAddRisks} from './func'
+import {onAddPhotoToStorage,onDeletePhotoFromStorage,onGetAllRisks,onGetAllPer,onAddRisks} from './func'
 import {v4} from "uuid";
 import { useSelector, useDispatch } from 'react-redux';
+import JsonData from './data.json';
 
 
 const CheckListData = 
@@ -50,15 +51,21 @@ export default function App({navigation,route}) {
   const user = useSelector(state => state.user);
   const checklist = useSelector(state => state.checklist);
   const model = useSelector(state => state.model);
+  const risk = useSelector(state => state.risk);
   const header = useSelector(state => state.header);
   //const title = checklist?.title ?? 'Checklist'
   const dispatch = useDispatch();
+
+// console.log({...JsonData})
+// console.log({...checklist})
+// dispatch({type: 'CREATE_CHECKLIST_DATA',payload:[...JsonData]})
 
   useEffect(() => {
     //!checklist?.data && dispatch({type: 'CREATE_CHECKLIST',payload:CheckListData})
     //!(model?.length) && dispatch({type: 'CREATE_MODEL',payload:CHECK_LIST_MODEL})
     checklist?.data && checklist.data[0] && header == 'Checklist' && dispatch({type:'SET_HEADER',payload:checklist.data[0].group})
-    onGetAllRisks({user,reactModal,dispatch});
+    if (checklist?.periculoso) onGetAllPer({user,reactModal,dispatch});
+    else onGetAllRisks({user,reactModal,dispatch});
   }, [])
 
   // function teste() {
@@ -71,7 +78,7 @@ export default function App({navigation,route}) {
       <Card dispatch={dispatch} navigation={navigation} /* title={title} */>
           {checklist?.data && <Card.Component onDeletePhotoFromStorage={onDeletePhotoFromStorage} onAddPhotoToStorage={onAddPhotoToStorage} sheetRef={sheetRef} route={route} CHECK_LIST_MODEL={model} CheckListData={checklist} dispatch={dispatch}/>}
       </Card>
-      {checklist?.data && <Card.BottomSheet sheetRef={sheetRef} dispatch={dispatch} checklist={checklist}/>}
+      {checklist?.data && <Card.BottomSheet navigation={navigation} sheetRef={sheetRef} dispatch={dispatch} checklist={checklist}/>}
     </>
 
   );

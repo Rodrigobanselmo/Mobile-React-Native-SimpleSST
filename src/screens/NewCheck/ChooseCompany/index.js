@@ -9,7 +9,7 @@ import { TextInputMask } from 'react-native-masked-text'
 import {useReactModal} from '../../../context/ModalContext'
 import { useSelector, useDispatch } from 'react-redux';
 import {onGetAllCompanies,onGetCompany,onGetWorkplace} from './func'
-import {CheckFlatList,Container,ItemContainer,TextGroup,} from './style'
+import {CheckFlatList,Container,ItemContainer,TextGroup,ItemContainerButton} from './style'
 import Icons from '../../../components/Icons'
 import { StackActions } from '@react-navigation/native';
 
@@ -47,6 +47,7 @@ export default ({navigation,route}) => {
   const user = useSelector(state => state.user);
   const company = useSelector(state => state.company);
   const employee = useSelector(state => state.employee);
+  const employeeChosen = useSelector(state => state.employeeChosen);
 
   const tree = (route && route.params && route.params.tree)
 
@@ -58,9 +59,12 @@ export default ({navigation,route}) => {
     if (item?.cargoId) return 
     if (route && route.params && route.params.workplace) onGetWorkplace({item,user,company,reactModal,navigation,dispatch})
     else if (tree && item?.children && item.children.length > 0) {
-      navigation.push('ChooseCompany',{tree:item.children,text:`Adicinar ${item.type != 'Cargo' ?'Todos os Cargos':'Todas os Empregados'} de ${item.text}`,item:{...item}})
+      if (route.params?.nav) navigation.push('CardChose',{nav:route.params?.nav,tree:item.children,text:`Adicinar ${item.type != 'Cargo' ?'Todos os Cargos':'Todas os Empregados'} de ${item.text}`,item:{...item}})
+      else navigation.push('ChooseCompany',{tree:item.children,text:`Adicinar ${item.type != 'Cargo' ?'Todos os Cargos':'Todas os Empregados'} de ${item.text}`,item:{...item}})   
+     
     } else if (route && route.params && (item.type == 'Cargo' || item.type == 'Função')) {
-      navigation.push('ChooseCompany',{tree:item.children,text:`Adicinar ${'Todos os Empregados'} de ${item.text}`,item:{...item}})
+      if (route.params?.nav) navigation.push('CardChose',{nav:route.params?.nav,tree:item.children,text:`Adicinar ${'Todos os Empregados'} de ${item.text}`,item:{...item}})
+      else navigation.push('ChooseCompany',{tree:item.children,text:`Adicinar ${'Todos os Empregados'} de ${item.text}`,item:{...item}})   
       // navigation.navigate('ChooseCargo')
       // dispatch({type:'ADD_EMPLOYEE_CARGO',payload:item})
     } else if (tree && item?.children && item.children.length == 0 &&  (/* item.type != 'Cargo' ||  */item.type != 'Função')) {
@@ -79,23 +83,34 @@ export default ({navigation,route}) => {
     if (route && route.params && route.params.workplace) return filterFunction(company.workplace,'name')
     else if (tree) { //employee
       // if (search.length==0 && route.params.type != 'all') return [...filterFunction(route.params.tree,'text'),{id:route.params.item.type != 'Cargo'?'Adicionar novo cargo':'Adicionar nova função'}]
-      if (search.length==0 && (route.params?.item && route.params.item?.type && (route.params.item.type == 'Cargo'|| route.params.item.type == 'Função') )) return [...filterFunction(route.params.tree,'text'),...filterFunction(employee.all.filter(i=>i.cargoId == route.params.item.id && i.status != 'Desligado'),'name')]
+      if (search.length==0 && (route.params?.item && route.params.item?.type && (route.params.item.type == 'Cargo'|| route.params.item.type == 'Função') )) return [...filterFunction(route.params.tree,'text'),...filterFunction(employee.filter(i=>i.cargoId == route.params.item.id && i.status != 'Desligado'),'name')]
       if (search.length==0) return filterFunction(route.params.tree,'text')
       if (search.length>0) return filterObjFunction(route.params.tree,'text')
     }
     return filterFunction(data,'name')
   }
 
-  function bottomButton() {
-    console.log(Array.isArray(route.params.tree))
-    console.log('item',route.params.item)
-    console.log(route.params?.type && route.params?.type=='all')
+  function bottomButton(item) {
+
+    if (item && item != 'Jump') {
+      if (route.params?.nav) navigation.navigate('CardEmployee',{id:item.id})
+      else navigation.navigate('ChooseCargo')    
+      dispatch({type:'ADD_EMPLOYEE_CARGO',payload:{...item}})
+      return
+    }
+
+
     if (route.params?.type && route.params.type=='all') {
-      navigation.navigate('ChooseCargo')
+      if (route.params?.nav) navigation.navigate('CardEmployee',{id:company.cnpj})
+      else navigation.navigate('ChooseCargo')    
       dispatch({type:'ADD_EMPLOYEE_CARGO',payload:{text:'Todos os Cargos',type:'Empresa',id:company.cnpj}})
     } else if (tree) {
-      navigation.navigate('ChooseCargo')
+      if (route.params?.nav) navigation.navigate('CardEmployee',{id:route.params.item.id})
+      else navigation.navigate('ChooseCargo')    
       dispatch({type:'ADD_EMPLOYEE_CARGO',payload:{...route.params.item}})
+    } else {
+      navigation.navigate('ChooseName',{name:true})  
+      dispatch({type:'REMOVE_EMPLOYEE_ALL'})
     }
     // navigation.navigate('ChooseName')
     // if (route && route.params && route.params.workplace) return filterFunction(company.workplace,'name')
@@ -138,11 +153,16 @@ export default ({navigation,route}) => {
   const renderItem = ({ item,index }) => {
     if (item.id != 'Adicionar novo cargo' && item.id != 'Adicionar nova função') return (
       <ItemContainer employee={item?.cargoId} activeOpacity={0.7} last={index == data.length-1} tree={(tree)} onPress={()=>getCompanyData(item)} >
+          {!item?.cargoId && tree && 
+            <ItemContainerButton activeOpacity={0.7} onPress={()=>bottomButton(item)}>
+              <Icons name={'Plus'} color={themeContext.primary.textInside} size={20}/>
+            </ItemContainerButton>
+          }
           <View style={{flex:1}}>
             <TextGroup  numberOfLines={2}  style={{textAlignVertical: 'center'}}>{item?.text??item?.name}</TextGroup>
             {tree ? null : <TextGroup style={{fontSize:13}} numberOfLines={1}>{item?.CNPJ ?? item?.city}</TextGroup>}
           </View>
-          {!item?.cargoId && <Icons name={item?.cargoId?'Plus':"ArrowRight"} color={themeContext.text.fourth} size={20}/> }
+          {!item?.cargoId && <Icons name={"ArrowRight"} color={themeContext.text.fourth} size={20}/> }
           {/* <Icons name={(route && route.params && (!item?.children || (item?.children && item.children.length == 0)) && (item.type == 'Cargo' || item.type == 'Função' || item?.cargoId))?'Plus':"ArrowRight"} color={themeContext.text.fourth} size={20}/> */}
       </ItemContainer>
     );
@@ -154,7 +174,7 @@ export default ({navigation,route}) => {
         </AddRecText>
       </AddRecContainer>
     )
-}
+  }
 
   return (
     <Container >
@@ -178,16 +198,16 @@ export default ({navigation,route}) => {
         keyExtractor={item => item?.CNPJ ?? item?.id}
         showsVerticalScrollIndicator={false}
       />
-      <ButtonInitial
+      {tree&&<ButtonInitial
         secondary={tree?true:false}
         style={{marginBottom:0,borderRadius:0}}
         textStyle={{color:tree?'#fff':'#000',textAlign:'center'}}
         height={80}
-        onPress={bottomButton}
+        onPress={()=>bottomButton('Jump')}
         scale={0.67}
         elevation={true}
         text={tree?route.params.text:'Pular'}
-      />
+      />}
     </Container>
   );
 }

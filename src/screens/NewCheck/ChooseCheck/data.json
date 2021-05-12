@@ -1,0 +1,291 @@
+{
+  "data": [
+      {
+          "groups": [
+              "a) no armazenamento de explosivos",
+              "b) no transporte de explosivos",
+              "c) na operação de escorva dos cartuchos de explosivos",
+              "d) na operação de carregamento de explosivos",
+              "e) na detonação",
+              "f) na verificação de denotações falhadas",
+              "g) na queima e destruição de explosivos deteriorados",
+              "h) nas operações de manuseio de explosivos"
+          ],
+          "id": "f5ffaaa7ac9",
+          "jump": [
+              {
+                  "questionId": "6e9cccf28bc",
+                  "g": [
+                      "a) no armazenamento de explosivos",
+                      "b) no transporte de explosivos",
+                      "d) na operação de carregamento de explosivos",
+                      "h) nas operações de manuseio de explosivos",
+                      "c) na operação de escorva dos cartuchos de explosivos",
+                      "e) na detonação",
+                      "f) na verificação de denotações falhadas",
+                      "g) na queima e destruição de explosivos deteriorados"
+                  ],
+                  "selected": "q_2"
+              }
+          ],
+          "group": "EXPLOSIVOS (Anexo 1)",
+          "questions": [
+              {
+                  "id": "6e9cccf28bc",
+                  "photo": false,
+                  "action": {
+                      "q_1": {
+                          "text": "SIM",
+                          "data": [],
+                          "id": "q_1"
+                      },
+                      "q_2": {
+                          "data": [],
+                          "jump": {
+                              "g": [
+                                  "a) no armazenamento de explosivos",
+                                  "b) no transporte de explosivos",
+                                  "d) na operação de carregamento de explosivos",
+                                  "h) nas operações de manuseio de explosivos",
+                                  "c) na operação de escorva dos cartuchos de explosivos",
+                                  "e) na detonação",
+                                  "f) na verificação de denotações falhadas",
+                                  "g) na queima e destruição de explosivos deteriorados"
+                              ]
+                          },
+                          "text": "NÃO",
+                          "id": "q_2"
+                      }
+                  },
+                  "mother": true,
+                  "text": "Existe atividades com explosivos??",
+                  "type": "pers"
+              },
+              {
+                  "text": "Existe atividade de armazenamento de explosivos?",
+                  "group": "a) no armazenamento de explosivos",
+                  "type": "pers",
+                  "id": "d6c6ad042ad",
+                  "action": {
+                      "q_2": {
+                          "id": "q_2",
+                          "text": "NÃO",
+                          "data": []
+                      },
+                      "q_1": {
+                          "text": "SIM",
+                          "id": "q_1",
+                          "data": []
+                      }
+                  },
+                  "photo": false
+              },
+              {
+                  "group": "a) no armazenamento de explosivos",
+                  "text": "A atividade é exatamente a mesmo ou se equipara?",
+                  "photo": false,
+                  "type": "standard",
+                  "id": "cede2ac0038",
+                  "action": {
+                      "q_2": {
+                          "text": "NÃO",
+                          "id": "q_2",
+                          "child": "61ae6bf8504",
+                          "data": []
+                      },
+                      "q_1": {
+                          "data": [],
+                          "child": "bebc88b0a87",
+                          "id": "q_1",
+                          "text": "SIM"
+                      }
+                  }
+              },
+              {
+                  "id": "61ae6bf8504",
+                  "parent": "cede2ac0038",
+                  "text": "Descreva área equivalente (*estarà presente no documento gerado)",
+                  "type": "standard",
+                  "photo": false,
+                  "action": {
+                      "q_3": {
+                          "id": "q_3",
+                          "data": [],
+                          "text": "N.A."
+                      },
+                      "q_2": {
+                          "text": "NÃO",
+                          "data": [],
+                          "id": "q_2"
+                      },
+                      "q_1": {
+                          "text": "SIM",
+                          "data": [],
+                          "id": "q_1",
+                          "child": "686e3a6ac76"
+                      }
+                  },
+                  "group": "a) no armazenamento de explosivos",
+                  "hide": true
+              },
+              {
+                  "text": "Quer fazer uma observação/descrição para essa atividade? (*estarà presente no documento gerado)",
+                  "id": "686e3a6ac76",
+                  "group": "a) no armazenamento de explosivos",
+                  "hide": true,
+                  "photo": false,
+                  "subParent": [
+                      "cede2ac0038"
+                  ],
+                  "parent": "61ae6bf8504",
+                  "action": {
+                      "q_3": {
+                          "id": "q_3",
+                          "text": "N.A.",
+                          "data": []
+                      },
+                      "q_1": {
+                          "data": [],
+                          "text": "SIM",
+                          "id": "q_1"
+                      },
+                      "q_2": {
+                          "data": [],
+                          "id": "q_2",
+                          "text": "NÃO"
+                      }
+                  },
+                  "type": "standard"
+              },
+              {
+                  "hide": true,
+                  "action": {
+                      "q_1": {
+                          "id": "q_1",
+                          "text": "SIM",
+                          "data": []
+                      },
+                      "q_3": {
+                          "text": "N.A.",
+                          "id": "q_3",
+                          "data": []
+                      },
+                      "q_2": {
+                          "text": "NÃO",
+                          "id": "q_2",
+                          "data": []
+                      }
+                  },
+                  "text": "Quer fazer uma observação/descrição para essa atividade? (*estarà presente no documento gerado)",
+                  "photo": false,
+                  "type": "standard",
+                  "group": "a) no armazenamento de explosivos",
+                  "parent": "cede2ac0038",
+                  "id": "bebc88b0a87"
+              },
+              {
+                  "type": "mult",
+                  "photo": false,
+                  "group": "a) no armazenamento de explosivos",
+                  "action": {
+                      "q_2": {
+                          "text": "Locais de armazenagem de pólvoras químicas, artifícios pirotécnicos e produtos químicos usados na fabricação de misturas explosivas ou de fogos de artifício",
+                          "id": "q_2",
+                          "data": []
+                      },
+                      "q_3": {
+                          "text": "Locais de armazenagem de explosivos de ruptura e pólvoras mecânicos (pólvora negra e pólvora chocolate ou parda)",
+                          "data": [],
+                          "id": "q_3"
+                      },
+                      "q_1": {
+                          "text": "Locais de armazenagem de explosivos iniciadores",
+                          "data": [],
+                          "id": "q_1"
+                      }
+                  },
+                  "id": "8af73743562",
+                  "text": "Selecione o tipo de explosivos armazenados."
+              },
+              {
+                  "text": "Selecione a QUANTIDADE ARMAZENADA EM QUILOS ()",
+                  "photo": false,
+                  "type": "standard",
+                  "subText": "Se existir mais de um local de armazenamento selecione mais de uma opção",
+                  "group": "a) no armazenamento de explosivos",
+                  "id": "fdfb237aec8",
+                  "action": {
+                      "q_3": {
+                          "text": "N.A.",
+                          "data": [],
+                          "id": "q_3"
+                      },
+                      "q_2": {
+                          "text": "NÃO",
+                          "id": "q_2",
+                          "data": []
+                      },
+                      "q_1": {
+                          "id": "q_1",
+                          "data": [],
+                          "text": "SIM"
+                      }
+                  }
+              },
+              {
+                  "id": "4e4279f1874",
+                  "type": "standard",
+                  "group": "a) no armazenamento de explosivos",
+                  "text": "Selecione a QUANTIDADE ARMAZENADA EM QUILOS () ",
+                  "photo": false,
+                  "subText": "Se existir mais de um local de armazenamento selecione mais de uma opção",
+                  "action": {
+                      "q_2": {
+                          "id": "q_2",
+                          "data": [],
+                          "text": "NÃO"
+                      },
+                      "q_3": {
+                          "data": [],
+                          "text": "N.A.",
+                          "id": "q_3"
+                      },
+                      "q_1": {
+                          "id": "q_1",
+                          "data": [],
+                          "text": "SIM"
+                      }
+                  }
+              },
+              {
+                  "type": "standard",
+                  "text": "Selecione a QUANTIDADE ARMAZENADA EM QUILOS (pólvoras químicas, artifícios pirotécnicos e produtos químicos )",
+                  "id": "0f9ef470f9e",
+                  "action": {
+                      "q_3": {
+                          "data": [],
+                          "id": "q_3",
+                          "text": "N.A."
+                      },
+                      "q_2": {
+                          "text": "NÃO",
+                          "data": [],
+                          "id": "q_2"
+                      },
+                      "q_1": {
+                          "text": "SIM",
+                          "id": "q_1",
+                          "data": []
+                      }
+                  },
+                  "subText": "Se existir mais de um local de armazenamento selecione mais de uma opção",
+                  "group": "a) no armazenamento de explosivos",
+                  "photo": false
+              }
+          ]
+      }
+  ],
+  "title": "Periculosidade",
+  "periculoso": true,
+  "id": "6lep6l8fnig0"
+}

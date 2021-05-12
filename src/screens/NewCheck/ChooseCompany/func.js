@@ -34,6 +34,7 @@ export function onGetCompany({item,user,reactModal,navigation,dispatch}) {
         }
         dispatch({type:'CREATE_COMPANY',payload:response})
         dispatch({type:'COMPANY_CHECKLIST',payload:{cnpj:item.CNPJ,companyName:name}})
+        dispatch({type:'REMOVE_EMPLOYEE_ALL'})
         reactModal.close()
         navigation.push('ChooseCompany',{workplace:true})
     }
@@ -53,6 +54,7 @@ export function onGetWorkplace({item,company,user,reactModal,navigation,dispatch
     function checkSuccess(response) {
         dispatch({type:'CREATE_WORKPLACE',payload:response})
         dispatch({type:'WORKPLACE_CHECKLIST',payload:{workplaceId:item.id,workplaceName:item.name}})
+        dispatch({type:'REMOVE_EMPLOYEE_ALL'})
         reactModal.close()
         navigation.push('ChooseCargo')
     }

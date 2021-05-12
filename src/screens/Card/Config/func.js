@@ -14,6 +14,7 @@ export function onSaveChecklist({checklist,percentage,allData,user,reactModal,na
       dispatch({type: 'LOGOUT_MODEL'})
       dispatch({type: 'LOGOUT_OBS'})
       dispatch({type: 'LOGOUT_EMPLOYEE'})
+      dispatch({type: 'LOGOUT_EMPLOYEE_CHOSEN'})
       dispatch({type: 'LOGOUT_PHOTO'})
       dispatch({type: 'LOGOUT_RISK_ANSWER'})
       dispatch({type: 'LOGOUT_RISK_POSITION'})
@@ -50,9 +51,11 @@ export function onDeleChecklist({checklist,user,reactModal,dispatch,navigation})
         dispatch({type: 'LOGOUT_MODEL'})
         dispatch({type: 'LOGOUT_OBS'})
         dispatch({type: 'LOGOUT_EMPLOYEE'})
+        dispatch({type: 'LOGOUT_EMPLOYEE_CHOSEN'})
         dispatch({type: 'LOGOUT_PHOTO'})
         dispatch({type: 'LOGOUT_RISK_ANSWER'})
         dispatch({type: 'LOGOUT_RISK_POSITION'})
+        dispatch({type: 'LOGOUT_COMPANY'})
         navigation.dispatch(
           CommonActions.reset({
             index: 0,

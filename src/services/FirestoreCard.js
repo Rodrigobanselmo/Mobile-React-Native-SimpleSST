@@ -61,6 +61,23 @@ export function GetAllRisks({companyId,checkSuccess,checkError}) {
 
 }
 
+export function GetAllPer({companyId,checkSuccess,checkError}) {
+
+  var dataRef = firestore().collection("company").doc(companyId).collection('risks').doc('000periculosos')
+
+
+  dataRef.get().then(function(docSnapshots) {
+    if (docSnapshots.exists) {
+      checkSuccess({...docSnapshots.data()})
+    } else {
+      checkError(`Atividades Periculosas não encontrado em seu banco de dados.`)
+    }
+  }).catch((error) => {
+    checkError(errorCatch(error))
+  });
+
+}
+
 export function AddRisks({data,readData,companyId,checkSuccess,checkError}) {
   const riscRef = firestore().collection("company").doc(companyId)
   const risksRef = riscRef.collection('risks')

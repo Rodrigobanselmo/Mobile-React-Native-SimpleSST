@@ -1,5 +1,6 @@
 import {GetAllChecklist,GetChecklist} from '../../../services/firestoreChecklist'
 import {infoNet} from '../../../helpers/infoNet'
+import JsonData from './data.json'
 
 export function onGetAllChecklist({setData,user,reactModal,navigation}) {
 
@@ -28,7 +29,7 @@ export function onGetChecklist({itemId,user,reactModal,dispatch,navigation}) {
     function checkSuccess(response) {
         const uid = Math.floor((1 + Math.random()) * 0x1000000000000000).toString(32).substring(1);
         reactModal.close()
-        dispatch({type: 'CREATE_CHECKLIST',payload:{...response,checklistId:response.id,id:uid,type:'model',creation:new Date(),userId:user.uid,user:user.name}})
+        dispatch({type: 'CREATE_CHECKLIST',payload:{...JsonData,checklistId:JsonData.id,id:uid,type:'model',creation:new Date(),userId:user.uid,user:user.name}})
         navigation.navigate('ChooseCompany')
     }
 

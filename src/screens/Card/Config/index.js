@@ -21,6 +21,7 @@ export default ({navigation}) => {
   const user = useSelector(state => state.user);
   const checklist = useSelector(state => state.checklist);
   const answer = useSelector(state => state.answer);
+  const employeeChosen = useSelector(state => state.employeeChosen);
   const obs = useSelector(state => state.obs);
   const photo = useSelector(state => state.photo);
   const riskAnswer = useSelector(state => state.riskAnswer);
@@ -35,6 +36,7 @@ export default ({navigation}) => {
   //   onGetAllCompanies({setData,user,reactModal,navigation})
   // }, [])
 
+  console.log(riskAnswer)
 
   function Jump(item,index) {
     const dataFilterHide = [...item.questions.filter(i=>!(i?.hide&&i.hide))]
@@ -83,7 +85,7 @@ export default ({navigation}) => {
 
   function SaveChecklist() {
     const allData ={
-      answer,obs,photo,riskAnswer,riskPosition,header,model,company
+      answer,obs,photo,riskAnswer,riskPosition,header,model,company,employeeChosen
     }
     //console.log(checklist)
     onSaveChecklist({checklist:checklist,percentage:onPercentage(),allData:allData,user,reactModal,navigation,dispatch})

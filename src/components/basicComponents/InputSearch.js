@@ -17,6 +17,10 @@ const Container = styled.View`
   background-color: ${({theme})=>theme.background.line};
   border-radius: 10px;
   padding: 0px 0px 0px 10px;
+
+  ${props=>props.noMargin && css`
+    margin:0;
+  `}
 `;
 
 
@@ -25,16 +29,20 @@ const Input = styled.TextInput`
   color: ${({theme})=>theme.text.primary};
   font-size:16px;
   flex:1;
+
+  ${props=>props.dense && css`
+    padding: 7px 10px 7px 10px;
+  `}
 `;
 
 
 
-export function InputSearch({secure,showClean,setCleanFunc,mask=false,password=false,onSecurityChange,icon=true,cleanIconProps={},iconProps={},iconName='UserEmail',iconCheck=false,focused=false,isValid=true,warnText='',...props}) {
+export function InputSearch({secure,showClean,noMargin,setCleanFunc,mask=false,password=false,onSecurityChange,icon=true,cleanIconProps={},iconProps={},iconName='UserEmail',iconCheck=false,focused=false,isValid=true,warnText='',...props}) {
   
     const themeContext = useContext(ThemeContext);
     
     return (
-        <Container >
+        <Container noMargin={noMargin}>
             <Icons name={'Search'} size={20} color={themeContext.text.third} {...iconProps}/>
             <Input {...props} />
             {setCleanFunc && showClean &&

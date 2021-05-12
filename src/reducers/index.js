@@ -13,6 +13,7 @@ import AllModelReducer from './AllModelReducer';
 import ObsReducer from './ObsReducer';
 import EmployeeReducer from './EmployeeReducer';
 import CompanyReducer from './CompanyReducer';
+import EmployeeChosenReducer from './EmployeeChosenReducer';
 
 export default combineReducers({
     risk: RiskReducer, 
@@ -29,4 +30,5 @@ export default combineReducers({
     obs: ObsReducer,
     employee: EmployeeReducer,
     company: CompanyReducer,
+    employeeChosen: EmployeeChosenReducer,
 });

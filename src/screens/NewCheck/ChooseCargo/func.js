@@ -1,7 +1,7 @@
 import {GetAllEmployee} from '../../../services/firestoreChecklist'
 import {infoNet} from '../../../helpers/infoNet'
 
-export function onGetAllEmployee({setData,company,user,reactModal,navigation,dispatch}) {
+export function onGetAllEmployee({company,user,reactModal,navigation,dispatch}) {
 
     console.log('company',company.selectedWorkplace)
     reactModal.loader()

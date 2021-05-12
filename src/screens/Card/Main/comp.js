@@ -16,6 +16,8 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import styled, {css} from "styled-components";
 
+//cargoAdd
+
 const IconsPlusMinus = styled(Icons)`
   position: absolute;
   bottom:5px;
@@ -310,7 +312,7 @@ Card.Component = function ComponentCard({onDeletePhotoFromStorage,onAddPhotoToSt
     );
 }
 
-export function Modal({fator,item,onClose,answers,riskPosition,dispatch,callBack,notDispatch,RiskAnswer}) {  //item.risk
+export function Modal({fator,item,onClose,answers,riskPosition,dispatch,callBack,notDispatch,cargoArrayId,onFunction,answer}) {  //item.risk
 
   const [active, setActive] = useState(item?.prob?item.prob:0)
   const [expo, setExpo] = useState(item?.exp?item.exp:0)
@@ -318,26 +320,30 @@ export function Modal({fator,item,onClose,answers,riskPosition,dispatch,callBack
 
   function answerIndex() {
     if (answers.findIndex(i=>i.questionId==riskPosition.position.id) != -1) return answers[answers.findIndex(i=>i.questionId==riskPosition.position.id)]
+    //qunado clico em uma resposta com child ela muda pra child e perde o id atual, entao utilizo o parent para identificar se tem risco ou nao
     if (riskPosition.parent[riskPosition.position.id] && answers.findIndex(i=>i.questionId==riskPosition.parent[riskPosition.position.id][riskPosition.parent[riskPosition.position.id].length-1].questionId) !=-1) return answers[answers.findIndex(i=>i.questionId==riskPosition.parent[riskPosition.position.id][riskPosition.parent[riskPosition.position.id].length-1].questionId)]
   }
 
   function onConfirm() { //{selected:peek,questionId:item.id,groupId}
     if (!notDispatch) {
-      if (Array.isArray(answerIndex().selected)) {
+      if (onFunction) onFunction()
+      if (answerIndex() && Array.isArray(answerIndex().selected)) {
         //const returnedData = []
-        answerIndex().selected.map(ans=>{
+        console.log('answerIndex()',answerIndex())
+        answerIndex().selected.map(ans=>{ //somente para multquestions
             if (ans && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[ans] && riskPosition.position.action[ans].data) {
               if (riskPosition.position.action[ans].data.findIndex(i=>i.risk == item.risk) != -1) {
-                dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},answer:{selected:ans,questionId:riskPosition.position.id,groupId:answerIndex().groupId}}})
+                dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},cargoArrayId,answer:{selected:ans,questionId:riskPosition.position.id,groupId:answerIndex().groupId}}})
               }
             }
           })
         //const newReturn = [...returnedData.filter((item, i) => returnedData.findIndex(i=>i.risk==item.risk) === i)]
       }
-      else dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},answer:answerIndex()}}) //erro aqui
+      else  if (answerIndex()) dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},cargoArrayId,answer:answerIndex()}}) //erro aqui
+      else if (answer) dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},cargoArrayId,answer}})
     }
     onClose()
-    if (callBack) callBack({item,data:{exp:expo,prob:active,primary},answer:answers})
+    if (callBack) callBack({item,data:{exp:expo,prob:active,primary},cargoArrayId,answer:answers})
   }
 
   return (
@@ -379,77 +385,7 @@ export function Modal({fator,item,onClose,answers,riskPosition,dispatch,callBack
   )
 }
 
-export function ModalEmployee(fator,item,onClose,answers,riskPosition,dispatch,callBack,notDispatch,RiskAnswer) {  //item.risk
-
-  const [active, setActive] = useState(item?.prob?item.prob:0)
-  const [expo, setExpo] = useState(item?.exp?item.exp:0)
-  const [primary, setPrimary] = useState(item?.primary?item.primary:false)
-
-  function answerIndex() {
-    if (answers.findIndex(i=>i.questionId==riskPosition.position.id) != -1) return answers[answers.findIndex(i=>i.questionId==riskPosition.position.id)]
-    if (riskPosition.parent[riskPosition.position.id] && answers.findIndex(i=>i.questionId==riskPosition.parent[riskPosition.position.id][riskPosition.parent[riskPosition.position.id].length-1].questionId) !=-1) return answers[answers.findIndex(i=>i.questionId==riskPosition.parent[riskPosition.position.id][riskPosition.parent[riskPosition.position.id].length-1].questionId)]
-  }
-
-  function onConfirm() { //{selected:peek,questionId:item.id,groupId}
-    if (!notDispatch) {
-      if (Array.isArray(answerIndex().selected)) {
-        //const returnedData = []
-        answerIndex().selected.map(ans=>{
-            if (ans && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[ans] && riskPosition.position.action[ans].data) {
-              if (riskPosition.position.action[ans].data.findIndex(i=>i.risk == item.risk) != -1) {
-                dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},answer:{selected:ans,questionId:riskPosition.position.id,groupId:answerIndex().groupId}}})
-              }
-            }
-          })
-        //const newReturn = [...returnedData.filter((item, i) => returnedData.findIndex(i=>i.risk==item.risk) === i)]
-      }
-      else dispatch({type: 'CHOOSE_RISK_ANSWER',payload:{item,data:{exp:expo,prob:active,primary},answer:answerIndex()}}) //erro aqui
-    }
-    onClose()
-    if (callBack) callBack({item,data:{exp:expo,prob:active,primary},answer:answers})
-  }
-
-  return (
-    <View style={{}}>
-      <Text style={{fontSize:16,fontWeight:'bold',marginBottom:12,width:windowWidth*0.8,maxWidth:400}}>{fator}</Text>
-      <ProbText style={{marginBottom:8}}>Exposição</ProbText>
-      <ExpoTouch activeOpacity={0.7} onPress={()=>setExpo('o')} active={'o' == expo} >
-        <ProbText adjustsFontSizeToFit numberOfLines={1} active={'o' == expo}>Ocasional</ProbText>
-      </ExpoTouch>
-      <ExpoTouch activeOpacity={0.7} onPress={()=>setExpo('hp')} active={'hp' == expo} >
-        <ProbText adjustsFontSizeToFit numberOfLines={1} active={'hp' == expo}>Habitual/Permanente</ProbText>
-      </ExpoTouch>
-      <ExpoTouch activeOpacity={0.7} onPress={()=>setExpo('hi')} active={'hi' == expo} >
-        <ProbText adjustsFontSizeToFit numberOfLines={1} active={'hi' == expo}>Habitual/Intermitente</ProbText>
-      </ExpoTouch>
-      <View style={{flexDirection:'row',marginBottom:10,marginTop:10}}>
-        <ProbText >Marcar se exposição primária</ProbText>
-        <TouchableOpacity style={{flex:1,alignItems:'flex-end'}} activeOpacity={0.7} onPress={()=>setPrimary(primary=>!primary)}>
-          <Checkbox active={primary}/>
-        </TouchableOpacity>
-      </View>
-      <ProbText style={{marginTop:10,marginBottom:8}}>Probabilidade</ProbText>
-      <View style={{flexDirection:'row',marginBottom:10}}>
-        {[1,2,3,4,5].map(i=>
-          <ProbabilityTouch key={i} activeOpacity={0.7} onPress={()=>setActive(i)} active={i == active} last={i == 5} >
-            <ProbText active={i == active}>{i}</ProbText>
-          </ProbabilityTouch>
-        )}
-      </View>
-      <ContainerButtons style={{marginTop:20,marginBottom:0}}>
-        <ButtonCancel activeOpacity={0.5} onPress={onClose}>
-            <TextCancel>Calcelar</TextCancel>
-        </ButtonCancel>
-        <ButtonOk disabled={Boolean(active==0 || expo==0)} disable={active==0 || expo==0} activeOpacity={0.7} onPress={()=>onConfirm()} >
-            <TextOk>Adicionar</TextOk>
-        </ButtonOk>
-      </ContainerButtons>
-    </View>
-  )
-}
-
-
-Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
+Card.BottomSheet = function Sheet({sheetRef,navigation,dispatch,checklist,children}) {
 
   let fall = useRef(new Animated.Value(1)).current;
   
@@ -458,6 +394,7 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
   const riskAnswer = useSelector(state => state.riskAnswer);
   const answers = useSelector(state => state.answer);
   const employee = useSelector(state => state.employee);
+  const employeeChosen = useSelector(state => state.employeeChosen);
   const risk = useSelector(state => state.risk);
   const riskData = useSelector(state => state.riskData);
   const riskPosition = useSelector(state => state.riskPosition);
@@ -468,31 +405,22 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
   //erro aqui
   const selectedAnswer = answers[answers.findIndex(i=>i.questionId==riskPosition.position.id)] ? answers[answers.findIndex(i=>i.questionId==riskPosition.position.id)].selected : null
 
-  function onChooseRisk(factor,item) {  //item.risk
+  function onChooseRisk(fator,item) {  //item.risk
     reactModal.alert({
       confirmButton:'Adicionar',
       optionHide:true,
-      childrenComponent:(onConfirm,onClose)=>Modal({factor,item,onClose,answers,riskPosition,dispatch}),
+      childrenComponent:(onConfirm,onClose)=>Modal({fator,item,onClose,answers,cargoArrayId:Object.keys(employeeChosen.chosen).length == 0 ?null:Object.keys(employeeChosen.chosen),riskPosition,dispatch}),
       onConfirm:()=>{},
     })
   }
 
-  function onChooseEmployee(factor,item) {  //item.risk
-    reactModal.alert({
-      confirmButton:'Adicionar',
-      optionHide:true,
-      childrenComponent:(onConfirm,onClose)=>ModalEmployee(factor,item,onClose,employee,dispatch),
-      onConfirm:()=>{},
-    })
-  }
-
-  function onChooseRiskData(item,riskId) {
-    dispatch({type: 'CHOOSE_RISK_ANSWER_DATA',payload:{dataId:item.id,riskId}})
-  }
+  // function onChooseRiskData(item,riskId) {
+  //   dispatch({type: 'CHOOSE_RISK_ANSWER_DATA',payload:{dataId:item.id,riskId}})
+  // }
   
-  function onRemoveRiskData(item,riskId) {
-    dispatch({type: 'REMOVE_RISK_ANSWER_DATA',payload:{dataId:item.id,riskId}})
-  }
+  // function onRemoveRiskData(item,riskId) {
+  //   dispatch({type: 'REMOVE_RISK_ANSWER_DATA',payload:{dataId:item.id,riskId}})
+  // }
 
   function riskParent() {
   //console.log('teste',[{id:1},{id:2},{id:1}].filter((item, i) => [{id:1},{id:2},{id:1}].findIndex(i=>i.id==item.id) === i))
@@ -501,23 +429,22 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
       riskPosition.parent[riskPosition.position.id].map(position=>{
         const categoryIndex =  checklist.data.findIndex(i=>i.id==position.groupId)
         const questionIndex =  checklist.data[categoryIndex].questions.findIndex(i=>i.id==position.questionId)
-        returnedData.push(...checklist.data[categoryIndex].questions[questionIndex].action[position.selected].data.filter(i=>Object.keys(riskAnswer.risks).includes(i.risk)))
+        returnedData.push(...checklist.data[categoryIndex].questions[questionIndex].action[position.selected].data.filter(i=>Object.keys(riskAnswer.risks).filter(fi=>fi.includes(i.risk)).length>0))
       })
     }
 
     if (Array.isArray(selectedAnswer)) {
       selectedAnswer.map(ans=>{
         if (ans && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[ans] && riskPosition.position.action[ans].data) {
-          returnedData.push(...riskPosition.position.action[ans].data.filter(i=>Object.keys(riskAnswer.risks).includes(i.risk)))
+          returnedData.push(...riskPosition.position.action[ans].data.filter(i=>Object.keys(riskAnswer.risks).filter(fi=>fi.includes(i.risk)).length>0))
         }
       })
     } else if (selectedAnswer && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[selectedAnswer] && riskPosition.position.action[selectedAnswer].data) {
-      returnedData.push(...riskPosition.position.action[selectedAnswer].data.filter(i=>Object.keys(riskAnswer.risks).includes(i.risk)))
+      returnedData.push(...riskPosition.position.action[selectedAnswer].data.filter(i=>Object.keys(riskAnswer.risks).filter(fi=>fi.includes(i.risk)).length>0))
     }
     
     return [...returnedData.filter((item, i) => returnedData.findIndex(i=>i.risk==item.risk) === i)] //retirar duplicatas  
   }
-
 
   function riskParentSuggest() {
     //console.log('teste',[{id:1},{id:2},{id:1}].filter((item, i) => [{id:1},{id:2},{id:1}].findIndex(i=>i.id==item.id) === i))
@@ -527,57 +454,57 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
         riskPosition.parent[riskPosition.position.id].map(position=>{
           const categoryIndex =  checklist.data.findIndex(i=>i.id==position.groupId)
           const questionIndex =  checklist.data[categoryIndex].questions.findIndex(i=>i.id==position.questionId)
-          returnedData.push(...checklist.data[categoryIndex].questions[questionIndex].action[position.selected].data.filter(i=>!Object.keys(riskAnswer.risks).includes(i.risk)))
+          returnedData.push(...checklist.data[categoryIndex].questions[questionIndex].action[position.selected].data.filter(i=>!Object.keys(riskAnswer.risks).filter(fi=>fi.includes(i.risk)).length>0))
         })
       }
   
       if (Array.isArray(selectedAnswer)) {
         selectedAnswer.map(ans=>{
           if (ans && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[ans] && riskPosition.position.action[ans].data) {
-            returnedData.push(...riskPosition.position.action[ans].data.filter(i=>!Object.keys(riskAnswer.risks).includes(i.risk)))
+            returnedData.push(...riskPosition.position.action[ans].data.filter(i=>!Object.keys(riskAnswer.risks).filter(fi=>fi.includes(i.risk)).length>0))
           }
         })
       } else if (selectedAnswer && riskPosition.position && riskPosition.position?.action && riskPosition.position.action[selectedAnswer] && riskPosition.position.action[selectedAnswer].data) {
-        returnedData.push(...riskPosition.position.action[selectedAnswer].data.filter(i=>!Object.keys(riskAnswer.risks).includes(i.risk)))
+        returnedData.push(...riskPosition.position.action[selectedAnswer].data.filter(i=>!Object.keys(riskAnswer.risks).filter(fi=>fi.includes(i.risk)).length>0))
       }
       
       return [...returnedData.filter((item, i) => returnedData.findIndex(i=>i.risk==item.risk) === i)]
   }
 
-  function onEditRisk(factor,item) {
-    onChooseRisk(factor,{...item,prob:riskAnswer.risks[item.risk].prob,primary:riskAnswer.risks[item.risk].primary,exp:riskAnswer.risks[item.risk].exp})
-  }
+  // function onEditRisk(factor,item) {
+  //   onChooseRisk(factor,{...item,prob:riskAnswer.risks[item.risk].prob,primary:riskAnswer.risks[item.risk].primary,exp:riskAnswer.risks[item.risk].exp})
+  // }
 
-  function onDeleteRisk(riskId) {
-    function onConfirm() {
-      dispatch({type: 'DELETE_RISK',payload:riskId})
-      setRiskID(false)
-    }
+  // function onDeleteRisk(riskId) {
+  //   function onConfirm() {
+  //     dispatch({type: 'DELETE_RISK',payload:riskId})
+  //     setRiskID(false)
+  //   }
     
-    reactModal.alert({
-      title:'Deletar Checklist',
-      text:`Você tem certeza que deseza deletar o fator de risco ${risk[riskId].name}?`,
-      confirmButton:'Deletar',
-      warn:true,
-      option:true,
-      onConfirm:onConfirm,
-    })
-  }
+  //   reactModal.alert({
+  //     title:'Deletar Checklist',
+  //     text:`Você tem certeza que deseza deletar o fator de risco ${risk[riskId].name}?`,
+  //     confirmButton:'Deletar',
+  //     warn:true,
+  //     option:true,
+  //     onConfirm:onConfirm,
+  //   })
+  // }
 
-  function HAS_MANDATORY(riskId) {
-    var bool = false
-    riskAnswer.risks[riskId].created.map(i=>{
-      const categoryIndex =  checklist.data.findIndex(fi=>fi.id==i.groupId)
-      const questionIndex =  checklist.data[categoryIndex].questions.findIndex(fi=>fi.id==i.questionId)
-      const actionDataIndex =  checklist.data[categoryIndex].questions[questionIndex].action[i.selected].data.findIndex(fi=>fi.risk==riskId)
-      if (actionDataIndex != -1) {
-        if (checklist.data[categoryIndex].questions[questionIndex].action[i.selected].data[actionDataIndex].man) {
-          bool = true
-        }
-      }
-    })
-    return bool
-  }
+  // function HAS_MANDATORY(riskId) {
+  //   var bool = false
+  //   riskAnswer.risks[riskId].created.map(i=>{
+  //     const categoryIndex =  checklist.data.findIndex(fi=>fi.id==i.groupId)
+  //     const questionIndex =  checklist.data[categoryIndex].questions.findIndex(fi=>fi.id==i.questionId)
+  //     const actionDataIndex =  checklist.data[categoryIndex].questions[questionIndex].action[i.selected].data.findIndex(fi=>fi.risk==riskId)
+  //     if (actionDataIndex != -1) {
+  //       if (checklist.data[categoryIndex].questions[questionIndex].action[i.selected].data[actionDataIndex].man) {
+  //         bool = true
+  //       }
+  //     }
+  //   })
+  //   return bool
+  // }
 
 
   const renderContent = () => {
@@ -587,82 +514,18 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
           if (!risk[item.risk]) return
           return(
             <View style={{marginBottom:index+1 == riskParent().length? 25:15}} key={item.risk}>
-              {index == 0 && <TitleText>Fatorres de Risco Selecionados</TitleText>}
-              <RiskComponent onLongPress={()=>console.log(riskData)} onPress={()=>setRiskID(riskID==item.risk?false:item.risk)} key={item} text={risk[item.risk]?.name} type={risk[item.risk]?.type}>
-                {riskID == item.risk && ['font','rec','med'].map((type)=>{
-                  return ( 
-                    <View key={type}>
-                      {riskAnswer.risks[item.risk].data.filter(i=>i.type == type).map((itemSel,indexSel)=>{
-                        return (
-                          <View key={itemSel.id}>
-                            {indexSel == 0 && 
-                              <>
-                                <TitleRecText >
-                                  {`${type == 'rec'?'Recomendações':type == 'med'?'Medidas de Controle':'Fontes Geradoras'}`}
-                                </TitleRecText>
-                                <TitleRecText sub>
-                                  Ativas
-                                </TitleRecText>
-                              </>
-                            }
-                            <RecView onPress={()=>onRemoveRiskData(itemSel,item.risk)} rec activeOpacity={0.8}>
-                              <RecText >{riskData[itemSel.id].text}</RecText>
-                              <IconsPlusMinus  name={'MinusStroke'} size={16} color={themeContext.text.third} />
-                            </RecView>
-                          </View>
-                      )})}
-                      {riskAnswer.risks[item.risk].data.filter(i=>i.type == type).length == 0 ?
-                        <>
-                          <TitleRecText >
-                            {`${type == 'rec'?'Recomendações':type == 'med'?'Medidas de Controle':'Fontes Geradoras'}`}
-                          </TitleRecText>
-                          <AddRecComponent text={`Adicionar ${type == 'rec'?'Recomendação':type == 'med'?'Medida de Controle':'Fonte Geradora'}`} />
-                        </>
-                        :
-                        <AddRecComponent style={{marginTop:18}} text={`Adicionar ${type == 'rec'?'Recomendação':type == 'med'?'Medida de Controle':'Fonte Geradora'}`} />
-                      }
-                      {riskAnswer.risks[item.risk].suggest.filter(i=>i.type == type).map((itemSug,indexSug)=>{
-                        return (
-                          <View key={itemSug.id}>
-                            {indexSug == 0 && 
-                              <TitleRecText sub>
-                                Sugestões
-                              </TitleRecText>
-                            }
-                            <RecView onPress={()=>onChooseRiskData(itemSug,item.risk)} activeOpacity={0.8}>
-                              <RecText>{riskData[itemSug.id].text}</RecText>
-                              <IconsPlusMinus  name={'PlusStroke'} size={17} color={themeContext.text.third} />
-                            </RecView>
-                          </View>
-                      )})}
-                    </View>
+              {index == 0 && <TitleText>{checklist.periculoso ? 'Atividades Periculosas Detectadas' : 'Fatorres de Risco Selecionados'}</TitleText>}
+              {/* <RiskComponent onLongPress={()=>console.log(riskData)} onPress={()=>setRiskID(riskID==item.risk?false:item.risk)} key={item} text={risk[item.risk]?.name} type={risk[item.risk]?.type}> */}
+              <RiskComponent onLongPress={()=>console.log(riskData)} onPress={()=>navigation.navigate('CardEmployee',{text:risk[item.risk]?.name ?? risk[item.risk]?.atividade,item})} key={item} text={risk[item.risk]?.name?? risk[item.risk]?.atividade} type={risk[item.risk]?.type}>
+                {/* {Object.keys(riskAnswer.risks).filter(fi=>fi.includes(item.risk)).map((key,index)=>{
+                  return (
+                    <>
+                      {index == 0 && <Text>Quais áreas </Text>}
+                      <Text>{key.split('--')[1]}</Text>
+                    </>
                   )
-                })}
-                {riskID == item.risk && 
-                  <>
-                    <ButtonInitial
-                      secondary={true}
-                      style={{marginBottom:0,marginTop:30}}
-                      onPress={()=>onEditRisk(risk[item.risk]?.name,item)}
-                      scale={0.55}
-                      elevation={false}
-                      text='EDITAR'
-                    />
-                    {!HAS_MANDATORY(item.risk) &&
-                      <ButtonInitial
-                        secondary={true}
-                        style={{marginBottom:10,backgroundColor:'transparent' ,borderRadius:10,borderColor:themeContext.text.fourth,borderWidth:1}}
-                        onPress={()=>onDeleteRisk(item.risk)}
-                        textStyle={{color:themeContext.text.fourth}}
-                        scale={0.55}
-                        elevation={false}
-                        text='DELETAR'
-                      />
-                    }
-                  </>
-                }
+                })} */}
               </RiskComponent>
-
             </View>
           );
         })}
@@ -671,7 +534,8 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
           if (!risk[item.risk]) return
           return(
             <View key={item.risk}>
-              <RiskComponent onPress={()=>onChooseRisk(risk[item.risk]?.name,item)} text={risk[item.risk]?.name} type={risk[item.risk]?.type} />
+              {/* <RiskComponent onPress={()=>onChooseRisk(risk[item.risk]?.name,item)} text={risk[item.risk]?.name} type={risk[item.risk]?.type} /> */}
+              <RiskComponent onPress={()=>checklist?.cargoAdd?navigation.navigate('CardEmployee',{text:risk[item.risk]?.name ?? risk[item.risk]?.atividade,item}):onChooseRisk(risk[item.risk]?.name ?? risk[item.risk]?.atividade,item)} text={risk[item.risk]?.name?? risk[item.risk]?.atividade} type={risk[item.risk]?.type} />
             </View>
           );
         })}
@@ -683,11 +547,7 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
         {!selectedAnswer && (riskPosition.parent && riskPosition.parent[riskPosition.position.id] && riskPosition.parent[riskPosition.position.id] == 0) &&
           <NoRiskComponent text={'Selecione uma resposta para visualizar os fatores de risco'} style={{marginTop:15}}/>
         }
-
-
-        
         <View style={{flex:1}}/>
-
         <ButtonInitial
           secondary={false}
           textStyle={{color:themeContext.text.third}}
@@ -758,3 +618,78 @@ Card.BottomSheet = function Sheet({sheetRef,dispatch,checklist,children}) {
     </>
   );
 }
+
+
+
+// {riskID == item.risk && ['font','rec','med'].map((type)=>{
+//   return ( 
+//     <View key={type}>
+//       {riskAnswer.risks[item.risk].data.filter(i=>i.type == type).map((itemSel,indexSel)=>{
+//         return (
+//           <View key={itemSel.id}>
+//             {indexSel == 0 && 
+//               <>
+//                 <TitleRecText >
+//                   {`${type == 'rec'?'Recomendações':type == 'med'?'Medidas de Controle':'Fontes Geradoras'}`}
+//                 </TitleRecText>
+//                 <TitleRecText sub>
+//                   Ativas
+//                 </TitleRecText>
+//               </>
+//             }
+//             <RecView onPress={()=>onRemoveRiskData(itemSel,item.risk)} rec activeOpacity={0.8}>
+//               <RecText >{riskData[itemSel.id].text}</RecText>
+//               <IconsPlusMinus  name={'MinusStroke'} size={16} color={themeContext.text.third} />
+//             </RecView>
+//           </View>
+//       )})}
+//       {riskAnswer.risks[item.risk].data.filter(i=>i.type == type).length == 0 ?
+//         <>
+//           <TitleRecText >
+//             {`${type == 'rec'?'Recomendações':type == 'med'?'Medidas de Controle':'Fontes Geradoras'}`}
+//           </TitleRecText>
+//           <AddRecComponent text={`Adicionar ${type == 'rec'?'Recomendação':type == 'med'?'Medida de Controle':'Fonte Geradora'}`} />
+//         </>
+//         :
+//         <AddRecComponent style={{marginTop:18}} text={`Adicionar ${type == 'rec'?'Recomendação':type == 'med'?'Medida de Controle':'Fonte Geradora'}`} />
+//       }
+//       {riskAnswer.risks[item.risk].suggest.filter(i=>i.type == type).map((itemSug,indexSug)=>{
+//         return (
+//           <View key={itemSug.id}>
+//             {indexSug == 0 && 
+//               <TitleRecText sub>
+//                 Sugestões
+//               </TitleRecText>
+//             }
+//             <RecView onPress={()=>onChooseRiskData(itemSug,item.risk)} activeOpacity={0.8}>
+//               <RecText>{riskData[itemSug.id].text}</RecText>
+//               <IconsPlusMinus  name={'PlusStroke'} size={17} color={themeContext.text.third} />
+//             </RecView>
+//           </View>
+//       )})}
+//     </View>
+//   )
+// })}
+// {riskID == item.risk && 
+//   <>
+//     <ButtonInitial
+//       secondary={true}
+//       style={{marginBottom:0,marginTop:30}}
+//       onPress={()=>onEditRisk(risk[item.risk]?.name,item)}
+//       scale={0.55}
+//       elevation={false}
+//       text='EDITAR'
+//     />
+//     {!HAS_MANDATORY(item.risk) &&
+//       <ButtonInitial
+//         secondary={true}
+//         style={{marginBottom:10,backgroundColor:'transparent' ,borderRadius:10,borderColor:themeContext.text.fourth,borderWidth:1}}
+//         onPress={()=>onDeleteRisk(item.risk)}
+//         textStyle={{color:themeContext.text.fourth}}
+//         scale={0.55}
+//         elevation={false}
+//         text='DELETAR'
+//       />
+//     }
+//   </>
+// }

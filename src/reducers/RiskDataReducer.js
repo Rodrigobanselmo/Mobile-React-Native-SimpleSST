@@ -13,6 +13,9 @@ export default (state = initialState, action) => {
             })
         return {...risksAll};
 
+        case 'CREATE_PER_DATA':
+        return {...action.payload};
+
         case 'LOGOUT_RISK_DATA':
         return [];
 

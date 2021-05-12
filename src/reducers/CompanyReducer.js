@@ -15,6 +15,9 @@ export default (state = initialState, action) => {
             company.selectedWorkplace =  {...action.payload}
         return {...company};
 
+        case 'LOGOUT_COMPANY':
+        return {...initialState};
+
         default:
         return state;
     }

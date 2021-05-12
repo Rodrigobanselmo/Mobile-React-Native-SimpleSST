@@ -8,6 +8,15 @@ const initialState = {
         //     primary:'',
         //     suggest:[{id:'',type:'rec',questionId:''}]
         // },
+   
+        // 'riskId-cargoId':{
+        //     data:[{id:'',type:'rec',questionId:''}],
+        //     created:[{questionId:'',selected:''}],
+        //     exp:'',
+        //     prob:'',
+        //     primary:'',
+        //     suggest:[{id:'',type:'rec',questionId:''}]
+        // },
     },
 }
 
@@ -23,62 +32,70 @@ export default (state = initialState, action) => {
         case 'CREATE_RISK_ANSWER':
         return {...action.payload};
 
-        // case 'ADD_RISK_ANSWER':
-        //     var actualState = {...state}
-
-        //     actualState.position = {...actualState.position, itemId:action.payload.itemId,groupId:action.payload.groupId,peek:action.payload.peek}
-
-        //     if (action.payload.peekData?.risk) {
-        //         var dataRisk = []
-        //         action.payload.peekData.risk.map(i=>{
-        //             dataRisk.push({id:i,choosen:false})
-        //         })
-        //         actualState.risks[`${action.payload.groupId}-${action.payload.itemId}`] = {
-        //             data:[...dataRisk],
-        //             peek:action.payload.peek
-        //         }
-        //     } else {
-        //         actualState.risks[`${action.payload.groupId}-${action.payload.itemId}`] = {
-        //             data:[],
-        //             peek:action.payload.peek
-        //         }
-        //     }
-           
-        //     console.log(actualState);
-
-        // return {...actualState};
-
         case 'CHOOSE_RISK_ANSWER':
             var actualState = {...state}
             var data = {questionId:action.payload.answer.questionId,selected:action.payload.answer.selected,groupId:action.payload.answer.groupId}
-            var validate = actualState.risks[action.payload.item.risk]
-            var actualStateRisk = validate ? {...validate,created:validate.created?[...validate.created.filter(i=>!(i.questionId == data.questionId && i.selected == data.selected)),{...data}]:[{...data}],...action.payload.data} : {created:[{...data}],data:[],suggest:[],...action.payload.data};
-            ['rec','med','font'].map((item)=>{
-                if (action.payload.item[item]) {
-                    action.payload.item[item].map(itemId=>{
-                       if (actualStateRisk.data.findIndex(i=>i.id==itemId) == -1) actualStateRisk.data.push({
-                           id:itemId,
-                           type:item,
-                           questionId:action.payload.answer.questionId,
-                           selected:action.payload.answer.selected,
-                        })
-                    })
-                }
-            });
-            ['rec','med','font'].map((item)=>{
-                if (action.payload.item[`${item}Sug`]) {
-                    action.payload.item[`${item}Sug`].map(itemId=>{
-                       if (actualStateRisk.suggest.findIndex(i=>i.id==itemId) == -1) actualStateRisk.suggest.push({
-                           id:itemId,
-                           type:item,
-                           questionId:action.payload.answer.questionId,
-                           selected:action.payload.answer.selected,
-                        })
-                    })
-                }
-            });
             
-            actualState.risks[action.payload.item.risk] = {...actualStateRisk}
+            if (action.payload.cargoArrayId) {
+                action.payload.cargoArrayId.map(item=>{
+                    var validate = actualState.risks[`${action.payload.item.risk}--${item}`]
+                    var actualStateRisk = validate ? {...validate,created:validate.created?[...validate.created.filter(i=>!(i.questionId == data.questionId && i.selected == data.selected)),{...data}]:[{...data}],...action.payload.data} : {created:[{...data}],data:[],suggest:[],...action.payload.data};
+                    ['rec','med','font'].map((item)=>{
+                        if (action.payload.item[item]) {
+                            action.payload.item[item].map(itemId=>{
+                            if (actualStateRisk.data.findIndex(i=>i.id==itemId) == -1) actualStateRisk.data.push({
+                                id:itemId,
+                                type:item,
+                                questionId:action.payload.answer.questionId,
+                                selected:action.payload.answer.selected,
+                                })
+                            })
+                        }
+                    });
+                    ['rec','med','font'].map((item)=>{
+                        if (action.payload.item[`${item}Sug`]) {
+                            action.payload.item[`${item}Sug`].map(itemId=>{
+                            if (actualStateRisk.suggest.findIndex(i=>i.id==itemId) == -1) actualStateRisk.suggest.push({
+                                id:itemId,
+                                type:item,
+                                questionId:action.payload.answer.questionId,
+                                selected:action.payload.answer.selected,
+                                })
+                            })
+                        }
+                    });
+                    actualState.risks[`${action.payload.item.risk}--${item}`] = {...actualStateRisk}
+                })
+
+            } else {
+                var validate = actualState.risks[action.payload.item.risk]
+                var actualStateRisk = validate ? {...validate,created:validate.created?[...validate.created.filter(i=>!(i.questionId == data.questionId && i.selected == data.selected)),{...data}]:[{...data}],...action.payload.data} : {created:[{...data}],data:[],suggest:[],...action.payload.data};
+                ['rec','med','font'].map((item)=>{
+                    if (action.payload.item[item]) {
+                        action.payload.item[item].map(itemId=>{
+                        if (actualStateRisk.data.findIndex(i=>i.id==itemId) == -1) actualStateRisk.data.push({
+                            id:itemId,
+                            type:item,
+                            questionId:action.payload.answer.questionId,
+                            selected:action.payload.answer.selected,
+                            })
+                        })
+                    }
+                });
+                ['rec','med','font'].map((item)=>{
+                    if (action.payload.item[`${item}Sug`]) {
+                        action.payload.item[`${item}Sug`].map(itemId=>{
+                        if (actualStateRisk.suggest.findIndex(i=>i.id==itemId) == -1) actualStateRisk.suggest.push({
+                            id:itemId,
+                            type:item,
+                            questionId:action.payload.answer.questionId,
+                            selected:action.payload.answer.selected,
+                            })
+                        })
+                    }
+                });
+                actualState.risks[action.payload.item.risk] = {...actualStateRisk}
+            }
         
         return {...actualState};
 
@@ -122,7 +139,7 @@ export default (state = initialState, action) => {
             var actualState = {...state}
             delete actualState.risks[action.payload]
         return {...actualState};
-
+        
         case 'REMOVE_RISK_ANSWER':
             var actualState = {...state}
 
@@ -148,6 +165,7 @@ export default (state = initialState, action) => {
                     
                 }
             })
+        return {...actualState};
 
         case 'REMOVE_RISK_ANSWER_MULT':
             var actualState = {...state}
@@ -186,27 +204,51 @@ export default (state = initialState, action) => {
             actualStateRisk.data = removeDuplicatedId([...actualStateRisk.data.filter(i=>i.id != action.payload.dataId)],'id')
             actualState.risks[action.payload.riskId] = {...actualStateRisk}
         return {...actualState};
-
-        // case 'ADD_RISK_ANSWER_POSITION':
-        //     var actualState = {...state}
-        //     actualState.position = {...action.payload}
-        //     if (action.payload?.peek && action.payload.action[action.payload.peek]?.child && !action.payload.action[action.payload.peek]?.parent) actualState.parent = [action.payload.id]
-        //     if (action.payload?.peek && action.payload.action[action.payload.peek]?.child && action.payload.action[action.payload.peek].parent) actualState.parent = [...actualState.parent.filter(i=>i!=action.payload.id),action.payload.id]
-        // return {...actualState};
-
+        
         case 'LOGOUT_RISK_ANSWER':
-        return {...initialState};
-
+        return {risks:{}};
+            
         default:
-        return state;
-    }
+            return state;
+        }
 }
 
+        // case 'ADD_RISK_ANSWER':
+        //     var actualState = {...state}
+
+        //     actualState.position = {...actualState.position, itemId:action.payload.itemId,groupId:action.payload.groupId,peek:action.payload.peek}
+
+        //     if (action.payload.peekData?.risk) {
+        //         var dataRisk = []
+        //         action.payload.peekData.risk.map(i=>{
+        //             dataRisk.push({id:i,choosen:false})
+        //         })
+        //         actualState.risks[`${action.payload.groupId}-${action.payload.itemId}`] = {
+        //             data:[...dataRisk],
+        //             peek:action.payload.peek
+        //         }
+        //     } else {
+        //         actualState.risks[`${action.payload.groupId}-${action.payload.itemId}`] = {
+        //             data:[],
+        //             peek:action.payload.peek
+        //         }
+        //     }
+           
+        //     console.log(actualState);
+
+        // return {...actualState};
+
+// case 'ADD_RISK_ANSWER_POSITION':
+//     var actualState = {...state}
+//     actualState.position = {...action.payload}
+//     if (action.payload?.peek && action.payload.action[action.payload.peek]?.child && !action.payload.action[action.payload.peek]?.parent) actualState.parent = [action.payload.id]
+//     if (action.payload?.peek && action.payload.action[action.payload.peek]?.child && action.payload.action[action.payload.peek].parent) actualState.parent = [...actualState.parent.filter(i=>i!=action.payload.id),action.payload.id]
+// return {...actualState};
 
 
 /*             action.payload?.data && action.payload.data.map((group)=>{
-                let GROUP = {id:item.id, response:[]}
-                group?.questions && group.questions.map((question)=>{
-                    GROUP.push({})
-                })
-            }) */
+    let GROUP = {id:item.id, response:[]}
+    group?.questions && group.questions.map((question)=>{
+        GROUP.push({})
+    })
+}) */

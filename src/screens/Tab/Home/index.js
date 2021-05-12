@@ -11,6 +11,7 @@ import {onGetAllChecklistData,onGetChecklistData} from './func';
 import { useSelector, useDispatch } from 'react-redux';
 import {ButtonInitial} from '../../../components/basicComponents/Button';
 
+
 const ChecklistContainer = styled.TouchableOpacity`
   background-color: ${({theme})=>theme.background.paper};
   margin: 10px 20px 10px 20px;
@@ -67,8 +68,18 @@ export default function App({navigation}) {
   const reactModal = useReactModal();
   const allModels = useSelector(state => state.allModels);
   const user = useSelector(state => state.user);
+  const riskAnswer = useSelector(state => state.riskAnswer);
+  const riskPosition = useSelector(state => state.riskPosition);
+  const answer = useSelector(state => state.answer);
+  const company = useSelector(state => state.company);
+  const checklist = useSelector(state => state.checklist);
   const dispatch = useDispatch();
   
+console.log('riskAnswer',riskAnswer)
+console.log('answer',answer)
+console.log('company',company)
+console.log('checklist',checklist)
+
   const [selected, setSelected] = useState(null);
   
   useEffect(() => {
@@ -91,7 +102,7 @@ export default function App({navigation}) {
               {item?.companyName ? item.companyName : 'Empresa: não identificado'}
               </TextSub>
           </View>
-          <Donut strokeWidth={6} color={themeContext.primary.main} percentage={item.percentage.jump+item.percentage.selected} max={item.percentage.total} radius={30} />
+          <Donut strokeWidth={6} color={themeContext.primary.main} percentage={item?.percentage?.jump+item?.percentage?.selected} max={item?.percentage?.total} radius={30} />
         </View>
         {selected == item.id && 
           <>

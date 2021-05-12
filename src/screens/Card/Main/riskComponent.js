@@ -126,15 +126,15 @@ const AddRecText = styled.Text`
   color:${({theme})=>theme.text.third};
 `;
 
-export function RiskComponent({type='qui',text='',children,...props}) {
+export function RiskComponent({type,text='',children,...props}) {
 
   const themeContext = useContext(ThemeContext);
 
   return (
     <Container>
     <ItemRiskContainer activeOpacity={0.8} type={type} {...props}>
-      <IconRiskContainer type={type}>
-        <Icons  name={type} fill={themeContext.status.text} />
+      <IconRiskContainer type={type || 'qui'}>
+        {type && <Icons  name={type} fill={themeContext.status.text} />}
       </IconRiskContainer>
       <RiskText>{text}</RiskText>
     </ItemRiskContainer>
